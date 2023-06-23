@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack/webpack.pr",
+    "build": "webpack --config webpack/webpack.prod.js",
     "test" : "npx jest"
   },
   "repository": "https://github.com/HANITZ/PSHelper.git",
