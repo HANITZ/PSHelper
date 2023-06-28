@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+
+  "name": "PSHelper",
+  "description": "알고리즘 문제풀이 도우미",
+  "version": "1.0",
+
+  // "options_ui": {
+  //     "page": "options.html"
+  // },
+
+  "action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+
+  // "content_scripts": [
+  //   {
+  //     "matches": ["<all_urls>"],
+  //     "js": []
+  //   }
+  // ],
+
+  "background": {
+    "service_worker": "js/background.js"
+  },
+
+  "permissions": ["storage"],
+
+  "host_permissions": ["<all_urls>"]
+}
