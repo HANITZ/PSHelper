@@ -1,5 +1,20 @@
+const getUserInfo = async (token: Response) => {
+  const host = "https://api.github.com/user";
+  const res = await (
+    await fetch(host, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `token ${token}`,
+        Accept: "application/json",
+      },
+    })
+  ).json();
 
-async function Git() {
+  return res;
+};
+
+async function Github() {
   const url = new URL(window.location.href);
   const githubCode = url.searchParams.get("code");
 
@@ -24,7 +39,19 @@ async function Git() {
   };
 
   const res = await getAccessToken(githubCode);
-  console.log(res.access_token);
+  chrome.runtime.sendMessage({
+    closeWebPage: true,
+    isSuccess: true,
+    token: res.access_token,
+    action: "PSHELPER_TOKEN",
+  });
+  chrome.runtime.onMessage.addListener((req: any) => {
+    console.log(123);
+  });
+  getUserInfo(res.access_token);
+  return res.access_token;
 }
 
-Git();
+if (window.location.host === "github.com") {
+  const token = Github();
+}

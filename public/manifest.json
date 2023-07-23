@@ -13,7 +13,12 @@
   "background": {
     "service_worker": "js/background.js"
   },
-
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*"],
+      "js": ["js/index.js"]
+    }
+  ],
   "permissions": ["storage"],
 
   "host_permissions": ["<all_urls>"]
