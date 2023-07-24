@@ -8,14 +8,14 @@ module.exports = {
   entry: {
     popup: path.join(srcDir, "popup.ts"),
     background: path.join(srcDir, "background.ts"),
-    index: path.join(srcDir, "index.ts"),
+    Github: path.join(srcDir, "Github.ts"),
   },
   output: {
     path: path.join(__dirname, "../dist/js"),
     filename: "[name].js",
   },
   resolve: {
-    extensions: [ ".js"],
+    extensions: [".js"],
   },
   optimization: {
     splitChunks: {
@@ -29,7 +29,7 @@ module.exports = {
     rules: [
       {
         test: /\.ts$|tsx/,
-        include: [path.resolve(__dirname, './src')],
+        include: [path.resolve(__dirname, "./src")],
         exclude: ["/node_modules"],
         use: {
           loader: "babel-loader",
