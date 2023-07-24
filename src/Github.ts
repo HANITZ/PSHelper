@@ -1,4 +1,4 @@
-import { createChromeTabs } from "./chromeUtils";
+import { sendChromeMessage } from "./chromeUtils";
 import { getAccessToken } from "./getReqAPI";
 
 async function Github() {
@@ -8,13 +8,20 @@ async function Github() {
   if (!githubCode) throw new Error("GITGUB인증실패");
 
   const res = await getAccessToken(githubCode);
+  console.log(res);
   if (res) {
-    createChromeTabs({
+    sendChromeMessage({
       closeWebPage: true,
       isSuccess: true,
       token: res.access_token,
       action: "PSHELPER_TOKEN",
     });
+    // chrome.runtime.sendMessage({
+    //   closeWebPage: true,
+    //   isSuccess: true,
+    //   token: res.access_token,
+    //   action: "PSHELPER_TOKEN",
+    // });
   }
 }
 

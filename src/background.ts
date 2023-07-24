@@ -1,7 +1,11 @@
+import { getChromeMessage, setChromeStorage } from "./chromeUtils";
+
 const messageHandler = (req: any, sender: any, sendResponse: any) => {
   if (req && req.isSuccess && req.action === "PSHELPER_TOKEN") {
-    chrome.storage.local.set({ GITHUB_TOKEN: req.token });
+    setChromeStorage({ GITHUB_TOKEN: req.token });
+    console.log(req);
   }
 };
 
-chrome.runtime.onMessage.addListener(messageHandler);
+getChromeMessage(messageHandler);
+

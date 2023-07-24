@@ -4,4 +4,19 @@ export const createChromeTabs = ({ ...props }) => {
   });
 };
 
-export const 
+export const setChromeStorage = ({...props}, fn= ()=>{}) => {
+    chrome.storage.local.set({...props}, fn);
+}
+
+export const getChromeStorage = (key: string, fn=()=>{}) => {
+    chrome.storage.local.get({})
+    
+}
+
+export const sendChromeMessage = ({...props}) => {
+    chrome.runtime.sendMessage({...props})
+}
+
+export const getChromeMessage = (fn:any) => {
+    chrome.runtime.onMessage.addListener(fn)
+}
