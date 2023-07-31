@@ -17,9 +17,15 @@
     {
       "matches": ["https://github.com/*"],
       "js": ["js/Github.js"]
+    },
+    {
+      "matches": ["https://school.programmers.co.kr/*"],
+      "js":[
+        "js/Programmers.js"
+      ]
     }
   ],
-  "permissions": ["storage"],
+  "permissions": ["storage", "tabs", "activeTab"],
 
   "host_permissions": ["<all_urls>"]
 }

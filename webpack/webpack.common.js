@@ -9,6 +9,7 @@ module.exports = {
     popup: path.join(srcDir, "popup.ts"),
     background: path.join(srcDir, "background.ts"),
     Github: path.join(srcDir, "Github.ts"),
+    Programmers: path.join(srcDir, "Programmers.ts"),
   },
   output: {
     path: path.join(__dirname, "../dist/js"),
