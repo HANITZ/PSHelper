@@ -1,14 +1,17 @@
 import { $, $$, enrollEvent, getElById } from "./utils/jsUtils";
-import { getChromeMessage, setChromeStorage, getChromeStorage } from "./chromeUtils";
+import {
+  getChromeMessage,
+  setChromeStorage,
+  getChromeStorage,
+} from "./chromeUtils";
 
-
-interface  PROBLEM {
-    isSolved: string,
-    title: string,
-    level: string,
-    finishedCoun: string,
-    acceptanceRage: string
-  } 
+interface PROBLEM {
+  isSolved: string;
+  title: string;
+  level: string;
+  finishedCount: string;
+  acceptanceRage: string;
+}
 
 class Programmers {
   constructor() {}
@@ -30,9 +33,7 @@ class Programmers {
         const level = $("td.level", tr)!.innerText;
         const finishedCount = $("td.finished-count", tr)!.innerText;
         const acceptanceRate = $("td.acceptance-rate", tr)!.innerText;
-        console.log(title);
-        console.log(isSolved);
-        console.log(acceptanceRate);
+
         enrollEvent(tr, "click", () => {
           setChromeStorage({
             PROBLEM: {
@@ -47,12 +48,8 @@ class Programmers {
       });
   };
 
-
   startSolve = () => {
     this.setEvents();
-    getChromeStorage("PROBLEM", (data:PROBLEM) => {
-      console.log(data);
-    });
   };
   setEvents = () => {
     const submitButton = getElById("submit-code");
@@ -66,20 +63,26 @@ class Programmers {
     const modalCheckInterval = setInterval(() => {
       const modalText = $("div.modal-header > h4");
       if (!modalText) return;
-      if (modalText.innerText.includes("정답입니다.")) {
-        this.parse();
+      if (modalText.innerText.includes("정답입니다")) {
+        this.parseCode();
         clearInterval(modalCheckInterval);
       }
     }, 1000);
   };
 
-  parse = () => {
-    console.log(window.location.href);
-    const metaTag = $("head > meta[name$=url]") as any;
+  parseCode = async () => {
+    const problemData = await getChromeStorage("PROBLEM");
+
+    const metaTag = $("head > meta[name$=url]") as HTMLMetaElement;
     const link = metaTag.content.replace(/\?.*/g, "").trim();
     const problemId = $("div.main > div.lesson-content")!.getAttribute(
       "data-lesson-id"
     );
+    const title = $(".nav-item.algorithm-nav-link.algorithm-title");
+    const divi = $("ol.breadcrumb")
+    if (!divi) return;
+    console.log(divi.childNodes);
+    console.log(problemId);
     const tcBtn = getElById("btn-show-question");
     console.log(tcBtn);
     if (!tcBtn) return;
