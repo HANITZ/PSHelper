@@ -4,11 +4,26 @@ export const createChromeTabs = ({ ...props }) => {
   });
 };
 
-export const setChromeStorage = ({ ...props }, fn = () => {}) => {
+export const setChromeSyncStorage = ({ ...props }, fn = () => {}) => {
+  chrome.storage.sync.set({ ...props }, fn);
+};
+
+export const getChromeSyncStorage = (
+  key: string,
+  fn?: Fn
+): void | Promise<object> => {
+  if (fn) {
+    chrome.storage.sync.get([key], fn);
+    return;
+  }
+  return chrome.storage.sync.get([key]);
+};
+
+export const setChromeLocalStorage = ({ ...props }, fn = () => {}) => {
   chrome.storage.local.set({ ...props }, fn);
 };
 type Fn = (data: object) => {};
-export const getChromeStorage = (
+export const getChromeLocalStorage = (
   key: string,
   fn?: Fn
 ): void | Promise<object> => {
