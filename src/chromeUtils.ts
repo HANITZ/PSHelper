@@ -22,11 +22,13 @@ export const getChromeSyncStorage = (
 export const setChromeLocalStorage = ({ ...props }, fn = () => {}) => {
   chrome.storage.local.set({ ...props }, fn);
 };
+
 type Fn = (data: object) => {};
-export const getChromeLocalStorage = (
-  key: string,
-  fn?: Fn
-): void | Promise<object> => {
+type getChromeLocalStorage =
+  | ((key: string ) => Promise<object>)
+  | ((key: string, fn?: Fn) => void);
+
+export const getChromeLocalStorage: getChromeLocalStorage = (key, fn) => {
   if (fn) {
     chrome.storage.local.get([key], fn);
     return;
@@ -41,3 +43,5 @@ export const sendChromeMessage = ({ ...props }) => {
 export const getChromeMessage = (fn: any) => {
   chrome.runtime.onMessage.addListener(fn);
 };
+
+

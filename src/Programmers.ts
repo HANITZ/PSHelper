@@ -1,9 +1,10 @@
 import { $, $$, enrollEvent, getElById } from "./utils/jsUtils";
 import {
   getChromeMessage,
-  setChromeStorage,
-  getChromeStorage,
+  setChromeLocalStorage,
+  getChromeLocalStorage,
 } from "./chromeUtils";
+
 
 interface PROBLEM {
   PROBLEM: {
@@ -11,7 +12,7 @@ interface PROBLEM {
     title: string;
     level: string;
     finishedCount: string;
-    acceptanceRage: string;
+    acceptanceRate: string;
   };
 }
 
@@ -37,7 +38,7 @@ class Programmers {
         const acceptanceRate = $("td.acceptance-rate", tr)!.innerText;
 
         enrollEvent(tr, "click", () => {
-          setChromeStorage({
+          setChromeLocalStorage({
             PROBLEM: {
               isSolved,
               title,
@@ -57,26 +58,45 @@ class Programmers {
     const submitButton = getElById("submit-code");
     if (!submitButton) return;
 
-    enrollEvent(submitButton, "click", () => {
-      this.checkSuccess();
+    enrollEvent(submitButton, "click", async () => {
+      if (this.checkSuccess()) {
+        const solvedData = await this.parseCode();
+        console.log(solvedData);
+        // type GITHUB_TOKEN = {
+        //   GITHUB_TOKEN: string;
+        // };
+        // const { GITHUB_TOKEN } = (await getChromeLocalStorage(
+        //   "GITHUB_TOKEN"
+        // )) as GITHUB_TOKEN;
+
+        // const octokit = new Octokit({
+        //   auth: GITHUB_TOKEN,
+        // });
+        // const res = await octokit.request("GET /orgs/{org}/repos", {
+        //   org: "HANITZ",
+        // });
+        // console.log(res);
+        this.uploadCode("임시");
+      }
     });
   };
+  uploadCode = (code: string) => {};
   checkSuccess = () => {
     const modalCheckInterval = setInterval(() => {
       const modalText = $("div.modal-header > h4");
       if (!modalText) return;
       if (modalText.innerText.includes("정답입니다")) {
-        this.parseCode();
         clearInterval(modalCheckInterval);
       }
     }, 1000);
+    return true;
   };
 
   parseCode = async () => {
-    const problemData = (await getChromeStorage("PROBLEM")) as PROBLEM;
+    const problemData = (await getChromeLocalStorage("PROBLEM")) as PROBLEM;
 
     const metaTag = $("head > meta[name$=url]") as HTMLMetaElement;
-    const link = metaTag.content.replace(/\?.*/g, "").trim();
+    const link = window.location.href;
     const problemId = $("div.main > div.lesson-content")!.getAttribute(
       "data-lesson-id"
     );
@@ -125,7 +145,7 @@ class Programmers {
       )
       .map((num) => num.toString());
 
-    const aa = await this.makeReadMe({
+    return this.makeReadMe({
       link,
       problemData,
       problemId,
@@ -137,7 +157,6 @@ class Programmers {
       avgTime,
       avgMemory,
     });
-    console.log(aa);
   };
 
   makeReadMe = ({
@@ -151,9 +170,14 @@ class Programmers {
     code,
     avgTime,
     avgMemory,
-  }: ReadeMe): string => {
-    return (
-      `# [${problemData.PROBLEM.level}] ${problemData.PROBLEM.title} - ${problemId} \n\n` +
+  }: ReadeMe): object => {
+    const { title, level, isSolved, finishedCount, acceptanceRate } =
+      problemData.PROBLEM;
+    const directory = `프로그래머스/${level}/${problemId}.${title}`;
+    const message = `[${level}] Title: ${title}, AvgTime: ${avgTime}, AvgMemory: ${avgMemory}`;
+    const fileName = `${title}.${languageExtension}`;
+    const readMe =
+      `# [${level}] ${problemData.PROBLEM.title} - ${problemId} \n\n` +
       `[문제 링크](${link}) \n\n` +
       `### 성능 요약\n\n` +
       `평균 메모리: ${avgMemory}MB, ` +
@@ -164,8 +188,14 @@ class Programmers {
       `${resultMessage}\n\n` +
       `### 문제 설명\n\n` +
       `${problemDescription}\n\n` +
-      `> 출처: 프로그래머스 코딩 테스트 연습, https://programmers.co.kr/learn/challenges`
-    );
+      `> 출처: 프로그래머스 코딩 테스트 연습, https://programmers.co.kr/learn/challenges`;
+    return {
+      directory,
+      message,
+      fileName,
+      readMe,
+      code,
+    };
   };
 }
 interface ReadeMe {

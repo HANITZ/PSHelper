@@ -1,4 +1,4 @@
-import { sendChromeMessage } from "./chromeUtils";
+import { getChromeMessage, sendChromeMessage } from "./chromeUtils";
 import { getAccessToken } from "./getReqAPI";
 
 export async function Github() {
@@ -15,12 +15,11 @@ export async function Github() {
         token: res.access_token,
         action: "PSHELPER_TOKEN",
       });
-      if (window.location.host === "github.com") {
-        window.close();
-      }
-      return true;
+      window.close();
     }
   } catch (error) {
     throw error;
   }
 }
+
+Github();

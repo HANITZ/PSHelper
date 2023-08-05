@@ -1,11 +1,15 @@
-import { getChromeMessage, setChromeStorage } from "./chromeUtils";
+import { Octokit } from "octokit";
+import { getChromeMessage, setChromeLocalStorage } from "./chromeUtils";
 
-const messageHandler = (req: any, sender: any, sendResponse: any) => {
+const messageHandler = async (req: any, sender: any, sendResponse: any) => {
   if (req && req.isSuccess && req.action === "PSHELPER_TOKEN") {
-    setChromeStorage({ GITHUB_TOKEN: req.token });
-
-    console.log(req.token);
+    setChromeLocalStorage({ GITHUB_TOKEN: req.token });
+    
+    const octokit = new Octokit({
+      auth: req.token,
+    });
+    const res = await octokit.request("GET /user/repos");
   }
 };
 
-getChromeMessage(messageHandler);
+const a = getChromeMessage(messageHandler);

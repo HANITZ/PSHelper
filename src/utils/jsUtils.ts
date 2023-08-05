@@ -25,3 +25,12 @@ type enrollEvent = (
 export const enrollEvent: enrollEvent = (el, type, fn) => {
   el.addEventListener(type, fn);
 };
+
+export const isObjEmpty = (obj: Object) => {
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      return false;
+    }
+  }
+  return JSON.stringify(obj) === JSON.stringify({});
+};
