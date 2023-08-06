@@ -7,33 +7,43 @@ import { $, enrollEvent, getElById, isObjEmpty } from "./utils/jsUtils";
 
 class Popup {
   element: HTMLElement | null;
+  isLogined: boolean = false;
   constructor(element: HTMLElement | null) {
     this.element = element;
     this.init();
   }
 
   init = async () => {
-    const token = await getChromeLocalStorage("GITHUB_TOKEN");
-    if (!token) throw new Error("Not Found GITHUB Token");
-    if (isObjEmpty(token)) {
-      this.element!.innerHTML = this.getBasicTemplate();
-      this.setEvent();
-      console.log("토큰 없음");
+    if (this.isLogined) {
+      const a = setInterval(async () => {
+        const token = await getChromeLocalStorage("GITHUB_TOKEN");
+        if (token) {
+          createChromeTabs({
+            url: `chrome-extension://${process.env.CHROME_NUMBER}/index.html`,
+            active: true,
+          });
+          this.element!.innerHTML = this.getLoginedTemplate();
+          clearInterval(a);
+        }
+      }, 1000);
       return;
     }
 
-    console.log("토큰있음");
-    this.element!.innerHTML = this.getLoginedTemplate();
+    this.element!.innerHTML = this.getBasicTemplate();
+    this.setEvent();
+    console.log("토큰 없음");
+    return;
   };
 
   setEvent = () => {
     const enrollEl = getElById("enroll");
     if (!enrollEl) throw new Error("enrollEl 엘리먼트를 찾지 못했습니다.");
-    enrollEvent(enrollEl, "click", () => {
+    enrollEvent(enrollEl, "click", async () => {
       createChromeTabs({
         url: `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}`,
         active: false,
       });
+      this.isLogined = true;
       this.init();
     });
   };
@@ -45,7 +55,7 @@ class Popup {
   getBasicTemplate = () => {
     return `
     <h1>PSHELPER</h1>
-    <button id="enroll">Enroll GitHub</button>`;
+    <button id="enroll">Connect with GitHub</button>`;
   };
 }
 new Popup($("#root"));

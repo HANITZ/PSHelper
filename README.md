@@ -2,7 +2,7 @@
 
 ### 구현 목록
 
-- [ ] GitHub 로그인이 성공하면 welcome.html화면에 띄운다
+- [v] GitHub 로그인이 성공하면 welcome.html화면에 띄운다
 - [ ] welcome 화면에서 repo 등록을 한다
   - [ ] 새로운 repo를 생성시켜서 등록할 수 있다
   - [ ] 기존의 repo에 연결시킬 수 있다

@@ -25,7 +25,7 @@ export const setChromeLocalStorage = ({ ...props }, fn = () => {}) => {
 
 type Fn = (data: object) => {};
 type getChromeLocalStorage =
-  | ((key: string ) => Promise<object>)
+  | ((key: string) => Promise<object>)
   | ((key: string, fn?: Fn) => void);
 
 export const getChromeLocalStorage: getChromeLocalStorage = (key, fn) => {
@@ -44,4 +44,16 @@ export const getChromeMessage = (fn: any) => {
   chrome.runtime.onMessage.addListener(fn);
 };
 
-
+export const closeCurrentTab = (parent: any) => {
+  let that = parent;
+  chrome.tabs = parent;
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs.length > 0) {
+      let tabId = tabs[0].id;
+      if (!tabId) return;
+      chrome.tabs.remove(tabId, () => {
+        console.log("페이지 닫힘");
+      });
+    }
+  });
+};

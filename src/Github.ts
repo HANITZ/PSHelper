@@ -1,4 +1,4 @@
-import { getChromeMessage, sendChromeMessage } from "./chromeUtils";
+import { closeCurrentTab, sendChromeMessage } from "./chromeUtils";
 import { getAccessToken } from "./getReqAPI";
 
 export async function Github() {
