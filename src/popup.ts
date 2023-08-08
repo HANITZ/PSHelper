@@ -19,7 +19,7 @@ class Popup {
         const token = await getChromeLocalStorage("GITHUB_TOKEN");
         if (token) {
           createChromeTabs({
-            url: `chrome-extension://${process.env.CHROME_NUMBER}/index.html`,
+            url: `chrome-extension://${process.env.CHROME_NUMBER}/home.html`,
             active: true,
           });
           this.element!.innerHTML = this.getLoginedTemplate();
