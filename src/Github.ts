@@ -4,7 +4,6 @@ import { getAccessToken } from "./getReqAPI";
 export async function Github() {
   const url = new URL(window.location.href);
   const githubCode = url.searchParams.get("code");
-
   if (!githubCode) throw new Error("Failed Get GITHUB Authorization Code ");
   try {
     const res = await getAccessToken(githubCode);

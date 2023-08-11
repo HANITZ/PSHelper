@@ -20,9 +20,11 @@
     },
     {
       "matches": ["https://school.programmers.co.kr/*"],
-      "js":[
-        "js/Programmers.js"
-      ]
+      "js": ["js/Programmers.js"]
+    },
+    {
+      "matches": ["*://hnebgpjnajdmkcncbgfahhnhaennabjb/home.html"],
+      "js": ["js/home.js"]
     }
   ],
   "permissions": ["storage", "tabs", "activeTab"],

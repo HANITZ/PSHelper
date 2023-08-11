@@ -14,6 +14,7 @@ class Popup {
   }
 
   init = async () => {
+    console.log(this.isLogined);
     if (this.isLogined) {
       const a = setInterval(async () => {
         const token = await getChromeLocalStorage("GITHUB_TOKEN");
