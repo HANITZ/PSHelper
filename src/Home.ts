@@ -7,6 +7,7 @@ class Home {
   repos: repos[] | undefined;
   isValidate = false;
   canSubmit = false;
+  selectType = "";
 
   constructor() {
     this.init();
@@ -25,12 +26,28 @@ class Home {
     });
     return true;
   };
+  validateBeforeSubmit = () => {
+    switch (this.selectType) {
+      case "new":
+        if (!this.isValidate) return false;
+        if (!this.canSubmit) return false;
+        return true;
+
+      case "link":
+        if (!this.canSubmit) return false;
+        return true;
+
+      default:
+        return false;
+    }
+  };
   selectionHandler = (value: string, element: HTMLElement) => {
     const submitButton = $("#submit_button") as HTMLButtonElement;
-    this.canSubmit = true;
-    submitButton.disabled = this.canSubmit;
+    this.canSubmit = false;
+    submitButton.disabled = !this.canSubmit;
     switch (value) {
       case "new":
+        this.selectType = "new";
         this.renderTemplate(
           element,
           `<input
@@ -53,21 +70,22 @@ class Home {
           }
           validateButton.innerText = "인증완료";
           this.isValidate = true;
-          this.canSubmit = false;
+          this.canSubmit = true;
           validateButton.disabled = this.isValidate;
-          submitButton.disabled = this.canSubmit;
+          submitButton.disabled = !this.canSubmit;
         });
 
         const inputEl = $("input", element) as HTMLInputElement;
         enrollEvent(inputEl, "input", () => {
           validateButton.innerText = "인증";
           this.isValidate = false;
-          this.canSubmit = true;
+          this.canSubmit = false;
           validateButton.disabled = this.isValidate;
-          submitButton.disabled = this.canSubmit;
+          submitButton.disabled = !this.canSubmit;
         });
         break;
       case "link":
+        this.selectType = "link";
         this.renderTemplate(
           element,
           `<select name="" id="repo_selection">
@@ -80,19 +98,24 @@ class Home {
         const repoSelectEl = $("#repo_selection", element) as HTMLSelectElement;
         enrollEvent(repoSelectEl, "change", (e) => {
           const selectTarget = e.target as HTMLSelectElement;
-          if (!selectTarget.value) return;
-          this.canSubmit = false;
-          submitButton.disabled = this.canSubmit;
+          if (!selectTarget.value) {
+            this.canSubmit = false;
+            submitButton.disabled = !this.canSubmit;
+            return;
+          }
+          this.canSubmit = true;
+          submitButton.disabled = !this.canSubmit;
         });
         break;
       default:
+        this.selectType = "";
         this.renderTemplate(element, ``);
         break;
     }
   };
   setBasicEvent = () => {
     const selectEl = getElById("type_selection");
-    if (!selectEl) return;
+    if (!selectEl) throw new Error("Not Found Type Select Element");
 
     enrollEvent(selectEl, "change", async (event) => {
       const target = event.target as HTMLSelectElement;
@@ -100,11 +123,20 @@ class Home {
       if (!fieldEl) throw new Error("Not Found Field Element");
       this.selectionHandler(target.value, fieldEl);
     });
+
+    const submitButton = $("#submit_button");
+    if (!submitButton) throw new Error("Not Found Submit Button");
+    enrollEvent(submitButton, "click", (e) => {
+      if(!this.validateBeforeSubmit()){
+        console.log('submit 안됨')
+      }
+      
+    });
   };
 
   renderTemplate = (element: Element, content: string) => {
     element.innerHTML = content;
   };
 }
-console.log("실행");
+
 new Home();
