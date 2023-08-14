@@ -37,3 +37,12 @@ export const isObjEmpty = (obj: Object) => {
   }
   return JSON.stringify(obj) === JSON.stringify({});
 };
+
+type removeEvent = (
+  el: HTMLElement,
+  type: string,
+  fn: EventListenerOrEventListenerObject
+) => void;
+export const removeEvent: removeEvent = (el, type, fn) => {
+  el.removeEventListener(type, fn);
+};
