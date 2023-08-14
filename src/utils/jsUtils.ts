@@ -1,7 +1,10 @@
-type $ = (targetName: string, parentEl?: HTMLElement) => HTMLElement | null;
+type $ = (targetName: string, parentEl?: HTMLElement) => HTMLElement;
 export const $: $ = (targetName, parentEl) => {
-  if (parentEl) return parentEl.querySelector(targetName);
-  return document.querySelector(targetName);
+  const element = parentEl
+    ? parentEl.querySelector(targetName)
+    : document.querySelector(targetName);
+  if (!element) throw new Error(`${targetName} element 불러오기 실패`);
+  return element as HTMLElement;
 };
 
 type $$ = (
