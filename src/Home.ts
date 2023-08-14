@@ -27,8 +27,8 @@ class Home {
     });
     return true;
   };
-  validateBeforeSubmit = () => {
-    switch (this.selectType) {
+  validateBeforeSubmit = (type: string) => {
+    switch (type) {
       case "new":
         if (!this.isValidate) return false;
         if (!this.canSubmit) return false;
@@ -115,7 +115,7 @@ class Home {
     }
   };
   setBasicEvent = () => {
-    const selectEl = getElById("type_selection");
+    const selectEl = getElById("type_selection") as HTMLSelectElement;
     if (!selectEl) throw new Error("Not Found Type Select Element");
 
     enrollEvent(selectEl, "change", async (event) => {
@@ -125,24 +125,47 @@ class Home {
       this.selectionHandler(target.value, fieldEl);
     });
 
-    const submitButton = $("#submit_button");
+    const submitButton = $("#submit_button") as HTMLButtonElement;
     if (!submitButton) throw new Error("Not Found Submit Button");
-    enrollEvent(submitButton, "click", () => {
-      if (!this.validateBeforeSubmit())
-        throw new Error("레포지토리 설정에 문제가 있습니다");
-      this.submitRepo();
-      const validateButton = $("#validate_button");
-
-      if (!validateButton) {
-        const repoField = $(".repo_field");
-        if (!repoField) return;
-        repoField.insertAdjacentHTML(
-          "beforeend",
-          `<button  id="repo_cancel_button" >취소</button>`
-        );
-        return;
-      }
+    enrollEvent(submitButton, "click", this.repoSubmitHandler);
+  };
+  submitNewRepo = async () => {
+    const name = $("#new_repo_name") as HTMLInputElement;
+    const res = await postNewRepo(name.value);
+    setChromeLocalStorage({
+      repoName: res.name,
     });
+  };
+  submitSelectedRepo = () => {
+    const selectedRepo = $("#repo_selection") as HTMLSelectElement;
+    setChromeLocalStorage({
+      repoName: selectedRepo.value,
+    });
+  };
+  repoSubmitHandler = async () => {
+    const { value: type } = getElById("type_selection") as HTMLSelectElement;
+    const submitButton = $("#submit_button") as HTMLButtonElement;
+
+    if (!this.validateBeforeSubmit(type))
+      throw new Error("레포지토리 설정에 문제가 있습니다");
+    switch (type) {
+      case "new":
+        await this.submitNewRepo();
+        $("#validate_button")!.remove();
+        break;
+      case "link":
+        this.submitSelectedRepo();
+        break;
+      default:
+        break;
+    }
+    const repoSelection = $("#repo_selection") as HTMLSelectElement;
+    repoSelection.insertAdjacentHTML(
+      "afterend",
+      `<button  id="repo_cancel_button">취소</button>`
+    );
+    repoSelection.disabled = true;
+    submitButton.remove();
   };
   submitRepo = async () => {
     const selectType = $("#type_selection") as HTMLSelectElement;
