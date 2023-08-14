@@ -1,5 +1,5 @@
 import { closeCurrentTab, sendChromeMessage } from "./chromeUtils";
-import { getAccessToken } from "./getReqAPI";
+import { getAccessToken } from "./API/getReqAPI";
 
 export async function Github() {
   const url = new URL(window.location.href);

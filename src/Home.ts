@@ -1,7 +1,8 @@
 import { $, enrollEvent, getElById } from "./utils/jsUtils";
-import { getChromeLocalStorage } from "./chromeUtils";
+import { getChromeLocalStorage, setChromeLocalStorage } from "./chromeUtils";
 import { Octokit, App } from "octokit";
-import { getUserRepos, repos } from "./getReqAPI";
+import { getUserRepos, repos } from "./API/getReqAPI";
+import { postNewRepo } from "./API/postReqAPI";
 
 class Home {
   repos: repos[] | undefined;
@@ -52,11 +53,11 @@ class Home {
           element,
           `<input
               autocomplete="off"
-              id="name"
+              id="new_repo_name"
               placeholder="Repository Name"
               type="text"
             />
-            <button>인증</button>
+            <button id="validate_button" >인증</button>
             `
         );
         const validateButton = $("button", element) as HTMLButtonElement;
@@ -126,14 +127,44 @@ class Home {
 
     const submitButton = $("#submit_button");
     if (!submitButton) throw new Error("Not Found Submit Button");
-    enrollEvent(submitButton, "click", (e) => {
-      if(!this.validateBeforeSubmit()){
-        console.log('submit 안됨')
+    enrollEvent(submitButton, "click", () => {
+      if (!this.validateBeforeSubmit())
+        throw new Error("레포지토리 설정에 문제가 있습니다");
+      this.submitRepo();
+      const validateButton = $("#validate_button");
+
+      if (!validateButton) {
+        const repoField = $(".repo_field");
+        if (!repoField) return;
+        repoField.insertAdjacentHTML(
+          "beforeend",
+          `<button  id="repo_cancel_button" >취소</button>`
+        );
+        return;
       }
-      
     });
   };
-
+  submitRepo = async () => {
+    const selectType = $("#type_selection") as HTMLSelectElement;
+    const name = $("#new_repo_name") as HTMLInputElement;
+    if (!name) return;
+    if (!selectType) return;
+    switch (selectType.value) {
+      case "new":
+        const res = await postNewRepo(name.value);
+        setChromeLocalStorage({
+          repoName: res.name,
+        });
+        break;
+      case "link":
+        setChromeLocalStorage({
+          repoName: name,
+        });
+        break;
+      default:
+        break;
+    }
+  };
   renderTemplate = (element: Element, content: string) => {
     element.innerHTML = content;
   };

@@ -1,5 +1,4 @@
-import { Octokit } from "octokit";
-import { getChromeLocalStorage } from "./chromeUtils";
+import { getChromeLocalStorage } from "../chromeUtils";
 
 export const getUserInfo = async (token: Response): Promise<any> => {
   const host = "https://api.github.com/user";
@@ -36,9 +35,9 @@ export const getAccessToken = async (code: string): Promise<any> => {
   return res;
 };
 export type repos = {
-  [key:string]: string
-}
-export const getUserRepos = async ():Promise<repos[]> => {
+  [key: string]: string;
+};
+export const getUserRepos = async (): Promise<repos[]> => {
   type Token = {
     GITHUB_TOKEN: string;
   };
