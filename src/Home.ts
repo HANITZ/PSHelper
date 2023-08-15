@@ -1,6 +1,5 @@
-import { $, enrollEvent, getElById } from "./utils/jsUtils";
-import { getChromeLocalStorage, setChromeLocalStorage } from "./chromeUtils";
-import { Octokit, App } from "octokit";
+import { $, enrollEvent, getElById, removeEvent } from "./utils/jsUtils";
+import { setChromeLocalStorage } from "./chromeUtils";
 import { getUserRepos, repos } from "./API/getReqAPI";
 import { postNewRepo } from "./API/postReqAPI";
 
@@ -20,11 +19,17 @@ class Home {
   renderButton = (button: HTMLButtonElement, type: boolean) => {
     button.disabled = type;
   };
-  validateNewRepo = (name: string): boolean => {
-    if (name.trim() === "") return false;
-    this.repos?.forEach((repo) => {
-      if (name === repo.name) return false;
-    });
+  validateNewRepo = (value: string): boolean => {
+    const name = value.trim();
+    if (name === "") return false;
+    if (name.length >= 20) return false;
+    const reg = /^[A-Za-z0-9]{1,20}$/;
+    if (!reg.test(name)) return false;
+    for (const repo of this.repos!) {
+      if (name === repo.name) {
+        return false;
+      }
+    }
     return true;
   };
   validateBeforeSubmit = (type: string) => {
@@ -57,7 +62,8 @@ class Home {
               placeholder="Repository Name"
               type="text"
             />
-            <button id="validate_button" >인증</button>
+            <button id="validate_button">인증</button>
+            <button style="display: none"  id="repo_cancel_button">취소</button>
             `
         );
         const validateButton = $("button", element) as HTMLButtonElement;
@@ -94,7 +100,8 @@ class Home {
               ${this.repos!.map(
                 (repo) => `<option value=${repo.name} >${repo.name}</option>`
               )} 
-            </select>`
+            </select>
+            <button style="display: none" id="repo_cancel_button">취소</button> `
         );
         const repoSelectEl = $("#repo_selection", element) as HTMLSelectElement;
         enrollEvent(repoSelectEl, "change", (e) => {
@@ -110,23 +117,20 @@ class Home {
         break;
       default:
         this.selectType = "";
-        this.renderTemplate(element, ``);
+        this.renderTemplate(element, "");
         break;
     }
   };
   setBasicEvent = () => {
     const selectEl = getElById("type_selection") as HTMLSelectElement;
-    if (!selectEl) throw new Error("Not Found Type Select Element");
 
     enrollEvent(selectEl, "change", async (event) => {
       const target = event.target as HTMLSelectElement;
       const fieldEl = $(".repo_field");
-      if (!fieldEl) throw new Error("Not Found Field Element");
       this.selectionHandler(target.value, fieldEl);
     });
 
-    const submitButton = $("#submit_button") as HTMLButtonElement;
-    if (!submitButton) throw new Error("Not Found Submit Button");
+    const submitButton = $("#submit_button");
     enrollEvent(submitButton, "click", this.repoSubmitHandler);
   };
   submitNewRepo = async () => {
@@ -144,49 +148,62 @@ class Home {
   };
   repoSubmitHandler = async () => {
     const { value: type } = getElById("type_selection") as HTMLSelectElement;
-    const submitButton = $("#submit_button") as HTMLButtonElement;
+    const submitButton = $("#submit_button");
+    const cancelButton = $("#repo_cancel_button") as HTMLButtonElement;
 
     if (!this.validateBeforeSubmit(type))
       throw new Error("레포지토리 설정에 문제가 있습니다");
     switch (type) {
       case "new":
         await this.submitNewRepo();
-        $("#validate_button")!.remove();
+        const validateButton = $("#validate_button") as HTMLButtonElement;
+        validateButton.style.display = "none";
+        const repoInput = $("#new_repo_name") as HTMLInputElement;
+        repoInput.disabled = true;
         break;
       case "link":
-        this.submitSelectedRepo();
+        await this.submitSelectedRepo();
+        const repoSelection = $("#repo_selection") as HTMLSelectElement;
+        repoSelection.disabled = true;
+
         break;
       default:
         break;
     }
-    const repoSelection = $("#repo_selection") as HTMLSelectElement;
-    repoSelection.insertAdjacentHTML(
-      "afterend",
-      `<button  id="repo_cancel_button">취소</button>`
-    );
-    repoSelection.disabled = true;
-    submitButton.remove();
+    const typeSelection = $("#type_selection") as HTMLSelectElement;
+    typeSelection.disabled = true;
+    removeEvent(submitButton, "click", this.repoSubmitHandler);
+    submitButton.style.display = "none";
+    this.canSubmit = false;
+    cancelButton.style.display = "";
+    enrollEvent(cancelButton, "click", this.cancelSubmitButtonHandler);
   };
-  submitRepo = async () => {
-    const selectType = $("#type_selection") as HTMLSelectElement;
-    const name = $("#new_repo_name") as HTMLInputElement;
-    if (!name) return;
-    if (!selectType) return;
-    switch (selectType.value) {
+  cancelSubmitButtonHandler = () => {
+    const { value: type } = getElById("type_selection") as HTMLSelectElement;
+
+    switch (type) {
       case "new":
-        const res = await postNewRepo(name.value);
-        setChromeLocalStorage({
-          repoName: res.name,
-        });
+        const validateButton = $("#validate_button") as HTMLButtonElement;
+        validateButton.style.display = "";
+        const repoInput = $("#new_repo_name") as HTMLInputElement;
+        repoInput.disabled = false;
         break;
       case "link":
-        setChromeLocalStorage({
-          repoName: name,
-        });
+        const repoSelection = $("#repo_selection") as HTMLSelectElement;
+        repoSelection.disabled = false;
         break;
       default:
         break;
     }
+    const submitButton = $("#submit_button");
+    const cancelButton = $("#repo_cancel_button");
+    const typeSelection = $("#type_selection") as HTMLSelectElement;
+    enrollEvent(submitButton, "click", this.repoSubmitHandler);
+    submitButton.style.display = "";
+    typeSelection.disabled = false;
+    this.canSubmit = true;
+    removeEvent(cancelButton, "click", this.cancelSubmitButtonHandler);
+    cancelButton.style.display = "none";
   };
   renderTemplate = (element: Element, content: string) => {
     element.innerHTML = content;
