@@ -24,16 +24,12 @@ export const setChromeLocalStorage = ({ ...props }, fn = () => {}) => {
 };
 
 type Fn = (data: object) => {};
-type getChromeLocalStorage =
-  | ((key: string) => Promise<object>)
-  | ((key: string, fn?: Fn) => void);
+type getChromeLocalStorage = (key: string) => object
 
-export const getChromeLocalStorage: getChromeLocalStorage = (key, fn) => {
-  if (fn) {
-    chrome.storage.local.get([key], fn);
-    return;
-  }
+export const getChromeLocalStorage: getChromeLocalStorage = (key) => {
+
   return chrome.storage.local.get([key]);
+
 };
 
 export const sendChromeMessage = ({ ...props }) => {
