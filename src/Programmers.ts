@@ -1,10 +1,18 @@
-import { $, $$, enrollEvent, getElById } from "./utils/jsUtils";
 import {
-  getChromeMessage,
-  setChromeLocalStorage,
-  getChromeLocalStorage,
-} from "./chromeUtils";
-
+  $,
+  $$,
+  convertSingleCharToDoubleChar,
+  enrollEvent,
+  getElById,
+} from "./utils/jsUtils";
+import { setChromeLocalStorage, getChromeLocalStorage } from "./chromeUtils";
+import {
+  createBlob,
+  createCommit,
+  createTree,
+  updateHead,
+} from "./API/postReqAPI";
+import { getDefaultBranch, getReference } from "./API/getReqAPI";
 
 interface PROBLEM {
   PROBLEM: {
@@ -17,7 +25,11 @@ interface PROBLEM {
 }
 
 class Programmers {
-  constructor() {}
+  constructor() {
+    this.init();
+  }
+  init = () => {};
+
   readySolve = async () => {
     const tableCheckInterval = setInterval(() => {
       const elements = $$("tr", $("table") as HTMLElement);
@@ -27,28 +39,26 @@ class Programmers {
       }
     }, 1000);
   };
-  setProblemsEvent = (problems: NodeListOf<HTMLElement>) => {
-    Array.from(problems)
-      .slice(1)
-      .forEach((tr) => {
-        const isSolved = $("td.status.solved", tr) ? "solved" : "unsolved";
-        const title = $("td.title", tr)!.innerText;
-        const level = $("td.level", tr)!.innerText;
-        const finishedCount = $("td.finished-count", tr)!.innerText;
-        const acceptanceRate = $("td.acceptance-rate", tr)!.innerText;
+  setProblemsEvent = (problems: HTMLElement[]) => {
+    problems.slice(1).forEach((tr) => {
+      const isSolved = $("td.status.solved", tr) ? "solved" : "unsolved";
+      const title = $("td.title", tr)!.innerText;
+      const level = $("td.level", tr)!.innerText;
+      const finishedCount = $("td.finished-count", tr)!.innerText;
+      const acceptanceRate = $("td.acceptance-rate", tr)!.innerText;
 
-        enrollEvent(tr, "click", () => {
-          setChromeLocalStorage({
-            PROBLEM: {
-              isSolved,
-              title,
-              level,
-              finishedCount,
-              acceptanceRate,
-            },
-          });
+      enrollEvent(tr, "click", () => {
+        setChromeLocalStorage({
+          PROBLEM: {
+            isSolved,
+            title,
+            level,
+            finishedCount,
+            acceptanceRate,
+          },
         });
       });
+    });
   };
 
   startSolve = () => {
@@ -56,46 +66,48 @@ class Programmers {
   };
   setEvents = () => {
     const submitButton = getElById("submit-code");
-    if (!submitButton) return;
 
-    enrollEvent(submitButton, "click", async () => {
-      if (this.checkSuccess()) {
-        const solvedData = await this.parseCode();
-        console.log(solvedData);
-        // type GITHUB_TOKEN = {
-        //   GITHUB_TOKEN: string;
-        // };
-        // const { GITHUB_TOKEN } = (await getChromeLocalStorage(
-        //   "GITHUB_TOKEN"
-        // )) as GITHUB_TOKEN;
-
-        // const octokit = new Octokit({
-        //   auth: GITHUB_TOKEN,
-        // });
-        // const res = await octokit.request("GET /orgs/{org}/repos", {
-        //   org: "HANITZ",
-        // });
-        // console.log(res);
-        this.uploadCode("임시");
-      }
+    enrollEvent(submitButton, "click", () => {
+      const startTime = new Date().getTime();
+      const interval = setInterval(async () => {
+        const nowTime = new Date().getTime();
+        if (this.checkSuccess()) {
+          const solvedData = await this.parseCode();
+          clearInterval(interval);
+          this.uploadCode(solvedData);
+        }
+        if (nowTime - startTime >= 20000) {
+          clearInterval(interval);
+        }
+      }, 2000);
     });
   };
-  uploadCode = (code: string) => {};
+  uploadCode = async ({
+    directory,
+    code,
+    message,
+    readMe,
+    fileName,
+  }: FilesReadyToUproad) => {
+    const defaultBranch = await getDefaultBranch();
+    const { refSHA, ref } = await getReference(defaultBranch);
+    const sourceCode = await createBlob(code, fileName, directory);
+    const sourceReadMe = await createBlob(readMe, "README.md", directory);
+    const treeSHA = await createTree(refSHA, [sourceCode, sourceReadMe]);
+    const commitSHA = await createCommit(message, treeSHA, refSHA);
+    const newHeadSHA = await updateHead(ref, commitSHA);
+  };
+
   checkSuccess = () => {
-    const modalCheckInterval = setInterval(() => {
-      const modalText = $("div.modal-header > h4");
-      if (!modalText) return;
-      if (modalText.innerText.includes("정답입니다")) {
-        clearInterval(modalCheckInterval);
-      }
-    }, 1000);
-    return true;
+    const modalText = $(".modal-title");
+    if (modalText.innerText.includes("정답입니다")) {
+      return true;
+    }
+    return false;
   };
 
   parseCode = async () => {
     const problemData = (await getChromeLocalStorage("PROBLEM")) as PROBLEM;
-
-    const metaTag = $("head > meta[name$=url]") as HTMLMetaElement;
     const link = window.location.href;
     const problemId = $("div.main > div.lesson-content")!.getAttribute(
       "data-lesson-id"
@@ -111,19 +123,41 @@ class Programmers {
     const languageExtension = $(
       "div.editor > ul > li.nav-item > a"
     )!.innerText.split(".")[1];
-
+    setTimeout(() => {}, 1000);
     let code = $("textarea#code")!.innerText;
+    const resultMessage = this.getResultMessage();
+    const [avgTime, avgMemory] = this.getTimeAndMemory();
+    console.log(avgTime, avgMemory);
+    const a = $$(".result.passed");
+    a.forEach((aa) => {
+      console.log(aa);
+    });
 
-    const resultMessage =
-      Array.prototype.slice
-        .call($$("#output > pre.console-content > div.console-message"))
+    return this.makeFiles({
+      link,
+      problemData,
+      problemId,
+      division,
+      problemDescription,
+      languageExtension,
+      resultMessage,
+      code,
+      avgTime,
+      avgMemory,
+    });
+  };
+  getResultMessage = () => {
+    return (
+      $$(".console-message")
         .map((x) => x.innerText)
         .filter((x) => x.includes(": "))
-        .reduce((x, y) => `${x}<br/>${y}`, "") || "Empty";
-    const [avgTime, avgMemory] = Array.prototype.slice
-      .call($$("tr", $("console-test-group") as HTMLElement))
+        .reduce((x, y) => `${x}<br/>${y}`, "") || "Empty"
+    );
+  };
+  getTimeAndMemory = () => {
+    return $$("tr", $("tbody"))
       .slice(4)
-      .map((tr) => $("td.result.passed", tr)!.innerText)
+      .map((tr) => $(".result", tr)!.innerText)
       .map((node) => node.replace(/[^., 0-9]/g, "").trim())
       .map((node) => node.split(", "))
       .reduce(
@@ -144,22 +178,8 @@ class Programmers {
         [0, 0]
       )
       .map((num) => num.toString());
-
-    return this.makeReadMe({
-      link,
-      problemData,
-      problemId,
-      division,
-      problemDescription,
-      languageExtension,
-      resultMessage,
-      code,
-      avgTime,
-      avgMemory,
-    });
   };
-
-  makeReadMe = ({
+  makeFiles = ({
     link,
     problemData,
     problemId,
@@ -170,12 +190,20 @@ class Programmers {
     code,
     avgTime,
     avgMemory,
-  }: ReadeMe): object => {
-    const { title, level, isSolved, finishedCount, acceptanceRate } =
+  }: RawFiles): FilesReadyToUproad => {
+    const { level, isSolved, finishedCount, acceptanceRate } =
       problemData.PROBLEM;
-    const directory = `프로그래머스/${level}/${problemId}.${title}`;
+    const title = $("li.algorithm-title").innerText.replace(/\\n/g, "").trim();
+
+    const directory = `프로그래머스/${level}/${problemId}.${title}`.replace(
+      " ",
+      ""
+    );
     const message = `[${level}] Title: ${title}, AvgTime: ${avgTime}, AvgMemory: ${avgMemory}`;
-    const fileName = `${title}.${languageExtension}`;
+    const fileName = `${convertSingleCharToDoubleChar(
+      title
+    )}.${languageExtension}`;
+
     const readMe =
       `# [${level}] ${problemData.PROBLEM.title} - ${problemId} \n\n` +
       `[문제 링크](${link}) \n\n` +
@@ -198,7 +226,8 @@ class Programmers {
     };
   };
 }
-interface ReadeMe {
+
+type RawFiles = {
   link: string;
   problemData: PROBLEM;
   problemId: string | null;
@@ -209,9 +238,15 @@ interface ReadeMe {
   code: string;
   avgTime: string;
   avgMemory: string;
-}
+};
+type FilesReadyToUproad = {
+  directory: string;
+  message: string;
+  fileName: string;
+  readMe: string;
+  code: string;
+};
 const programmers = new Programmers();
-
 if (
   window.location.href.includes("/learn/courses/30") &&
   window.location.href.includes("lessons")

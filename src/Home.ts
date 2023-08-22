@@ -7,11 +7,10 @@ class Home {
   repos: repos[] | undefined;
   isValidate = false;
   canSubmit = false;
-  selectType = "";
 
   constructor() {
     this.init();
-    this.setBasicEvent();
+    this.setDefaultEvent();
   }
   init = async () => {
     this.repos = await getUserRepos();
@@ -26,9 +25,7 @@ class Home {
     const reg = /^[A-Za-z0-9]{1,20}$/;
     if (!reg.test(name)) return false;
     for (const repo of this.repos!) {
-      if (name === repo.name) {
-        return false;
-      }
+      if (name === repo.name) return false;
     }
     return true;
   };
@@ -47,13 +44,12 @@ class Home {
         return false;
     }
   };
-  selectionHandler = (value: string, element: HTMLElement) => {
+  selectionHandler = async (value: string, element: HTMLElement) => {
     const submitButton = $("#submit_button") as HTMLButtonElement;
     this.canSubmit = false;
     submitButton.disabled = !this.canSubmit;
     switch (value) {
       case "new":
-        this.selectType = "new";
         this.renderTemplate(
           element,
           `<input
@@ -92,8 +88,7 @@ class Home {
         });
         break;
       case "link":
-        this.selectType = "link";
-        this.renderTemplate(
+        await this.renderTemplate(
           element,
           `<select name="" id="repo_selection">
               <option value="">연결할 레포지토리를 선택해주세요</option>
@@ -116,12 +111,11 @@ class Home {
         });
         break;
       default:
-        this.selectType = "";
         this.renderTemplate(element, "");
         break;
     }
   };
-  setBasicEvent = () => {
+  setDefaultEvent = () => {
     const selectEl = getElById("type_selection") as HTMLSelectElement;
 
     enrollEvent(selectEl, "change", async (event) => {

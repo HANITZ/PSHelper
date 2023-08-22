@@ -1,5 +1,5 @@
 import { closeCurrentTab, sendChromeMessage } from "./chromeUtils";
-import { getAccessToken } from "./API/getReqAPI";
+import { getAccessToken, getUserInfo } from "./API/getReqAPI";
 
 export async function Github() {
   const url = new URL(window.location.href);
@@ -7,18 +7,21 @@ export async function Github() {
   if (!githubCode) throw new Error("Failed Get GITHUB Authorization Code ");
   try {
     const res = await getAccessToken(githubCode);
+    const user = await getUserInfo(res.access_token);
+
     if (res) {
       sendChromeMessage({
         closeWebPage: true,
         isSuccess: true,
         token: res.access_token,
+        user,
         action: "PSHELPER_TOKEN",
       });
-      window.close();
+      // window.close();
     }
   } catch (error) {
     throw error;
   }
 }
-
+console.log("실행됨");
 Github();

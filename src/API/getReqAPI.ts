@@ -1,4 +1,5 @@
 import { getChromeLocalStorage } from "../chromeUtils";
+import { User, repoNameObj } from "./postReqAPI";
 
 export const getUserInfo = async (token: Response): Promise<any> => {
   const host = "https://api.github.com/user";
@@ -37,10 +38,10 @@ export const getAccessToken = async (code: string): Promise<any> => {
 export type repos = {
   [key: string]: string;
 };
+type Token = {
+  GITHUB_TOKEN: string;
+};
 export const getUserRepos = async (): Promise<repos[]> => {
-  type Token = {
-    GITHUB_TOKEN: string;
-  };
   const { GITHUB_TOKEN } = (await getChromeLocalStorage(
     "GITHUB_TOKEN"
   )) as Token;
@@ -56,4 +57,43 @@ export const getUserRepos = async (): Promise<repos[]> => {
     })
   ).json();
   return res;
+};
+
+export const getDefaultBranch = async () => {
+  const { USER: user } = (await getChromeLocalStorage("USER")) as User;
+  const { repoName } = (await getChromeLocalStorage("repoName")) as repoNameObj;
+  const { GITHUB_TOKEN } = (await getChromeLocalStorage(
+    "GITHUB_TOKEN"
+  )) as Token;
+  const host = `https://api.github.com/repos/${user}/${repoName}`;
+  const res = await (
+    await fetch(host, {
+      method: "get",
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `token ${GITHUB_TOKEN}`,
+      },
+    })
+  ).json();
+  return res.default_branch;
+};
+
+export const getReference = async (branch = "main") => {
+  const { USER: user } = (await getChromeLocalStorage("USER")) as User;
+  const { repoName } = (await getChromeLocalStorage("repoName")) as repoNameObj;
+  const { GITHUB_TOKEN } = (await getChromeLocalStorage(
+    "GITHUB_TOKEN"
+  )) as Token;
+  const host = `https://api.github.com/repos/${user}/${repoName}/git/ref/heads/${branch}`;
+  const res = await (
+    await fetch(host, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/vnd.github+json",
+        Authorization: `token ${GITHUB_TOKEN}`,
+      },
+    })
+  ).json();
+  return { refSHA: res.object.sha, ref: res.ref };
 };
