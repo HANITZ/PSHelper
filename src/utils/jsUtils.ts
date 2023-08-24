@@ -25,7 +25,7 @@ export const getElById: getElById = (targetId) => {
 };
 
 type enrollEvent = (
-  el: HTMLElement,
+  el: HTMLElement | Window,
   type: string,
   fn: EventListenerOrEventListenerObject
 ) => void;
