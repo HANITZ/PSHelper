@@ -8,16 +8,16 @@ export async function Github() {
   try {
     const res = await getAccessToken(githubCode);
     const user = await getUserInfo(res.access_token);
-    console.log(res);
+
     if (res) {
-      sendChromeMessage({
+      await sendChromeMessage({
         closeWebPage: true,
         isSuccess: true,
         token: res.access_token,
         user,
         action: "PSHELPER_TOKEN",
       });
-      // window.close();
+      window.close();
     }
   } catch (error) {
     throw error;
