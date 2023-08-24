@@ -37,9 +37,8 @@ class Programmers {
   setTimer = () => {
     const nav = $(".nav.navbar-nav.ml-auto");
     this.setTimerTemplate(nav);
-
-    const timerHandler = () => {
-      const timeEl = $(".nav-timer", nav);
+    const timeEl = $(".nav-timer", nav);
+    const timerHandler = (timerElement: HTMLElement) => {
       let [secs, mins, hours] = [0, 0, 0];
       return () => {
         secs++;
@@ -61,16 +60,17 @@ class Programmers {
         this.mins = mins;
         this.hours = hours;
 
-        timeEl.innerText = `${h}:${m}:${s}`;
+        timerElement.innerText = `${h}:${m}:${s}`;
       };
     };
-    const timer = setInterval(timerHandler(), 1000);
+    const timer = setInterval(timerHandler(timeEl), 1000);
   };
   setTimerTemplate = (element: HTMLElement) => {
     element.insertAdjacentHTML(
       "afterbegin",
-      `<li class="nav-item"> 
-      <p class="nav-timer">00:00:00</p>
+      `<li class="nav-item" style="display: flex;"  >
+      <p style= "color: #B2C0CC; font-weight: 500;  margin: 0; padding: 0.25rem 0.5rem" > Timer :</p> 
+      <p class="nav-timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >00:00:00</p>
       </li>`
     );
   };
