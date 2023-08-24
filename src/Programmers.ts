@@ -25,11 +25,55 @@ interface PROBLEM {
 }
 
 class Programmers {
+  secs: number | undefined;
+  mins: number | undefined;
+  hours: number | undefined;
   constructor() {
     this.init();
   }
-  init = () => {};
+  init = () => {
+    this.setTimer();
+  };
+  setTimer = () => {
+    const nav = $(".nav.navbar-nav.ml-auto");
+    this.setTimerTemplate(nav);
 
+    const timerHandler = () => {
+      const timeEl = $(".nav-timer", nav);
+      let [secs, mins, hours] = [0, 0, 0];
+      return () => {
+        secs++;
+        if (secs == 60) {
+          secs = 0;
+          mins++;
+        }
+        if (mins == 60) {
+          mins = 0;
+          hours++;
+        }
+        if (hours == 10) {
+          clearInterval(timer);
+        }
+        const h = hours < 10 ? "0" + hours.toString() : hours;
+        const m = mins < 10 ? "0" + mins.toString() : mins;
+        const s = secs < 10 ? "0" + secs.toString() : secs;
+        this.secs = secs;
+        this.mins = mins;
+        this.hours = hours;
+
+        timeEl.innerText = `${h}:${m}:${s}`;
+      };
+    };
+    const timer = setInterval(timerHandler(), 1000);
+  };
+  setTimerTemplate = (element: HTMLElement) => {
+    element.insertAdjacentHTML(
+      "afterbegin",
+      `<li class="nav-item"> 
+      <p class="nav-timer">00:00:00</p>
+      </li>`
+    );
+  };
   readySolve = async () => {
     const tableCheckInterval = setInterval(() => {
       const elements = $$("tr", $("table") as HTMLElement);
