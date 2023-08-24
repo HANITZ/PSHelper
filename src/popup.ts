@@ -1,8 +1,4 @@
-import {
-  createChromeTabs,
-  getChromeLocalStorage,
-  getChromeMessage,
-} from "./chromeUtils";
+import { createChromeTabs, getChromeLocalStorage } from "./chromeUtils";
 import { $, enrollEvent, getElById, isObjEmpty } from "./utils/jsUtils";
 
 class Popup {
@@ -59,4 +55,10 @@ class Popup {
     <button id="enroll">Connect with GitHub</button>`;
   };
 }
-new Popup($("#root"));
+try{
+  debugger
+  console.log("실행 중");
+  new Popup($("#root"));
+}catch(e){
+  console.log(e)
+}

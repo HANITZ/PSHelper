@@ -8,7 +8,7 @@ export async function Github() {
   try {
     const res = await getAccessToken(githubCode);
     const user = await getUserInfo(res.access_token);
-
+    console.log(res);
     if (res) {
       sendChromeMessage({
         closeWebPage: true,

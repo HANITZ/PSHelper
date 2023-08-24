@@ -3,6 +3,7 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const srcDir = path.join(__dirname, "..", "src");
 const Dotenv = require("dotenv-webpack");
+// const HtmlWebpackPlugin = require("html-webpack-plugin")
 
 module.exports = {
   entry: {
@@ -16,6 +17,7 @@ module.exports = {
     path: path.join(__dirname, "../dist/js"),
     filename: "[name].js",
   },
+
   resolve: {
     extensions: [".js"],
   },
@@ -68,5 +70,15 @@ module.exports = {
       patterns: [{ from: ".", to: "../", context: "public" }],
       options: {},
     }),
+    // new HtmlWebpackPlugin({
+    //   template: "public/popup.html",
+    //   csp: {
+    //     'default-src': "'self'",
+    //     'script-src': "'self' 'unsafe-eval'",
+    //     'style-src': "'self' 'unsafe-inline'",
+    //     'img-src': "'self' data:",
+    //     'font-src': "'self'",
+    //   }
+    // })
   ],
 };

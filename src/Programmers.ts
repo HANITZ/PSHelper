@@ -128,10 +128,6 @@ class Programmers {
     const resultMessage = this.getResultMessage();
     const [avgTime, avgMemory] = this.getTimeAndMemory();
     console.log(avgTime, avgMemory);
-    const a = $$(".result.passed");
-    a.forEach((aa) => {
-      console.log(aa);
-    });
 
     return this.makeFiles({
       link,
@@ -155,11 +151,17 @@ class Programmers {
     );
   };
   getTimeAndMemory = () => {
-    return $$("tr", $("tbody"))
-      .slice(4)
-      .map((tr) => $(".result", tr)!.innerText)
-      .map((node) => node.replace(/[^., 0-9]/g, "").trim())
-      .map((node) => node.split(", "))
+    return $$(".result.passed")
+      .map((tr) => tr.innerText)
+      .map((node) => node.substring(node.indexOf("(") + 1, node.indexOf(")")))
+      .map((node) =>
+        node.split(", ").map((word) => {
+          if (word.includes("m")) {
+            return word.substring(0, word.indexOf("m"));
+          }
+          return word.substring(0, word.indexOf("M"));
+        })
+      )
       .reduce(
         (
           [resultTime, resultMemory],
@@ -177,7 +179,7 @@ class Programmers {
         },
         [0, 0]
       )
-      .map((num) => num.toString());
+      .map((num) => num.toFixed(2));
   };
   makeFiles = ({
     link,
