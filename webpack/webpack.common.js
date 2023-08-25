@@ -3,7 +3,7 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const srcDir = path.join(__dirname, "..", "src");
 const Dotenv = require("dotenv-webpack");
-// const HtmlWebpackPlugin = require("html-webpack-plugin")
+const {CleanWebpackPlugin} = require("clean-webpack-plugin")
 
 module.exports = {
   entry: {
@@ -13,41 +13,11 @@ module.exports = {
     Github: path.join(srcDir, "Github.ts"),
     Programmers: path.join(srcDir, "Programmers.ts"),
   },
-  output: {
-    path: path.join(__dirname, "../dist/js"),
-    filename: "[name].js",
-  },
 
-  resolve: {
-    extensions: [".js"],
-  },
-  optimization: {
-    splitChunks: {
-      name: "vendor",
-      chunks(chunk) {
-        return chunk.name !== "background";
-      },
-    },
-  },
   module: {
     rules: [
       {
-        test: /\.ts$|tsx/,
-        include: [path.resolve(__dirname, "./src")],
-        exclude: ["/node_modules"],
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env", "@babel/preset-typescript"],
-            plugins: [
-              ["@babel/plugin-proposal-class-properties"],
-              ["@babel/plugin-transform-runtime", { corejs: 3 }],
-            ],
-          },
-        },
-      },
-      {
-        test: /\.tsx?$/,
+        test: /\.ts?$/,
         use: "ts-loader",
         exclude: /node_modules/,
       },
@@ -61,24 +31,31 @@ module.exports = {
       },
     ],
   },
-  resolve: {
-    extensions: [".ts", ".js"],
-  },
   plugins: [
+    new CleanWebpackPlugin(),
     new Dotenv(),
     new CopyPlugin({
       patterns: [{ from: ".", to: "../", context: "public" }],
       options: {},
     }),
-    // new HtmlWebpackPlugin({
-    //   template: "public/popup.html",
-    //   csp: {
-    //     'default-src': "'self'",
-    //     'script-src': "'self' 'unsafe-eval'",
-    //     'style-src': "'self' 'unsafe-inline'",
-    //     'img-src': "'self' data:",
-    //     'font-src': "'self'",
-    //   }
-    // })
   ],
+  resolve: {
+    extensions: [".ts", ".js"],
+  },
+  output: {
+    path: path.join(__dirname, "../dist/js"),
+    filename: "[name].js",
+  },
+
+  optimization: {
+    splitChunks: {
+      name: (module, chunks, cacheGroupKey) => {
+        const allChunksNames = chunks.map((chunk) => chunk.name).join("-");
+        return allChunksNames;
+      },
+      chunks(chunk) {
+        return chunk.name !== "background";
+      },
+    },
+  },
 };

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "watch": "webpack --config webpack/webpack.prod.js --watch",
+    "watch": "webpack --progress --config  webpack/webpack.dev.js --watch",
     "build": "webpack --config webpack/webpack.prod.js",
     "test": "jest"
   },
@@ -25,6 +25,7 @@
     "webpack-merge": "^5.9.0"
   },
   "dependencies": {
+    "clean-webpack-plugin": "^4.0.0",
     "dotenv": "^16.3.1"
   }
 }
