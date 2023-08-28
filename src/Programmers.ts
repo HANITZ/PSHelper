@@ -2,6 +2,7 @@ import {
   $,
   $$,
   convertSingleCharToDoubleChar,
+  createTimer,
   enrollEvent,
   getElById,
 } from "./utils/jsUtils";
@@ -14,6 +15,8 @@ import {
 } from "./API/postReqAPI";
 import { getDefaultBranch, getReference } from "./API/getReqAPI";
 
+import "./Programmers.css";
+
 interface PROBLEM {
   PROBLEM: {
     isSolved: string;
@@ -25,55 +28,56 @@ interface PROBLEM {
 }
 
 class Programmers {
-  secs: number | undefined;
-  mins: number | undefined;
-  hours: number | undefined;
-  constructor() {
-    this.init();
-  }
-  init = () => {
+  secs: string | undefined;
+  mins: string | undefined;
+  hours: string | undefined;
+  timer: NodeJS.Timer | undefined;
+
+  constructor() {}
+
+  setProgrammersTimer = async () => {
+    const largeNav = $(".nav.navbar-nav");
+    this.setTimerLargeTemplate(largeNav);
+
+    const smallNav = $(".navbar");
+    this.setTimerSmallTemplate(smallNav);
+
     this.setTimer();
   };
-  setTimer = () => {
-    const nav = $(".nav.navbar-nav.ml-auto");
-    this.setTimerTemplate(nav);
-    const timeEl = $(".nav-timer", nav);
-    const timerHandler = (timerElement: HTMLElement) => {
-      let [secs, mins, hours] = [0, 0, 0];
-      return () => {
-        secs++;
-        if (secs == 60) {
-          secs = 0;
-          mins++;
-        }
-        if (mins == 60) {
-          mins = 0;
-          hours++;
-        }
-        if (hours == 10) {
-          clearInterval(timer);
-        }
-        const h = hours < 10 ? "0" + hours.toString() : hours;
-        const m = mins < 10 ? "0" + mins.toString() : mins;
-        const s = secs < 10 ? "0" + secs.toString() : secs;
-        this.secs = secs;
-        this.mins = mins;
-        this.hours = hours;
 
-        timerElement.innerText = `${h}:${m}:${s}`;
-      };
+  setTimer = async () => {
+    const timerHandler = (h: string, m: string, s: string) => {
+      this.secs = s;
+      this.mins = m;
+      this.hours = h;
+      this.reRenderTime();
     };
-    const timer = setInterval(timerHandler(timeEl), 1000);
+    this.timer = createTimer(timerHandler.bind(this));
   };
-  setTimerTemplate = (element: HTMLElement) => {
+  reRenderTime = () => {
+    const timeElements = $$(".nav-timer");
+    timeElements.forEach((el) => {
+      el.innerText = `Timer: ${this.hours}:${this.mins}:${this.secs}`;
+    });
+  };
+
+  setTimerLargeTemplate = (element: HTMLElement) => {
     element.insertAdjacentHTML(
       "afterbegin",
-      `<li class="nav-item" style="display: flex;"  >
-      <p style= "color: #B2C0CC; font-weight: 500;  margin: 0; padding: 0.25rem 0.5rem" > Timer :</p> 
-      <p class="nav-timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >00:00:00</p>
+      `<li class="nav-item"   >
+      <p class="nav-timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: 00:00:00</p>
       </li>`
     );
   };
+  setTimerSmallTemplate = (element: HTMLElement) => {
+    element.insertAdjacentHTML(
+      "beforeend",
+      `<div class="nav-small-timer"  style=""  >
+      <p class="nav-timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: 00:00:00</p>
+      </div>`
+    );
+  };
+
   readySolve = async () => {
     const tableCheckInterval = setInterval(() => {
       const elements = $$("tr", $("table") as HTMLElement);
@@ -106,6 +110,7 @@ class Programmers {
   };
 
   startSolve = () => {
+    this.setProgrammersTimer();
     this.setEvents();
   };
   setEvents = () => {
@@ -115,7 +120,8 @@ class Programmers {
       const startTime = new Date().getTime();
       const interval = setInterval(async () => {
         const nowTime = new Date().getTime();
-        if (this.checkSuccess()) {
+
+        if (await this.checkSuccess()) {
           const solvedData = await this.parseCode();
           clearInterval(interval);
           this.uploadCode(solvedData);
@@ -126,6 +132,7 @@ class Programmers {
       }, 2000);
     });
   };
+
   uploadCode = async ({
     directory,
     code,

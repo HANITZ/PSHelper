@@ -97,3 +97,28 @@ export const convertSingleCharToDoubleChar = (text: string) => {
     (k: string) => map[k]
   );
 };
+
+
+
+export const createTimer =  (callbackFn: Function) => {
+  let [secs, mins, hours] = [0, 0, 0];
+  const timer = setInterval(() => {
+    secs++;
+    if (secs == 60) {
+      secs = 0;
+      mins++;
+    }
+    if (mins == 60) {
+      mins = 0;
+      hours++;
+    }
+    if (hours == 10) {
+      clearInterval(timer);
+    }
+    const h = hours < 10 ? "0" + hours.toString() : hours.toString();
+    const m = mins < 10 ? "0" + mins.toString() : mins.toString();
+    const s = secs < 10 ? "0" + secs.toString() : secs.toString();
+    callbackFn(h, m, s )
+  }, 1000);
+  return timer;
+};
