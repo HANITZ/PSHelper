@@ -56,6 +56,11 @@ module.exports = {
       chunks(chunk) {
         return chunk.name !== "background";
       },
+      cacheGroups: {
+        defaultVendors: {
+          enforce: true,
+        },
+      },
     },
   },
 };
