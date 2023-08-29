@@ -20,7 +20,7 @@
     },
     {
       "matches": ["https://school.programmers.co.kr/*"],
-      "js": ["js/Programmers.js"]
+      "js": ["js/Programmers.js", "js/home-Programmers.js"]
     }
   ],
   "permissions": ["storage", "tabs", "activeTab"],

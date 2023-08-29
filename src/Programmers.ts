@@ -109,7 +109,7 @@ class Programmers {
     });
   };
 
-  startSolve = () => {
+  startSolving = () => {
     this.setProgrammersTimer();
     this.setEvents();
   };
@@ -120,17 +120,47 @@ class Programmers {
       const startTime = new Date().getTime();
       const interval = setInterval(async () => {
         const nowTime = new Date().getTime();
-
-        if (await this.checkSuccess()) {
+        const modalElement = $(".modal-content");
+        if (modalElement) {
+          this.startLoading(modalElement);
+        }
+        if (modalElement && this.checkSuccess(modalElement)) {
           const solvedData = await this.parseCode();
+
           clearInterval(interval);
-          this.uploadCode(solvedData);
+          await this.uploadCode(solvedData);
+          this.succeedSolving(
+            modalElement,
+            `${this.hours}:${this.mins}:${this.secs}`
+          );
         }
         if (nowTime - startTime >= 20000) {
           clearInterval(interval);
+          this.failSolving(modalElement);
         }
-      }, 2000);
+      }, 1000);
     });
+  };
+
+  startLoading = (modalElement: HTMLElement) => {
+    const footerElement = $(".modal-footer", modalElement);
+    footerElement.insertAdjacentHTML(
+      "afterbegin",
+      `<span class="mark-programmers" style=" margin-left: 30px; padding-top: 0;" >
+      <div id="solve-result-mark" class="loading-programmers"></div>
+      </span>`
+    );
+  };
+
+  succeedSolving = (modalElement: HTMLElement, time: string) => {
+    const markTag = $("#solve-result-mark", modalElement);
+    const modalBody = $(".modal-body", modalElement);
+    modalBody.innerHTML = `<span class="modal-title"  > 풀이시간: ${time}</span>`;
+    markTag.className = "success-solve";
+  };
+  failSolving = (modalElement: HTMLElement) => {
+    const markTag = $("#solve-result-mark", modalElement);
+    markTag.className = "fail-solve";
   };
 
   uploadCode = async ({
@@ -149,9 +179,9 @@ class Programmers {
     const newHeadSHA = await updateHead(ref, commitSHA);
   };
 
-  checkSuccess = () => {
-    const modalText = $(".modal-title");
-    if (modalText.innerText.includes("정답입니다")) {
+  checkSuccess = (modalElement: HTMLElement) => {
+    const modalTitle = $(".modal-title", modalElement);
+    if (modalTitle.innerText.includes("정답입니다")) {
       return true;
     }
     return false;
@@ -304,7 +334,7 @@ if (
   window.location.href.includes("/learn/courses/30") &&
   window.location.href.includes("lessons")
 ) {
-  programmers.startSolve();
+  programmers.startSolving();
 } else if (window.location.href.includes("challenges")) {
   programmers.readySolve();
 }

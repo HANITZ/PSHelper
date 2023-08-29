@@ -1,5 +1,5 @@
 import { createChromeTabs, getChromeLocalStorage } from "./chromeUtils";
-import { $, enrollEvent, getElById, isObjEmpty } from "./utils/jsUtils";
+import { $, enrollEvent, getElById } from "./utils/jsUtils";
 
 class Popup {
   element: HTMLElement | null;
