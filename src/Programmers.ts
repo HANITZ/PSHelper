@@ -5,6 +5,7 @@ import {
   createTimer,
   enrollEvent,
   getElById,
+  hasElement,
 } from "./utils/jsUtils";
 import { setChromeLocalStorage, getChromeLocalStorage } from "./chromeUtils";
 import {
@@ -90,10 +91,10 @@ class Programmers {
   setProblemsEvent = (problems: HTMLElement[]) => {
     problems.slice(1).forEach((tr) => {
       const isSolved = $("td.status.solved", tr) ? "solved" : "unsolved";
-      const title = $("td.title", tr)!.innerText;
-      const level = $("td.level", tr)!.innerText;
-      const finishedCount = $("td.finished-count", tr)!.innerText;
-      const acceptanceRate = $("td.acceptance-rate", tr)!.innerText;
+      const title = $("td.title", tr).innerText;
+      const level = $("td.level", tr).innerText;
+      const finishedCount = $("td.finished-count", tr).innerText;
+      const acceptanceRate = $("td.acceptance-rate", tr).innerText;
 
       enrollEvent(tr, "click", () => {
         setChromeLocalStorage({
@@ -122,43 +123,49 @@ class Programmers {
         const nowTime = new Date().getTime();
         const modalElement = $(".modal-content");
         if (modalElement) {
-          this.startLoading(modalElement);
+          if (!hasElement(".mark-programmers")) {
+            this.startModalLoading(modalElement);
+          }
         }
         if (modalElement && this.checkSuccess(modalElement)) {
           const solvedData = await this.parseCode();
-
+          const time = `${this.hours}:${this.mins}:${this.secs}`;
           clearInterval(interval);
           await this.uploadCode(solvedData);
-          this.succeedSolving(
-            modalElement,
-            `${this.hours}:${this.mins}:${this.secs}`
-          );
+          this.renderModalAfterSuccess(modalElement, time);
         }
         if (nowTime - startTime >= 20000) {
           clearInterval(interval);
-          this.failSolving(modalElement);
+          this.renderModalAfterFail(modalElement);
         }
       }, 1000);
     });
   };
 
-  startLoading = (modalElement: HTMLElement) => {
-    const footerElement = $(".modal-footer", modalElement);
-    footerElement.insertAdjacentHTML(
+  startModalLoading = (modalElement: HTMLElement) => {
+    const bodyElement = $(".modal-body", modalElement);
+    bodyElement.insertAdjacentHTML(
       "afterbegin",
-      `<span class="mark-programmers" style=" margin-left: 30px; padding-top: 0;" >
+      `
+      <div class="result-container" >
+      <span class="mark-programmers" >
       <div id="solve-result-mark" class="loading-programmers"></div>
-      </span>`
+      </span>
+      </div>
+      `
     );
   };
 
-  succeedSolving = (modalElement: HTMLElement, time: string) => {
+  renderModalAfterSuccess = (modalElement: HTMLElement, time: string) => {
     const markTag = $("#solve-result-mark", modalElement);
     const modalBody = $(".modal-body", modalElement);
-    modalBody.innerHTML = `<span class="modal-title"  > 풀이시간: ${time}</span>`;
+    modalBody.insertAdjacentHTML(
+      "beforeend",
+      `<span  > 풀이시간: ${time}</span>`
+    );
     markTag.className = "success-solve";
   };
-  failSolving = (modalElement: HTMLElement) => {
+  renderModalAfterFail = (modalElement: HTMLElement) => {
     const markTag = $("#solve-result-mark", modalElement);
     markTag.className = "fail-solve";
   };
@@ -208,7 +215,7 @@ class Programmers {
     let code = $("textarea#code")!.innerText;
     const resultMessage = this.getResultMessage();
     const [avgTime, avgMemory] = this.getTimeAndMemory();
-    console.log(avgTime, avgMemory);
+    console.log(problemData);
 
     return this.makeFiles({
       link,
