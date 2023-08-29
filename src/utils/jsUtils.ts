@@ -98,9 +98,7 @@ export const convertSingleCharToDoubleChar = (text: string) => {
   );
 };
 
-
-
-export const createTimer =  (callbackFn: Function) => {
+export const createTimer = (callbackFn: Function) => {
   let [secs, mins, hours] = [0, 0, 0];
   const timer = setInterval(() => {
     secs++;
@@ -118,7 +116,14 @@ export const createTimer =  (callbackFn: Function) => {
     const h = hours < 10 ? "0" + hours.toString() : hours.toString();
     const m = mins < 10 ? "0" + mins.toString() : mins.toString();
     const s = secs < 10 ? "0" + secs.toString() : secs.toString();
-    callbackFn(h, m, s )
+    callbackFn(h, m, s);
   }, 1000);
   return timer;
+};
+
+export const hasElement = (target: string): boolean => {
+  if (document.querySelector(target)) {
+    return true;
+  }
+  return false;
 };
