@@ -10,7 +10,68 @@
     <title>Document</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="main-container">
+        <div class="logo-container" >
+          <img class="logo-button" src="./icon.png" alt="" />
+          <div class="logo-text" style="display: none;" >Click to connect</div>
+          <div class="logo-text-logined" style="display: none;" >Not loginned yet</div>
+        </div>
+        <div class="repo-container">
+            <div class="repo-type" >
+              <div class="dropdown-select-type" >
+                <input type="text" class="select-type" readonly placeholder="Select" >
+                <div class="options-type">
+                  <div class="option-type" >New</div>
+                  <div class="option-type" >Old</div>
+                </div>
+            </div>
+            </div >
+            <div class="repo-content">
+              <div class="default-select" >
+                <input type="text" class="before-select-type"  readonly   >
+              </div>
+              <div class="new-repo-create" style="display: none;"  >
+                <input class="new-repo-input" type="text" placeholder="Create New Repo" >
+              </div>
+              <div class="old-repo-select"  >
+                <div class="dropdown-select-repo"  style="display: none;" >
+                  <input type="text" class="select-repo" readonly placeholder="Select Your Repo" >
+                  <div class="options-repo"  >
+                    <div class="option-repo" >A</div>
+                    <div class="option-repo" >B</div>
+                    <div class="option-repo" >C</div>
+                    <div class="option-repo" >D</div>
+                    <div class="option-repo" >E</div>
+                    <div class="option-repo" >F</div>
+                    <div class="option-repo" >G</div>
+                    <div class="option-repo" >1</div>
+                    <div class="option-repo" >2</div>
+                    <div class="option-repo" >E</div>
+                    <div class="option-repo" >F</div>
+                    <div class="option-repo" >G</div>
+                    <div class="option-repo" >1</div>
+                    <div class="option-repo" >2</div>
+                    <div class="option-repo" >E</div>
+                    <div class="option-repo" >F</div>
+                    <div class="option-repo" >G</div>
+                    <div class="option-repo" >1</div>
+                    <div class="option-repo" >2</div>
+                    <div class="option-repo" >3</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        
+      </div>
+      <div class="option-container">
+        <div class="option-header">
+          <h1 class="option-title">Option</h1>
+        </div>
+        <div class="option-body"></div>
+  
+      </div>
     <script type="module" src="js/popup.js"></script>
   </body>
 </html>

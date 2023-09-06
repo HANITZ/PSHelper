@@ -1,41 +1,53 @@
 import { createChromeTabs, getChromeLocalStorage } from "./chromeUtils";
-import { $, enrollEvent, getElById } from "./utils/jsUtils";
+import { $, enrollEvent } from "./utils/jsUtils";
+import "./popup.css";
+import { isObjEmpty } from "./utils/jsUtils";
+import { $$ } from "./utils/jsUtils";
 
 class Popup {
   element: HTMLElement | null;
   isLogined: boolean = false;
   constructor(element: HTMLElement | null) {
     this.element = element;
+    this.setEvent();
     this.init();
+    this.setOption();
   }
 
+  setOption = () => {};
+
   init = async () => {
-    console.log(this.isLogined);
-    if (this.isLogined) {
+    console.log("시작");
+    if (await this.checkLogin()) {
       const a = setInterval(async () => {
         const token = await getChromeLocalStorage("GITHUB_TOKEN");
-        if (token) {
-          createChromeTabs({
-            url: `chrome-extension://${process.env.CHROME_NUMBER}/home.html`,
-            active: true,
-          });
-          this.element!.innerHTML = this.getLoginedTemplate();
-          clearInterval(a);
-        }
+        const user = await getChromeLocalStorage("USER");
+        console.log(user);
+        console.log(token);
+        // createChromeTabs({
+        //   url: `chrome-extension://${process.env.CHROME_NUMBER}/home.html`,
+        //   active: false,
+        // });
+        clearInterval(a);
       }, 1000);
       return;
     }
 
-    this.element!.innerHTML = this.getBasicTemplate();
-    this.setEvent();
     console.log("토큰 없음");
     return;
   };
 
+  checkLogin = async () => {
+    const user = await getChromeLocalStorage("USER");
+    if (isObjEmpty(user)) {
+      return false;
+    }
+    return true;
+  };
+
   setEvent = () => {
-    const enrollEl = getElById("enroll");
-    if (!enrollEl) throw new Error("enrollEl 엘리먼트를 찾지 못했습니다.");
-    enrollEvent(enrollEl, "click", async () => {
+    const enrollElement = $(".logo-button");
+    enrollEvent(enrollElement, "click", async () => {
       createChromeTabs({
         url: `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}`,
         active: false,
@@ -43,22 +55,47 @@ class Popup {
       this.isLogined = true;
       this.init();
     });
-  };
-  getLoginedTemplate = () => {
-    return `
-    <h1>PSHELPER</h1>
-    `;
-  };
-  getBasicTemplate = () => {
-    return `
-    <h1>PSHELPER</h1>
-    <button id="enroll">Connect with GitHub</button>`;
+    // type Select
+    const selectTypeElement = $(".dropdown-select-type");
+    const selectTypeText = $(".select-type") as HTMLInputElement;
+
+    enrollEvent(selectTypeElement, "click", () => {
+      selectTypeElement.classList.toggle("active");
+    });
+
+    enrollEvent(selectTypeText, "blur", () => {
+      selectTypeElement.classList.remove("active");
+    });
+
+    const typeOptions = $$(".option-type");
+    typeOptions.forEach((option) => {
+      enrollEvent(option, "mouseover", (event) => {
+        selectTypeText.value = option.innerText;
+      });
+    });
+
+    // repo Select
+    const selectRepoElement = $(".dropdown-select-repo");
+    const selectRepoText = $(".select-repo") as HTMLInputElement;
+
+    enrollEvent(selectRepoElement, "click", () => {
+      selectRepoElement.classList.toggle("active");
+    });
+
+    enrollEvent(selectRepoText, "blur", () => {
+      selectRepoElement.classList.remove("active");
+    });
+
+    const repoOptions = $$(".option-repo");
+    repoOptions.forEach((option) => {
+      enrollEvent(option, "mouseover", (event) => {
+        selectRepoText.value = option.innerText;
+      });
+    });
   };
 }
-try{
-  debugger
-  console.log("실행 중");
+try {
   new Popup($("#root"));
-}catch(e){
-  console.log(e)
+} catch (e) {
+  throw e;
 }
