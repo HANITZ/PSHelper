@@ -3,7 +3,7 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const srcDir = path.join(__dirname, "..", "src");
 const Dotenv = require("dotenv-webpack");
-const {CleanWebpackPlugin} = require("clean-webpack-plugin")
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
   entry: {
@@ -47,16 +47,16 @@ module.exports = {
     filename: "[name].js",
   },
 
-  optimization: {
-    splitChunks: {
-      name: (module, chunks, cacheGroupKey) => {
-        const allChunksNames = chunks.map((chunk) => chunk.name).join("-");
-        return allChunksNames;
-      },
-      chunks(chunk) {
-        return chunk.name !== "background";
-      },
+  // optimization: {
+  //   splitChunks: {
+  //     name: (module, chunks, cacheGroupKey) => {
+  //       const allChunksNames = chunks.map((chunk) => chunk.name).join("-");
+  //       return allChunksNames;
+  //     },
+  //     chunks(chunk) {
+  //       return chunk.name !== "background";
+  //     },
 
-    },
-  },
+  //   },
+  // },
 };

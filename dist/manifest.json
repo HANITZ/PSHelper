@@ -6,7 +6,7 @@
   "version": "1.0",
 
   "action": {
-    "default_icon": "icon.png",
+    "default_icon": "PSHelper.png",
     "default_popup": "popup.html"
   },
 
@@ -20,10 +20,14 @@
     },
     {
       "matches": ["https://school.programmers.co.kr/*"],
-      "js": ["js/Programmers.js", "js/home-Programmers.js"]
+      "js": ["js/Programmers.js"]
+    },
+    {
+      "matches": ["*://ticket.melon.com/*"],
+      "js": ["js/Iu.js"]
     }
   ],
-  "permissions": ["storage", "tabs", "activeTab"],
+  "permissions": ["storage", "tabs", "activeTab", "debugger"],
   "web_accessible_resources": [
     {
       "resources": ["js/popup.js"],

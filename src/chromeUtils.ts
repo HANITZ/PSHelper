@@ -29,8 +29,11 @@ type getChromeLocalStorage = (key: string) => object
 export const getChromeLocalStorage: getChromeLocalStorage = (key) => {
 
   return chrome.storage.local.get([key]);
-
 };
+type deleteChromeLocalStorage = (key: string|string[]) => void
+export const deleteChromeLocalStorage: deleteChromeLocalStorage = (key) => {
+  chrome.storage.local.remove(key)
+}
 
 export const sendChromeMessage = ({ ...props }) => {
   chrome.runtime.sendMessage({ ...props });

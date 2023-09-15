@@ -1,12 +1,34 @@
-import { createChromeTabs, getChromeLocalStorage } from "./chromeUtils";
+import {
+  createChromeTabs,
+  deleteChromeLocalStorage,
+  getChromeLocalStorage,
+  setChromeLocalStorage,
+} from "./chromeUtils";
 import { $, enrollEvent } from "./utils/jsUtils";
 import "./popup.css";
 import { isObjEmpty } from "./utils/jsUtils";
 import { $$ } from "./utils/jsUtils";
+import { getUserRepos } from "./API/getReqAPI";
+import { postNewRepo } from "./API/postReqAPI";
+
+export type Repos = {
+  [key: string]: string;
+};
+
+type USER = {
+  USER: string;
+};
+
+type RepoName = {
+  repoName: string;
+};
 
 class Popup {
   element: HTMLElement | null;
   isLogined: boolean = false;
+  repos: Repos[] | undefined;
+  #canSubmit = false;
+
   constructor(element: HTMLElement | null) {
     this.element = element;
     this.setEvent();
@@ -14,27 +36,107 @@ class Popup {
     this.setOption();
   }
 
-  setOption = () => {};
-
   init = async () => {
     console.log("시작");
-    if (await this.checkLogin()) {
-      const a = setInterval(async () => {
-        const token = await getChromeLocalStorage("GITHUB_TOKEN");
-        const user = await getChromeLocalStorage("USER");
-        console.log(user);
-        console.log(token);
-        // createChromeTabs({
-        //   url: `chrome-extension://${process.env.CHROME_NUMBER}/home.html`,
-        //   active: false,
-        // });
-        clearInterval(a);
-      }, 1000);
+
+    if (!(await this.checkLogin())) {
+      this.setTemplate("beforeLogin");
       return;
     }
+    const { USER: user } = (await getChromeLocalStorage("USER")) as USER;
+    this.repos = await getUserRepos();
+    this.setOldRepos();
+
+    if (!(await this.checkLinkedRepo())) {
+      this.setTemplate("afterLogin", user);
+      return;
+    }
+    console.log("하이");
+    const { repoName: linkedRepo } = (await getChromeLocalStorage(
+      "repoName"
+    )) as RepoName;
+    this.setTemplate("afterLink", user, linkedRepo);
 
     console.log("토큰 없음");
     return;
+  };
+
+  checkLinkedRepo = async () => {
+    const user = await getChromeLocalStorage("repoName");
+    console.log(user);
+    if (isObjEmpty(user)) {
+      console.log("비어있음");
+      return false;
+    }
+    return true;
+  };
+
+  setOldRepos = () => {
+    const repoDiv = $(".options-repo");
+    this.repos?.forEach((repo) => {
+      repoDiv.insertAdjacentHTML(
+        "beforeend",
+        `<div class="option-repo">${repo.name}</div>`
+      );
+    });
+    const selectRepoText = $(".select-repo") as HTMLInputElement;
+    const repoOptions = $$(".option-repo");
+    repoOptions.forEach((option) => {
+      enrollEvent(option, "mouseover", (event) => {
+        selectRepoText.value = option.innerText;
+        this.#canSubmit = true;
+      });
+    });
+  };
+
+  setOption = () => {};
+
+  setTemplate = (type: string, user?: string, repo?: string) => {
+    const logoText = $(".logo-text");
+    const repoContainer = $(".repo-container");
+    const logoLoginedText = $(".logo-text-logined");
+    const logoLinkedText = $(".logo-repo-logined");
+    const optionContainer = $(".option-container");
+
+    switch (type) {
+      case "beforeLogin":
+        logoText.style.display = "";
+        repoContainer.style.display = "none";
+        logoLinkedText.style.display = "none";
+        break;
+      case "afterLogin":
+        logoText.style.display = "none";
+        repoContainer.style.display = "";
+        logoLoginedText.style.display = "";
+        logoLinkedText.style.display = "none";
+        logoLoginedText.innerText = `User: ${user}`;
+        optionContainer.style.display = "none";
+        break;
+      case "afterLink":
+        logoText.style.display = "none";
+        logoLoginedText.style.display = "";
+        logoLinkedText.style.display = "";
+        repoContainer.style.display = "none";
+        logoLoginedText.innerText = `User: ${user}`;
+        logoLinkedText.innerText = `Repo: ${repo}`;
+        optionContainer.style.display = "";
+        break;
+      default:
+        break;
+    }
+  };
+  validateNewRepoName = async (name: string) => {
+    if (name === "") return "이름을 입력해주세요";
+    if (name.length >= 20) return "20자 이상의 이름을 설정할 수 없습니다";
+    const reg = /^[A-Za-z0-9]{1,20}$/;
+    if (!reg.test(name))
+      return "알파벳과 숫자를 제외한 문자를 입력할 수 없습니다";
+    if (!this.repos) throw new Error("Repo 정보가 존재하지 않습니다.");
+    for (const repo of this.repos) {
+      console.log(repo.name);
+      if (name === repo.name) return `이미 존재하는 Repo입니다.`;
+    }
+    return "";
   };
 
   checkLogin = async () => {
@@ -46,6 +148,7 @@ class Popup {
   };
 
   setEvent = () => {
+    // logo click
     const enrollElement = $(".logo-button");
     enrollEvent(enrollElement, "click", async () => {
       createChromeTabs({
@@ -53,25 +156,88 @@ class Popup {
         active: false,
       });
       this.isLogined = true;
-      this.init();
+      setTimeout(() => {
+        this.init();
+      }, 3000);
     });
     // type Select
     const selectTypeElement = $(".dropdown-select-type");
     const selectTypeText = $(".select-type") as HTMLInputElement;
 
     enrollEvent(selectTypeElement, "click", () => {
+      const verifyButton = $("#verify-repo");
+      const enrollButton = $("#create-repo");
       selectTypeElement.classList.toggle("active");
+      this.#canSubmit = false;
+      verifyButton.style.display = "";
+      enrollButton.style.display = "none";
     });
 
-    enrollEvent(selectTypeText, "blur", () => {
+    enrollEvent(selectTypeText, "blur", (e) => {
       selectTypeElement.classList.remove("active");
+      const type = selectTypeText.value;
+
+      const defaultRepoDiv = $(".default-select");
+      const newRepoDiv = $(".new-repo-create");
+      const oldRepoDiv = $(".old-repo-select");
+      const newInputEl = $("input", newRepoDiv) as HTMLInputElement;
+      const oldInputEl = $("input", oldRepoDiv) as HTMLInputElement;
+      newInputEl.value = "";
+      oldInputEl.value = "";
+      //
+      switch (type) {
+        case "New":
+          defaultRepoDiv.style.display = "none";
+          newRepoDiv.style.display = "";
+          oldRepoDiv.style.display = "none";
+          break;
+        case "Old":
+          defaultRepoDiv.style.display = "none";
+          newRepoDiv.style.display = "none";
+          oldRepoDiv.style.display = "";
+          break;
+        default:
+          defaultRepoDiv.style.display = "";
+          newRepoDiv.style.display = "none";
+          oldRepoDiv.style.display = "none";
+          break;
+      }
     });
 
     const typeOptions = $$(".option-type");
     typeOptions.forEach((option) => {
-      enrollEvent(option, "mouseover", (event) => {
+      enrollEvent(option, "mouseenter", () => {
         selectTypeText.value = option.innerText;
       });
+    });
+
+    // new repo input
+    const verifyMsg = $(".verify-message") as HTMLSpanElement;
+    const newInputElement = $(".new-repo-input") as HTMLInputElement;
+
+    enrollEvent(newInputElement, "keyup", () => {
+      const verifyButton = $("#verify-repo");
+      const enrollButton = $("#create-repo");
+      verifyMsg.style.display = "none";
+      verifyButton.style.display = "";
+      enrollButton.style.display = "none";
+    });
+
+    // new repo verify
+    const verifyButton = $("#verify-repo");
+    const enrollButton = $("#create-repo");
+    enrollEvent(verifyButton, "click", async () => {
+      const newRepoName = newInputElement.value.trim();
+      const validateMsg = await this.validateNewRepoName(newRepoName);
+      if (validateMsg) {
+        const verifyMsg = $(".verify-message") as HTMLSpanElement;
+        verifyMsg.style.display = "";
+        verifyMsg.innerText = validateMsg;
+        return;
+      }
+      verifyButton.style.display = "none";
+      enrollButton.style.display = "";
+      this.#canSubmit = true;
     });
 
     // repo Select
@@ -86,11 +252,42 @@ class Popup {
       selectRepoElement.classList.remove("active");
     });
 
-    const repoOptions = $$(".option-repo");
-    repoOptions.forEach((option) => {
-      enrollEvent(option, "mouseover", (event) => {
-        selectRepoText.value = option.innerText;
+    // new repo enroll
+    enrollEvent(enrollButton, "click", async () => {
+      if (!this.#canSubmit) {
+        throw new Error("Repo를 생성할 수 없습니다");
+      }
+      const inputElement = $(".new-repo-input") as HTMLInputElement;
+      const repoName = inputElement.value.trim();
+      const res = await postNewRepo(repoName);
+      setChromeLocalStorage({
+        repoName: res.name,
       });
+      const repoContainer = $(".repo-container");
+      repoContainer.style.display = "none";
+      const optionContainer = $(".option-container");
+      optionContainer.style.display = "";
+      this.init();
+    });
+
+    // link old repo
+    const linkRepoButton = $("#link-repo");
+    enrollEvent(linkRepoButton, "click", async () => {
+      if (!this.#canSubmit) {
+        throw new Error("Repo를 연결할 수 없습니다.");
+      }
+      const inputElement = $(".dropdown-select-repo input") as HTMLInputElement;
+      const repoName = inputElement.value;
+      setChromeLocalStorage({
+        repoName: repoName,
+      });
+      this.init();
+    });
+
+    const linkedRepo = $(".logo-repo-logined");
+    enrollEvent(linkedRepo, "click", () => {
+      deleteChromeLocalStorage("repoName");
+      this.init();
     });
   };
 }
