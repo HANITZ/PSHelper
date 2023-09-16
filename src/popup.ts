@@ -100,16 +100,20 @@ class Popup {
 
   setOption = async () => {
     console.log(await getChromeLocalStorage("isUpload"));
-    const isUpload = $("#isupload");
-    const isTimer = $("#istimer");
-    enrollEvent(isUpload, "change", async (e) => {
+    const isUploadInputElement = $("#isupload") as HTMLInputElement;
+    const isTimerInputElement = $("#istimer") as HTMLInputElement;
+    const { isUpload } = (await getChromeLocalStorage("isUpload")) as IsUpload;
+    const { isTimer } = (await getChromeLocalStorage("isTimer")) as IsTimer;
+    isUploadInputElement.checked = isUpload;
+    isTimerInputElement.checked = isTimer;
+    enrollEvent(isUploadInputElement, "change", async (e) => {
       const { isUpload } = (await getChromeLocalStorage(
         "isUpload"
       )) as IsUpload;
       setChromeLocalStorage({ isUpload: !isUpload });
     });
 
-    enrollEvent(isTimer, "change", async () => {
+    enrollEvent(isTimerInputElement, "change", async () => {
       const { isTimer } = (await getChromeLocalStorage("isTimer")) as IsTimer;
       setChromeLocalStorage({ isTimer: !isTimer });
     });

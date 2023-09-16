@@ -21,10 +21,6 @@
     {
       "matches": ["https://school.programmers.co.kr/*"],
       "js": ["js/Programmers.js"]
-    },
-    {
-      "matches": ["*://ticket.melon.com/*"],
-      "js": ["js/Iu.js"]
     }
   ],
   "permissions": ["storage", "tabs", "activeTab", "debugger"],
