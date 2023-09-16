@@ -146,7 +146,7 @@ class Popup {
         logoLinkedText.style.display = "";
         repoContainer.style.display = "none";
         logoLoginedText.innerText = `User: ${user}`;
-        logoLinkedText.innerText = `Repo: ${repo}`;
+        logoLinkedText.innerText = `Repository: ${repo}`;
         optionContainer.style.display = "";
         break;
       default:
