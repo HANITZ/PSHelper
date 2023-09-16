@@ -17,6 +17,7 @@ import {
 import { getDefaultBranch, getReference } from "./API/getReqAPI";
 
 import "./Programmers.css";
+import { IsTimer, IsUpload } from "./popup";
 
 interface PROBLEM {
   PROBLEM: {
@@ -110,8 +111,11 @@ class Programmers {
     });
   };
 
-  startSolving = () => {
-    this.setProgrammersTimer();
+  startSolving = async () => {
+    const { isTimer } = (await getChromeLocalStorage("isTimer")) as IsTimer;
+    if (isTimer) {
+      this.setProgrammersTimer();
+    }
     this.setEvents();
   };
   setEvents = () => {
@@ -129,9 +133,16 @@ class Programmers {
         }
         if (modalElement && this.checkSuccess(modalElement)) {
           const solvedData = await this.parseCode();
-          const time = `${this.hours}:${this.mins}:${this.secs}`;
+          const time = this.hours
+            ? `${this.hours}:${this.mins}:${this.secs}`
+            : undefined;
           clearInterval(interval);
-          await this.uploadCode(solvedData);
+          const { isUpload } = (await getChromeLocalStorage(
+            "isUpload"
+          )) as IsUpload;
+          if (isUpload) {
+            await this.uploadCode(solvedData);
+          }
           this.renderModalAfterSuccess(modalElement, time);
         }
         if (nowTime - startTime >= 20000) {
@@ -156,13 +167,15 @@ class Programmers {
     );
   };
 
-  renderModalAfterSuccess = (modalElement: HTMLElement, time: string) => {
+  renderModalAfterSuccess = (modalElement: HTMLElement, time?: string) => {
     const markTag = $("#solve-result-mark", modalElement);
     const modalBody = $(".modal-body", modalElement);
-    modalBody.insertAdjacentHTML(
-      "beforeend",
-      `<span  > 풀이시간: ${time}</span>`
-    );
+    if (time) {
+      modalBody.insertAdjacentHTML(
+        "beforeend",
+        `<span  > 풀이시간: ${time}</span>`
+      );
+    }
     markTag.className = "success-solve";
   };
   renderModalAfterFail = (modalElement: HTMLElement) => {

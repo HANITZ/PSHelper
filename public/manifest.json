@@ -21,6 +21,10 @@
     {
       "matches": ["https://school.programmers.co.kr/*"],
       "js": ["js/Programmers.js"]
+    },
+    {
+      "matches": ["https://leetcode.com/*"],
+      "js": ["js/Leetcode.js"]
     }
   ],
   "permissions": ["storage", "tabs", "activeTab", "debugger"],

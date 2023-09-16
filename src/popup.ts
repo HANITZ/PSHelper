@@ -23,11 +23,11 @@ type RepoName = {
   repoName: string;
 };
 
-type IsUpload = {
+export type IsUpload = {
   isUpload: boolean;
 };
 
-type IsTimer = {
+export type IsTimer = {
   isTimer: boolean;
 };
 
@@ -99,7 +99,6 @@ class Popup {
   };
 
   setOption = async () => {
-    console.log(await getChromeLocalStorage("isUpload"));
     const isUploadInputElement = $("#isupload") as HTMLInputElement;
     const isTimerInputElement = $("#istimer") as HTMLInputElement;
     const { isUpload } = (await getChromeLocalStorage("isUpload")) as IsUpload;

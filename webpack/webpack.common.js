@@ -12,6 +12,7 @@ module.exports = {
     background: path.join(srcDir, "background.ts"),
     Github: path.join(srcDir, "Github.ts"),
     Programmers: path.join(srcDir, "Programmers.ts"),
+    Leetcode: path.join(srcDir, "Leetcode.ts"),
   },
 
   module: {

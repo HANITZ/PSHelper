@@ -1,8 +1,24 @@
-function Leetcode() {
-  const currentUrl = window.location.href;
-  if (currentUrl.includes('/learn/courses/30')) {
-    return;
+import { getChromeLocalStorage } from "./chromeUtils";
+import { IsTimer } from "./popup";
+
+class Leetcode {
+  constructor() {
+    this.init();
+    this.setEvent();
   }
+
+  init = async () => {
+    const { isTimer } = (await getChromeLocalStorage("isTimer")) as IsTimer;
+    if (isTimer) {
+      this.setTimer();
+    }
+  };
+
+  setTimer = () => {
+    
+  };
+
+  setEvent = () => {};
 }
 
-Leetcode();
+new Leetcode();
