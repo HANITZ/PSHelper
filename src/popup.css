@@ -332,7 +332,7 @@ body {
 .option-container > .option-header {
   width: 90%;
   height: 30px;
-  margin: 15px 1px 10px 1px;
+  margin: 15px 1px 5px 1px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
