@@ -59,13 +59,14 @@ class Popup {
       this.setTemplate("afterLogin", user);
       return;
     }
-    console.log("하이");
+
     const { repoName: linkedRepo } = (await getChromeLocalStorage(
       "repoName"
     )) as RepoName;
     this.setTemplate("afterLink", user, linkedRepo);
 
-    console.log("토큰 없음");
+    const isUpload = await getChromeLocalStorage("isUpload");
+    console.log(isUpload);
     return;
   };
 
@@ -98,10 +99,6 @@ class Popup {
   };
 
   setOption = async () => {
-    await setChromeLocalStorage({
-      isUpload: false,
-      isTimer: false,
-    });
     console.log(await getChromeLocalStorage("isUpload"));
     const isUpload = $("#isupload");
     const isTimer = $("#istimer");

@@ -4,6 +4,10 @@ const messageHandler = async (req: any, sender: any, sendResponse: any) => {
   if (req && req.isSuccess && req.action === "PSHELPER_TOKEN") {
     await setChromeLocalStorage({ GITHUB_TOKEN: req.token });
     await setChromeLocalStorage({ USER: req.user.login });
+    await setChromeLocalStorage({
+      isUpload: false,
+      isTimer: false,
+    });
   }
 };
 try {
