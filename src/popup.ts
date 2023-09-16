@@ -23,6 +23,14 @@ type RepoName = {
   repoName: string;
 };
 
+type IsUpload = {
+  isUpload: boolean;
+};
+
+type IsTimer = {
+  isTimer: boolean;
+};
+
 class Popup {
   element: HTMLElement | null;
   isLogined: boolean = false;
@@ -89,7 +97,26 @@ class Popup {
     });
   };
 
-  setOption = () => {};
+  setOption = async () => {
+    await setChromeLocalStorage({
+      isUpload: false,
+      isTimer: false,
+    });
+    console.log(await getChromeLocalStorage("isUpload"));
+    const isUpload = $("#isupload");
+    const isTimer = $("#istimer");
+    enrollEvent(isUpload, "change", async (e) => {
+      const { isUpload } = (await getChromeLocalStorage(
+        "isUpload"
+      )) as IsUpload;
+      setChromeLocalStorage({ isUpload: !isUpload });
+    });
+
+    enrollEvent(isTimer, "change", async () => {
+      const { isTimer } = (await getChromeLocalStorage("isTimer")) as IsTimer;
+      setChromeLocalStorage({ isTimer: !isTimer });
+    });
+  };
 
   setTemplate = (type: string, user?: string, repo?: string) => {
     const logoText = $(".logo-text");
