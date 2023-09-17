@@ -25,6 +25,10 @@
     {
       "matches": ["https://leetcode.com/*"],
       "js": ["js/Leetcode.js"]
+    },
+    {
+      "matches": ["https://www.acmicpc.net/*"],
+      "js": ["js/Baekjun.js"]
     }
   ],
   "permissions": ["storage", "tabs", "activeTab", "debugger"],

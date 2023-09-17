@@ -102,7 +102,7 @@ export const createTimer = (callbackFn: Function) => {
   let [secs, mins, hours] = [0, 0, 0];
   const timer = setInterval(() => {
     secs++;
-    if (secs == 60) {
+    if (secs == 60) { 
       secs = 0;
       mins++;
     }

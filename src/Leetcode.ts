@@ -1,5 +1,6 @@
 import { getChromeLocalStorage } from "./chromeUtils";
 import { IsTimer } from "./popup";
+import { $ } from "./utils/jsUtils";
 
 class Leetcode {
   constructor() {
@@ -15,7 +16,8 @@ class Leetcode {
   };
 
   setTimer = () => {
-    
+    const nav = $("div");
+    console.log(nav);
   };
 
   setEvent = () => {};
