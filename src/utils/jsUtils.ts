@@ -102,7 +102,7 @@ export const createTimer = (callbackFn: Function) => {
   let [secs, mins, hours] = [0, 0, 0];
   const timer = setInterval(() => {
     secs++;
-    if (secs == 60) { 
+    if (secs == 60) {
       secs = 0;
       mins++;
     }
@@ -118,7 +118,19 @@ export const createTimer = (callbackFn: Function) => {
     const s = secs < 10 ? "0" + secs.toString() : secs.toString();
     callbackFn(h, m, s);
   }, 1000);
+  console.log(timer);
   return timer;
+};
+
+export type TimeNow = {
+  hour: string;
+  min: string;
+  sec: string;
+};
+
+export const getTimeNow = ():TimeNow => {
+  const [hour, min, sec] = new Date().toString().split(" ")[4].split(":");
+  return {hour, min, sec}
 };
 
 export const hasElement = (target: string): boolean => {
