@@ -122,15 +122,10 @@ export const createTimer = (callbackFn: Function) => {
   return timer;
 };
 
-export type TimeNow = {
-  hour: string;
-  min: string;
-  sec: string;
-};
 
-export const getTimeNow = ():TimeNow => {
-  const [hour, min, sec] = new Date().toString().split(" ")[4].split(":");
-  return {hour, min, sec}
+
+export const getTimeSecNow = () => {
+  return Math.floor(new Date().getTime()/1000)
 };
 
 export const hasElement = (target: string): boolean => {
