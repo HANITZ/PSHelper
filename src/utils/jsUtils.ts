@@ -1,4 +1,4 @@
-type $ = (targetName: string, parentEl?: HTMLElement) => HTMLElement;
+type $ = (targetName: string, parentEl?: HTMLElement | Document) => HTMLElement;
 export const $: $ = (targetName, parentEl) => {
   const element = parentEl
     ? parentEl.querySelector(targetName)
@@ -118,19 +118,68 @@ export const createTimer = (callbackFn: Function) => {
     const s = secs < 10 ? "0" + secs.toString() : secs.toString();
     callbackFn(h, m, s);
   }, 1000);
-  console.log(timer);
   return timer;
 };
 
-
-
-export const getTimeSecNow = () => {
-  return Math.floor(new Date().getTime()/1000)
+export const getTimeDiff = (startTime: number, callbackFn: Function) => {
+  const timer = setInterval(() => {
+    let [hour, min, sec] = [0, 0, 0];
+    let timeDiffSec = Math.floor((new Date().getTime() - startTime) / 1000);
+    if (timeDiffSec > 3600) {
+      hour = Math.floor(timeDiffSec / 3600);
+      timeDiffSec = timeDiffSec % 3600;
+    }
+    if (timeDiffSec > 60) {
+      min = Math.floor(timeDiffSec / 60);
+      timeDiffSec = timeDiffSec % 60;
+    }
+    sec = timeDiffSec;
+    const h = hour < 10 ? "0" + hour.toString() : hour.toString();
+    const m = min < 10 ? "0" + min.toString() : min.toString();
+    const s = sec < 10 ? "0" + sec.toString() : sec.toString();
+    callbackFn(h, m, s);
+  });
+  return timer;
 };
 
-export const hasElement = (target: string): boolean => {
+export const getTimeNow = () => {
+  return new Date().getTime();
+};
+
+export const hasElement = (
+  target: string,
+  parentElement?: HTMLElement
+): boolean => {
+  if (parentElement) {
+    if (parentElement.querySelector(target)) {
+      return true;
+    }
+    return false;
+  }
+
   if (document.querySelector(target)) {
     return true;
   }
   return false;
+};
+
+export const htmlEntityDecode = (text: string): string => {
+  const unescaped: { [key: string]: string } = {
+    "&amp;": "&",
+    "&#38;": "&",
+    "&lt;": "<",
+    "&#60;": "<",
+    "&gt;": ">",
+    "&#62;": ">",
+    "&apos;": "'",
+    "&#39;": "'",
+    "&quot;": '"',
+    "&#34;": '"',
+    "&nbsp;": " ",
+    "&#160;": " ",
+  };
+  return text.replace(
+    /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34|nbsp|#160);/g,
+    (word) => unescaped[word]
+  );
 };
