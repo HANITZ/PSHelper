@@ -24,19 +24,24 @@ export const setChromeLocalStorage = ({ ...props }, fn = () => {}) => {
 };
 
 type Fn = (data: object) => {};
-type getChromeLocalStorage = (key: string) => object
+type getChromeLocalStorage = (key: string) => object;
 
 export const getChromeLocalStorage: getChromeLocalStorage = (key) => {
-
   return chrome.storage.local.get([key]);
 };
-type deleteChromeLocalStorage = (key: string|string[]) => void
+type deleteChromeLocalStorage = (key: string | string[]) => void;
 export const deleteChromeLocalStorage: deleteChromeLocalStorage = (key) => {
-  chrome.storage.local.remove(key)
-}
+  chrome.storage.local.remove(key);
+};
 
-export const sendChromeMessage = ({ ...props }) => {
-  chrome.runtime.sendMessage({ ...props });
+export const sendChromeMessage = async (
+  { ...props },
+  callbackFn?: (response: any) => void
+): Promise<any> => {
+  if (callbackFn) {
+    return await chrome.runtime.sendMessage({ ...props }, callbackFn);
+  }
+  return await chrome.runtime.sendMessage({ ...props });
 };
 
 export const getChromeMessage = (fn: any) => {
