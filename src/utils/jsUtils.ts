@@ -183,3 +183,9 @@ export const htmlEntityDecode = (text: string): string => {
     (word) => unescaped[word]
   );
 };
+
+export const getQueryParam = (query: string): string => {
+  const param = new URLSearchParams(window.location.search).get(query);
+  if (!param) throw new Error(`Not Found Query ${query}`);
+  return param;
+};
