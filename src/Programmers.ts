@@ -9,7 +9,10 @@ import {
   hasElement,
   insertHTML,
 } from "./utils/jsUtils";
-import { setChromeLocalStorage, getChromeLocalStorage } from "./chromeUtils";
+import {
+  setChromeLocalStorage,
+  getChromeLocalStorage,
+} from "./utils/chromeUtils";
 import { FilesReadyToUproad, commitCodeToRepo } from "./API/postReqAPI";
 
 import "./Programmers.css";

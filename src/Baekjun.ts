@@ -16,7 +16,7 @@ import {
   deleteChromeLocalStorage,
   getChromeLocalStorage,
   setChromeLocalStorage,
-} from "./chromeUtils";
+} from "./utils/chromeUtils";
 import { IsTimer } from "./popup";
 import {
   getBaekjunProblemDescription,
@@ -157,7 +157,7 @@ class Baekjun {
       }
     }, 2000);
   };
-  
+
   afterSuccess = async (
     problemId: string,
     submissionId: string,
@@ -359,4 +359,3 @@ if (window.location.href.includes("/problem/")) {
 } else if (window.location.href.includes("/submit/")) {
   baekjun.readyToSubmit();
 }
-

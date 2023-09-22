@@ -1,4 +1,4 @@
-import { sendChromeMessage } from "./chromeUtils";
+import { sendChromeMessage } from "./utils/chromeUtils";
 import { getAccessToken, getUserInfo } from "./API/getReqAPI";
 
 export async function Github() {
@@ -10,8 +10,6 @@ export async function Github() {
     const user = await getUserInfo(res.access_token);
     if (res) {
       await sendChromeMessage({
-        closeWebPage: true,
-        isSuccess: true,
         token: res.access_token,
         user,
         action: "PSHELPER_TOKEN",

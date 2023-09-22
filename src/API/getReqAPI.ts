@@ -1,4 +1,4 @@
-import { getChromeLocalStorage, sendChromeMessage } from "../chromeUtils";
+import { getChromeLocalStorage, sendChromeMessage } from "../utils/chromeUtils";
 import { $, htmlEntityDecode } from "../utils/jsUtils";
 import { User, repoNameObj } from "./postReqAPI";
 

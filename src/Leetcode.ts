@@ -1,4 +1,4 @@
-import { getChromeLocalStorage } from "./chromeUtils";
+import { getChromeLocalStorage } from "./utils/chromeUtils";
 import { IsTimer } from "./popup";
 import { $ } from "./utils/jsUtils";
 

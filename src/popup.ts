@@ -3,7 +3,7 @@ import {
   deleteChromeLocalStorage,
   getChromeLocalStorage,
   setChromeLocalStorage,
-} from "./chromeUtils";
+} from "./utils/chromeUtils";
 import { $, enrollEvent } from "./utils/jsUtils";
 import "./popup.css";
 import { isObjEmpty } from "./utils/jsUtils";
@@ -33,7 +33,6 @@ export type IsTimer = {
 
 class Popup {
   element: HTMLElement | null;
-  isLogined: boolean = false;
   repos: Repos[] | undefined;
   #canSubmit = false;
 
@@ -62,17 +61,12 @@ class Popup {
       "repoName"
     )) as RepoName;
     this.setTemplate("afterLink", user, linkedRepo);
-
-    const isUpload = await getChromeLocalStorage("isUpload");
-    console.log(isUpload);
     return;
   };
 
   checkLinkedRepo = async () => {
     const user = await getChromeLocalStorage("repoName");
-    console.log(user);
     if (isObjEmpty(user)) {
-      console.log("비어있음");
       return false;
     }
     return true;
@@ -158,7 +152,6 @@ class Popup {
       return "알파벳과 숫자를 제외한 문자를 입력할 수 없습니다";
     if (!this.repos) throw new Error("Repo 정보가 존재하지 않습니다.");
     for (const repo of this.repos) {
-      console.log(repo.name);
       if (name === repo.name) return `이미 존재하는 Repo입니다.`;
     }
     return "";
@@ -180,10 +173,6 @@ class Popup {
         url: `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}`,
         active: true,
       });
-      this.isLogined = true;
-      setTimeout(() => {
-        this.init();
-      }, 3000);
     });
     // type Select
     const selectTypeElement = $(".dropdown-select-type");
@@ -209,7 +198,7 @@ class Popup {
       const oldInputEl = $("input", oldRepoDiv) as HTMLInputElement;
       newInputEl.value = "";
       oldInputEl.value = "";
-      //
+
       switch (type) {
         case "New":
           defaultRepoDiv.style.display = "none";
