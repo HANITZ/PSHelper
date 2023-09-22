@@ -6,6 +6,7 @@ import {
   createTimer,
   enrollEvent,
   getElById,
+  getTimeDiff,
   hasElement,
   insertHTML,
 } from "./utils/jsUtils";
@@ -18,27 +19,41 @@ import { FilesReadyToUproad, commitCodeToRepo } from "./API/postReqAPI";
 import "./Programmers.css";
 import { IsTimer, IsUpload, RepoName } from "./popup";
 
-interface PROBLEM {
-  PROBLEM: {
-    isSolved: string;
-    title: string;
-    level: string;
-    finishedCount: string;
-    acceptanceRate: string;
-  };
-}
+type Problem = {
+  isSolved: string | "undefined";
+  title: string | "undefined";
+  level: string | "undefined";
+  finishedCount: string | "undefined";
+  acceptanceRate: string | "undefined";
+};
+
+type ProgrammersTime = {
+  ProgrammersTime: number;
+};
+
+type makeFilesParam = {
+  link: string;
+  problemId: string | null;
+  division: string;
+  problemDescription: string;
+  languageExtension: string;
+  resultMessage: string;
+  code: string;
+  avgTime: string;
+  avgMemory: string;
+};
 
 class Programmers {
   timer: NodeJS.Timer | undefined;
 
   constructor() {
-    this.init()
+    this.init();
   }
 
-  init = () =>{
-    const {repoName} = getChromeLocalStorage("repoName") as RepoName
-      if(!repoName) throw new Error("Repository가 아직 설정되지 않았습니다.")
-  }
+  init = async () => {
+    const { repoName } = (await getChromeLocalStorage("repoName")) as RepoName;
+    if (!repoName) throw new Error("Repository가 아직 설정되지 않았습니다.");
+  };
   setProgrammersTimer = () => {
     this.setTimerLargeTemplate();
     this.setTimerSmallTemplate();
@@ -46,7 +61,9 @@ class Programmers {
   };
 
   setTimer = async () => {
-    this.timer = createTimer(new Date().getTime(), this.reRenderTime);
+    const startTime = new Date().getTime();
+    setChromeLocalStorage({ ProgrammersTime: startTime });
+    this.timer = createTimer(startTime, this.reRenderTime);
   };
 
   reRenderTime = ({ h, m, s }: Time) => {
@@ -92,7 +109,7 @@ class Programmers {
 
       enrollEvent(tr, "click", () => {
         setChromeLocalStorage({
-          PROBLEM: {
+          Problem: {
             isSolved,
             title,
             level,
@@ -126,9 +143,7 @@ class Programmers {
         }
         if (modalElement && this.checkSuccess(modalElement)) {
           const solvedData = await this.parseCode();
-          const time = this.hours
-            ? `${this.hours}:${this.mins}:${this.secs}`
-            : undefined;
+
           clearInterval(interval);
           const { isUpload } = (await getChromeLocalStorage(
             "isUpload"
@@ -136,7 +151,13 @@ class Programmers {
           if (isUpload) {
             await commitCodeToRepo(solvedData);
           }
-          this.renderModalAfterSuccess(modalElement, time);
+          const { ProgrammersTime: startTime } = (await getChromeLocalStorage(
+            "ProgrammersTime"
+          )) as ProgrammersTime;
+          const solvingTime = Object.values(
+            getTimeDiff(startTime, new Date().getTime())
+          ).join(" : ");
+          this.renderModalAfterSuccess(modalElement, solvingTime);
         }
         if (nowTime - startTime >= 20000) {
           clearInterval(interval);
@@ -185,7 +206,6 @@ class Programmers {
   };
 
   parseCode = async () => {
-    const problemData = (await getChromeLocalStorage("PROBLEM")) as PROBLEM;
     const link = window.location.href;
     const problemId = $("div.main > div.lesson-content")!.getAttribute(
       "data-lesson-id"
@@ -205,11 +225,9 @@ class Programmers {
     let code = $("textarea#code")!.innerText;
     const resultMessage = this.getResultMessage();
     const [avgTime, avgMemory] = this.getTimeAndMemory();
-    console.log(problemData);
 
     return this.makeFiles({
       link,
-      problemData,
       problemId,
       division,
       problemDescription,
@@ -228,6 +246,7 @@ class Programmers {
         .reduce((x, y) => `${x}<br/>${y}`, "") || "Empty"
     );
   };
+
   getTimeAndMemory = () => {
     return $$(".result.passed")
       .map((tr) => tr.innerText)
@@ -259,9 +278,8 @@ class Programmers {
       )
       .map((num) => num.toFixed(2));
   };
-  makeFiles = ({
+  makeFiles = async ({
     link,
-    problemData,
     problemId,
     division,
     problemDescription,
@@ -270,9 +288,9 @@ class Programmers {
     code,
     avgTime,
     avgMemory,
-  }: RawFiles): FilesReadyToUproad => {
+  }: makeFilesParam): Promise<FilesReadyToUproad> => {
     const { level, isSolved, finishedCount, acceptanceRate } =
-      problemData.PROBLEM;
+      (await getChromeLocalStorage("Problem")) as Problem;
     const title = $("li.algorithm-title").innerText.replace(/\\n/g, "").trim();
 
     const directory = `프로그래머스/${level}/${problemId}.${title}`.replace(
@@ -285,7 +303,7 @@ class Programmers {
     )}.${languageExtension}`;
 
     const readMe =
-      `# [${level}] ${problemData.PROBLEM.title} - ${problemId} \n\n` +
+      `# [${level}] ${title} - ${problemId} \n\n` +
       `[문제 링크](${link}) \n\n` +
       `### 성능 요약\n\n` +
       `평균 메모리: ${avgMemory}MB, ` +
@@ -306,19 +324,6 @@ class Programmers {
     };
   };
 }
-
-type RawFiles = {
-  link: string;
-  problemData: PROBLEM;
-  problemId: string | null;
-  division: string;
-  problemDescription: string;
-  languageExtension: string;
-  resultMessage: string;
-  code: string;
-  avgTime: string;
-  avgMemory: string;
-};
 
 const programmers = new Programmers();
 if (

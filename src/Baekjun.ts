@@ -100,6 +100,59 @@ class Baekjun {
     this.checkSubmited();
   }
 
+  init = async () => {
+    const { BaekjunProblemId: baekjunProblemId } = (await getChromeLocalStorage(
+      "BaekjunProblemId"
+    )) as BaekjunProblemId;
+    const { repoName } = (await getChromeLocalStorage("repoName")) as RepoName;
+    if (!repoName) throw new Error("Repository가 아직 설정되지않았습니다.");
+
+    if (!baekjunProblemId || !this.checkProblemId(baekjunProblemId)) {
+      setChromeLocalStorage({
+        BaekjunProblemId: window.location.href.split(
+          "https://www.acmicpc.net/problem/"
+        )[1],
+      });
+      setChromeLocalStorage({ baekjunTime: new Date().getTime() });
+      return;
+    }
+  };
+
+  startSolving = async () => {
+    const { isTimer } = (await getChromeLocalStorage("isTimer")) as IsTimer;
+    if (isTimer) {
+      this.setBaekjunTimer();
+    }
+  };
+
+  readyToSubmit = () => {
+    this.setSubmitEvent();
+  };
+
+  setBaekjunTimer = () => {
+    this.setTimerTemplate();
+    this.setTimer();
+  };
+
+  setSubmitEvent = () => {
+    const submitButton = $("#submit_button");
+
+    enrollEvent(submitButton, "click", () => {
+      setChromeLocalStorage({
+        submitedProblem: window.location.href.split(
+          "https://www.acmicpc.net/submit/"
+        )[1],
+      });
+    });
+  };
+  
+  setTimer = async () => {
+    const { baekjunTime } = (await getChromeLocalStorage(
+      "baekjunTime"
+    )) as BaekjunTime;
+    this.timer = createTimer(baekjunTime, this.reRenderTime);
+  };
+
   checkSubmited = async () => {
     const { submitedProblem } = (await getChromeLocalStorage(
       "submitedProblem"
@@ -264,64 +317,12 @@ class Baekjun {
     );
   };
 
-  init = async () => {
-    const { BaekjunProblemId: baekjunProblemId } = (await getChromeLocalStorage(
-      "BaekjunProblemId"
-    )) as BaekjunProblemId;
-    const { repoName } = (await getChromeLocalStorage("repoName")) as RepoName;
-    if (!repoName) throw new Error("Repository가 아직 설정되지않았습니다.");
-
-    if (!baekjunProblemId || !this.checkProblemId(baekjunProblemId)) {
-      setChromeLocalStorage({
-        BaekjunProblemId: window.location.href.split(
-          "https://www.acmicpc.net/problem/"
-        )[1],
-      });
-      setChromeLocalStorage({ baekjunTime: new Date().getTime() });
-      return;
-    }
-  };
-
   checkProblemId = (id: string): boolean => {
     const splitedLink = window.location.href.split(/=|&|\//);
     if (splitedLink.includes(id)) {
       return true;
     }
     return false;
-  };
-
-  startSolving = async () => {
-    const { isTimer } = (await getChromeLocalStorage("isTimer")) as IsTimer;
-    if (isTimer) {
-      this.setBaekjunTimer();
-    }
-  };
-
-  readyToSubmit = () => {
-    this.setSubmitEvent();
-  };
-
-  setSubmitEvent = () => {
-    const submitButton = $("#submit_button");
-
-    enrollEvent(submitButton, "click", () => {
-      setChromeLocalStorage({
-        submitedProblem: window.location.href.split(
-          "https://www.acmicpc.net/submit/"
-        )[1],
-      });
-    });
-  };
-
-  setBaekjunTimer = () => {
-    this.setTimerTemplate();
-    this.setTimer();
-  };
-  setTimer = async () => {
-    const { baekjunTime } = (await getChromeLocalStorage(
-      "baekjunTime"
-    )) as BaekjunTime;
-    this.timer = createTimer(baekjunTime, this.reRenderTime);
   };
 
   reRenderTime = ({ h, m, s }: Time) => {

@@ -292,6 +292,7 @@ class Popup {
       }
       const inputElement = $(".dropdown-select-repo input") as HTMLInputElement;
       const repoName = inputElement.value;
+      console.log(repoName);
       setChromeLocalStorage({
         repoName: repoName,
       });
