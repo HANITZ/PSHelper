@@ -1,4 +1,5 @@
-import { getChromeLocalStorage } from "../chromeUtils";
+import { getChromeLocalStorage, sendChromeMessage } from "../chromeUtils";
+import { $, htmlEntityDecode } from "../utils/jsUtils";
 import { User, repoNameObj } from "./postReqAPI";
 
 export const getUserInfo = async (token: Response): Promise<any> => {
@@ -96,4 +97,50 @@ export const getReference = async (branch = "main") => {
     })
   ).json();
   return { refSHA: res.object.sha, ref: res.ref };
+};
+
+export const getBaekjunSolvedData = async (
+  submissionId: string
+): Promise<string> => {
+  const host = `https://www.acmicpc.net/source/download/${submissionId}`;
+  const code = await (
+    await fetch(host, {
+      method: "get",
+      headers: {
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+      },
+    })
+  ).text();
+  return code;
+};
+
+export const getBaekjunProblemDescription = async (problemId: string) => {
+  const host = `https://www.acmicpc.net/problem/${problemId}`;
+  const doc = await (
+    await fetch(host, {
+      method: "get",
+      headers: {
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+      },
+    })
+  ).text();
+  const html = new DOMParser().parseFromString(doc, "text/html");
+  const input = htmlEntityDecode($("#problem_input", html).innerHTML.trim());
+  const output = htmlEntityDecode($("#problem_output", html).innerHTML.trim());
+  const description = htmlEntityDecode(
+    $("#problem_description", html).innerHTML.trim()
+  );
+  return { input, output, description };
+};
+
+export const getProblemInfoBySolvedAc = async (problemId: string) => {
+  const data = await chrome.runtime.sendMessage({
+    action: "baekjun",
+    task: "getProblemInfoBySolvedAc",
+    problemId,
+  });
+
+  return data;
 };

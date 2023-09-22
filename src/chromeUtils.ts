@@ -19,8 +19,8 @@ export const getChromeSyncStorage = (
   return chrome.storage.sync.get([key]);
 };
 
-export const setChromeLocalStorage = ({ ...props }, fn = () => {}) => {
-  chrome.storage.local.set({ ...props }, fn);
+export const setChromeLocalStorage = ({ ...props }):Promise<any> => {
+  return chrome.storage.local.set({ ...props });
 };
 
 type Fn = (data: object) => {};
@@ -39,9 +39,9 @@ export const sendChromeMessage = async (
   callbackFn?: (response: any) => void
 ): Promise<any> => {
   if (callbackFn) {
-    return await chrome.runtime.sendMessage({ ...props }, callbackFn);
+    return chrome.runtime.sendMessage({ ...props }, callbackFn);
   }
-  return await chrome.runtime.sendMessage({ ...props });
+  return chrome.runtime.sendMessage({ ...props });
 };
 
 export const getChromeMessage = (fn: any) => {

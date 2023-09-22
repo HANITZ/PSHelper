@@ -45,8 +45,6 @@ class Popup {
   }
 
   init = async () => {
-    console.log("시작");
-
     if (!(await this.checkLogin())) {
       this.setTemplate("beforeLogin");
       return;
@@ -180,7 +178,7 @@ class Popup {
     enrollEvent(enrollElement, "click", async () => {
       createChromeTabs({
         url: `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}`,
-        active: false,
+        active: true,
       });
       this.isLogined = true;
       setTimeout(() => {

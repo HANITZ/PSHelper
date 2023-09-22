@@ -1,5 +1,29 @@
 import { getChromeLocalStorage } from "../chromeUtils";
 import { b64EncodeUnicode } from "../utils/jsUtils";
+import { getDefaultBranch, getReference } from "./getReqAPI";
+
+export type FilesReadyToUproad = {
+  directory: string;
+  message: string;
+  fileName: string;
+  readMe: string;
+  code: string;
+};
+export const commitCodeToRepo = async ({
+  directory,
+  code,
+  message,
+  readMe,
+  fileName,
+}: FilesReadyToUproad) => {
+  const defaultBranch = await getDefaultBranch();
+  const { refSHA, ref } = await getReference(defaultBranch);
+  const sourceCode = await createBlob(code, fileName, directory);
+  const sourceReadMe = await createBlob(readMe, "README.md", directory);
+  const treeSHA = await createTree(refSHA, [sourceCode, sourceReadMe]);
+  const commitSHA = await createCommit(message, treeSHA, refSHA);
+  await updateHead(ref, commitSHA);
+};
 
 export const postNewRepo = async (name: string): Promise<any> => {
   const host = "https://api.github.com/user/repos";

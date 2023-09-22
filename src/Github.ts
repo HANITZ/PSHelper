@@ -1,4 +1,4 @@
-import { closeCurrentTab, sendChromeMessage } from "./chromeUtils";
+import { sendChromeMessage } from "./chromeUtils";
 import { getAccessToken, getUserInfo } from "./API/getReqAPI";
 
 export async function Github() {
@@ -8,7 +8,6 @@ export async function Github() {
   try {
     const res = await getAccessToken(githubCode);
     const user = await getUserInfo(res.access_token);
-
     if (res) {
       await sendChromeMessage({
         closeWebPage: true,
@@ -23,5 +22,4 @@ export async function Github() {
     throw error;
   }
 }
-console.log("실행됨");
 Github();

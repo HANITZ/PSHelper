@@ -13,6 +13,16 @@
   "background": {
     "service_worker": "js/background.js"
   },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset",
+        "enabled": true,
+        "path": "rule.json"
+      }
+    ]
+  },
+
   "content_scripts": [
     {
       "matches": ["https://github.com/*"],
@@ -31,7 +41,15 @@
       "js": ["js/Baekjun.js"]
     }
   ],
-  "permissions": ["storage", "tabs", "activeTab", "debugger"],
+  "permissions": [
+    "unlimitedStorage",
+    "storage",
+    "tabs",
+    "activeTab",
+    "debugger",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
+  ],
   "web_accessible_resources": [
     {
       "resources": ["js/popup.js"],

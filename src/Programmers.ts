@@ -1,20 +1,16 @@
 import {
   $,
   $$,
+  Time,
   convertSingleCharToDoubleChar,
   createTimer,
   enrollEvent,
   getElById,
   hasElement,
+  insertHTML,
 } from "./utils/jsUtils";
 import { setChromeLocalStorage, getChromeLocalStorage } from "./chromeUtils";
-import {
-  createBlob,
-  createCommit,
-  createTree,
-  updateHead,
-} from "./API/postReqAPI";
-import { getDefaultBranch, getReference } from "./API/getReqAPI";
+import { FilesReadyToUproad, commitCodeToRepo } from "./API/postReqAPI";
 
 import "./Programmers.css";
 import { IsTimer, IsUpload } from "./popup";
@@ -37,47 +33,38 @@ class Programmers {
 
   constructor() {}
 
-  setProgrammersTimer = async () => {
-    const largeNav = $(".nav.navbar-nav");
-    this.setTimerLargeTemplate(largeNav);
-
-    const smallNav = $(".navbar");
-    this.setTimerSmallTemplate(smallNav);
-
+  setProgrammersTimer = () => {
+    this.setTimerLargeTemplate();
+    this.setTimerSmallTemplate();
     this.setTimer();
   };
 
   setTimer = async () => {
-    const timerHandler = (h: string, m: string, s: string) => {
-      this.secs = s;
-      this.mins = m;
-      this.hours = h;
-      this.reRenderTime();
-    };
-    this.timer = createTimer(timerHandler.bind(this));
+    this.timer = createTimer(new Date().getTime(), this.reRenderTime);
   };
-  reRenderTime = () => {
+
+  reRenderTime = ({ h, m, s }: Time) => {
     const timeElements = $$(".nav-timer");
     timeElements.forEach((el) => {
-      el.innerText = `Timer: ${this.hours}:${this.mins}:${this.secs}`;
+      el.innerText = `Timer: ${h}:${m}:${s}`;
     });
   };
 
-  setTimerLargeTemplate = (element: HTMLElement) => {
-    element.insertAdjacentHTML(
-      "afterbegin",
-      `<li class="nav-item"   >
-      <p class="nav-timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: 00:00:00</p>
-      </li>`
-    );
+  setTimerLargeTemplate = () => {
+    const element = $(".nav.navbar-nav");
+    const position = "afterbegin";
+    const html = `<li class="nav-item"   >
+    <p class="nav-timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: 00:00:00</p>
+    </li>`;
+    insertHTML({ element, position, html });
   };
-  setTimerSmallTemplate = (element: HTMLElement) => {
-    element.insertAdjacentHTML(
-      "beforeend",
-      `<div class="nav-small-timer"  style=""  >
-      <p class="nav-timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: 00:00:00</p>
-      </div>`
-    );
+  setTimerSmallTemplate = () => {
+    const element = $(".navbar");
+    const position = "beforeend";
+    const html = `<div class="nav-small-timer"  style=""  >
+    <p class="nav-timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: 00:00:00</p>
+    </div>`;
+    insertHTML({ element, position, html });
   };
 
   readySolve = async () => {
@@ -141,7 +128,7 @@ class Programmers {
             "isUpload"
           )) as IsUpload;
           if (isUpload) {
-            await this.uploadCode(solvedData);
+            await commitCodeToRepo(solvedData);
           }
           this.renderModalAfterSuccess(modalElement, time);
         }
@@ -181,22 +168,6 @@ class Programmers {
   renderModalAfterFail = (modalElement: HTMLElement) => {
     const markTag = $("#solve-result-mark", modalElement);
     markTag.className = "fail-solve";
-  };
-
-  uploadCode = async ({
-    directory,
-    code,
-    message,
-    readMe,
-    fileName,
-  }: FilesReadyToUproad) => {
-    const defaultBranch = await getDefaultBranch();
-    const { refSHA, ref } = await getReference(defaultBranch);
-    const sourceCode = await createBlob(code, fileName, directory);
-    const sourceReadMe = await createBlob(readMe, "README.md", directory);
-    const treeSHA = await createTree(refSHA, [sourceCode, sourceReadMe]);
-    const commitSHA = await createCommit(message, treeSHA, refSHA);
-    const newHeadSHA = await updateHead(ref, commitSHA);
   };
 
   checkSuccess = (modalElement: HTMLElement) => {
@@ -342,13 +313,7 @@ type RawFiles = {
   avgTime: string;
   avgMemory: string;
 };
-type FilesReadyToUproad = {
-  directory: string;
-  message: string;
-  fileName: string;
-  readMe: string;
-  code: string;
-};
+
 const programmers = new Programmers();
 if (
   window.location.href.includes("/learn/courses/30") &&

@@ -1,24 +1,183 @@
-# PSHelper
+<h1 align="center">
+  <img src="./PSHelper.png" alt="PSHelper" width="400">
+  <br>
+  PSHelper
+  <br>
+</h1>
 
-### 구현 목록
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"/></a>
+</a>
+</p>
 
-- [v] GitHub 로그인이 성공하면 index.html화면에 띄운다
-- [v] welcome 화면에서 repo 등록을 한다
-  - [v] repo 선택 유형을 고를 때마다 제출 버튼은 비활성화 되어있다
-  - [v] 새로운 repo를 생성시켜서 등록할 수 있다
-    - [v] 새로운 repo를 입력하면 제출 버튼이 활성화된다
-      - [v] 새로운 repo의 유효성검사(?)가 통과되었을 때 활성화 시킨다
-        - [v] 기존 repo의 중복확인
-        - [v] 영어와 숫자만 입력이 가능하다
-        - [v] 20자 이내로 입력해야한다
-        - [v] 인증이 완료되면 인증버튼이 인증완료 버튼으로 바뀌고 비활성화 된다
-        - [v] 완성된 상태에서 다시 입력 창의 내용을 수정하면 인증 버튼이 활성화 된다
-  - [v] 기존의 repo에 연결시킬 수 있다
-    - [v] 기존 repo목록을 가져와서 선택하도록 해준다
-    - [v] 기존 repo목록을 선택하면 제출 버튼이 활성화 된다
-### Programmers
-- [v] 제출버튼을 누르면 취소 버튼이 repo 이름 옆에 생성된다
-- [v] 취소버튼을 누르면 제출 버튼을 누르기 이전으로 돌아간다
-- [v] 문제풀이 화면에 들어가는 순간 바로 타이머가 시작된다
-- [ ] 제출 버튼을 누르고 정답처리가 되면 풀이 시간이 기록된다
-### Home
+
+## 목차
+
+1. [크롬 마켓](#지금-크롬-마켓에서-확인하세요)
+2. [백준허브란?](#백준허브란what-is-baekjoonhub)
+3. [설치 및 연동](#설치-및-연동how-to-set-it-up)
+4. [작동 원리](#작동원리how-it-works)
+   1. [동작 화면](#1-동작-화면)
+   2. [업로드 시점](#2-업로드-시점)
+   3. [저장되는 정보](#3-저장되는-정보)
+5. [개발자 참고 내용](#개발자-참고-내용)
+6. [링크 및 문서](#링크-및-문서)
+   <br />
+   <br />
+
+<!--- 소개 --->
+
+# PSHelper?
+
+<p>
+  PSHelper는 알고리즘 문제 풀이를 할 때 보다 효과적인 풀이를 할 수 있도록 도와주는 크롬 익스텐션입니다. 코드 풀이를 시작할 때 자동으로 타이머가 시작되어 정확한 풀이시간을 측정할 수 있도록 해줍니다. 풀이가 완료된 코드는 자동으로 깃허브에 푸시됩니다.
+  <br>
+  <em style="opacity:0.5; font-size: 13px;" >PSHelper는 코딩테스트 준비에 개인 풀이를 github에 자동 푸시해주는 <a href="https://github.com/QasimWani/LeetHub">LeetHub</a>, <a href="https://www.acmicpc.net/">백준</a>을 참고하여 만든 개인프로젝트 입니다.</em>
+</p>
+
+<br />
+
+<!--- 설치 및 연동 --->
+
+# 설치 및 연동(How to set it up)
+
+<ol>
+  <li>크롬에서 설치 후 우측 상단의 popup 버튼을 클릭합니다.</li>
+  <li>"Authorize with GitHub" 버튼을 누르면 Repository 연동 화면이 표시됩니다.</li>
+  <li>신규 혹은 기존의 Repository를 선택하면 BaekjoonHub과 연동이 완료됩니다
+    (기본값은 private으로 되어있습니다).</li>
+  <li>이후 제출화면이 감지되면 자동으로 업로드됩니다</li>
+</ol>
+👉 보다 구체적인 사용 방법을 알고 싶다면 다음 <a href="https://velog.io/@flaxinger/백준허브-사용-방법">사용자 매뉴얼</a>을 확인해주세요.
+<br />
+<br />
+
+<!--- 작동 원리 --->
+
+## 작동원리(How it works)
+
+### 1. 동작 화면
+
+![](assets/extension/Baekjoon.gif)
+
+<div align="center">백준 동작 화면</div>
+<br/>
+
+![](assets/extension/Programmers.gif)
+
+<div align="center">프로그래머스 동작 화면</div>
+<br/>
+
+![](assets/extension/SWExpertAcademy.gif)
+
+<div align="center">SW Expert Academy 동작 화면</div>
+
+### 2. 업로드 시점
+
+<p> 백준허브는 풀이 제출 직후에 작동합니다. 백준은 신규 탭이 일시적으로 사용되고 업로드 후 자동 종료되며 프로그래머스는 제출 화면에서 바로 업로드가 진행됩니다.</p>
+
+### 3. 저장되는 정보
+
+<p>플랫폼 별로 문제 해결 시 파싱 후 저장되는 정보는 다음과 같습니다.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <th>플랫폼</th>
+      <th align="center">문제 메타 정보</th>
+      <th align="center">사용자 제출 정보</th>
+    </tr>
+    <tr>
+      <td>백준</td>
+      <td align="left">
+        <li>문제 제목</li>
+        <li>문제 아이디</li>
+        <li>문제 링크</li>
+        <li>문제 등급</li>
+        <li>문제 설명</li>
+        <li>사용 언어</li>
+        <li>문제 분류</li>
+      </td>
+      <td align="left">
+        <li>코드</li>
+        <li>사용한 메모리</li>
+        <li>실행 시간</li>
+      </td>
+    </tr>
+    <tr>
+      <td>프로그래머스</td>
+      <td align="left">
+        <li>문제 제목</li>
+        <li>문제 아이디</li>
+        <li>문제 링크</li>
+        <li>문제 등급</li>
+        <li>문제 설명</li>
+        <li>사용 언어</li>
+      </td>
+      <td align="left">
+        <li>코드</li>
+        <li>사용한 메모리</li>
+        <li>실행 시간</li>
+      </td>
+    </tr>
+    <tr>
+      <td>SW Expert Academy</td>
+      <td align="left">
+        <li>문제 제목</li>
+        <li>문제 아이디</li>
+        <li>문제 링크</li>
+        <li>문제 등급</li>
+        <li>사용 언어</li>
+      </td>
+      <td align="left">
+        <li>코드</li>
+        <li>사용한 메모리</li>
+        <li>실행 시간</li>
+        <li>코드 길이</li>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br />
+<br />
+
+<!--- 개발자 참고 내용 --->
+
+## 개발자 참고 내용
+
+```sh
+$ npm test # jest test 실행
+```
+
+<!--- 링크 및 문서 --->
+
+## 링크 및 문서
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/BaekjoonHub/BaekjoonHub/issues" title="버그신고">
+          <img src="./assets/readme_icons/bug.png" width="100" height="100">
+      </a><br/><sub><b>버그 신고</b></sub>
+    </td>
+    <td align="center">
+      <a href="https://hyeon-jinhyeok.tistory.com/5" title="GetCurrentThread의 개발블로그">
+        <img src="./assets/readme_icons/tstory.png" width="100" height="100">
+      </a><br/><sub><b>개발 블로그</b></sub>
+    </td>
+    <td align="center">
+      <a href="https://open.kakao.com/o/gOWn2ySd" title="카카오톡 협업방">
+        <img src="./assets/readme_icons/kakao.png" width="100" height="100">
+      </a><br/><sub><b>카카오톡 협업방</b></sub>
+    </td>
+    <td align="center">
+      <a href="./Patch_Notes/" title="패치 노트">
+        <img src="./assets/readme_icons/patchnotes.png" width="100" height="100">
+      </a><br/><sub><b>패치 노트</b></sub>
+    </td>
+  </tr>
+</table>
+
+<br />
+<br />

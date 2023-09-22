@@ -8,14 +8,13 @@
   display: flex;
   justify-content: center;
 }
-
-.mark-programmers {
+* {
+  border-radius: 0;
 }
-
 .loading-programmers {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 50% !important;
   display: inline-block;
   position: relative;
   background: linear-gradient(0deg, rgb(255, 255, 255) 33%, #afa8de 100%);
