@@ -16,7 +16,7 @@ import {
 import { FilesReadyToUproad, commitCodeToRepo } from "./API/postReqAPI";
 
 import "./Programmers.css";
-import { IsTimer, IsUpload } from "./popup";
+import { IsTimer, IsUpload, RepoName } from "./popup";
 
 interface PROBLEM {
   PROBLEM: {
@@ -29,13 +29,16 @@ interface PROBLEM {
 }
 
 class Programmers {
-  secs: string | undefined;
-  mins: string | undefined;
-  hours: string | undefined;
   timer: NodeJS.Timer | undefined;
 
-  constructor() {}
+  constructor() {
+    this.init()
+  }
 
+  init = () =>{
+    const {repoName} = getChromeLocalStorage("repoName") as RepoName
+      if(!repoName) throw new Error("Repository가 아직 설정되지 않았습니다.")
+  }
   setProgrammersTimer = () => {
     this.setTimerLargeTemplate();
     this.setTimerSmallTemplate();

@@ -19,7 +19,7 @@ type USER = {
   USER: string;
 };
 
-type RepoName = {
+export type RepoName = {
   repoName: string;
 };
 

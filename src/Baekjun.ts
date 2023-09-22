@@ -17,7 +17,7 @@ import {
   getChromeLocalStorage,
   setChromeLocalStorage,
 } from "./utils/chromeUtils";
-import { IsTimer } from "./popup";
+import { IsTimer, RepoName } from "./popup";
 import {
   getBaekjunProblemDescription,
   getBaekjunSolvedData,
@@ -268,6 +268,8 @@ class Baekjun {
     const { BaekjunProblemId: baekjunProblemId } = (await getChromeLocalStorage(
       "BaekjunProblemId"
     )) as BaekjunProblemId;
+    const { repoName } = (await getChromeLocalStorage("repoName")) as RepoName;
+    if (!repoName) throw new Error("Repository가 아직 설정되지않았습니다.");
 
     if (!baekjunProblemId || !this.checkProblemId(baekjunProblemId)) {
       setChromeLocalStorage({
@@ -309,10 +311,6 @@ class Baekjun {
         )[1],
       });
     });
-  };
-
-  parseCode = () => {
-    const textAreaElement = $(".CodeMirror-code");
   };
 
   setBaekjunTimer = () => {

@@ -136,7 +136,7 @@ export const getBaekjunProblemDescription = async (problemId: string) => {
 };
 
 export const getProblemInfoBySolvedAc = async (problemId: string) => {
-  const data = await chrome.runtime.sendMessage({
+  const data = await sendChromeMessage({
     action: "baekjun",
     task: "getProblemInfoBySolvedAc",
     problemId,
