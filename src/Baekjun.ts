@@ -113,6 +113,8 @@ class Baekjun {
           "https://www.acmicpc.net/problem/"
         )[1],
       });
+      setChromeLocalStorage({ baekjunTime: new Date().getTime() });
+      return;
     }
 
     const { baekjunTime } = (await getChromeLocalStorage(
