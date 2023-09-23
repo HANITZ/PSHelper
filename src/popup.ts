@@ -304,6 +304,15 @@ class Popup {
       deleteChromeLocalStorage("repoName");
       this.init();
     });
+
+    // footer
+    const footer = $("footer");
+    enrollEvent(footer, "click", () => {
+      createChromeTabs({
+        url: `https://github.com/HANITZ/PSHelper`,
+        active: true,
+      });
+    });
   };
 }
 try {

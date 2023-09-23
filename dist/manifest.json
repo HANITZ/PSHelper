@@ -41,20 +41,17 @@
       "js": ["js/Baekjun.js"]
     }
   ],
-  "permissions": [
-    "unlimitedStorage",
-    "storage",
-    "tabs",
-    "activeTab",
-    "debugger",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess"
-  ],
+  "permissions": ["storage", "tabs", "declarativeNetRequest"],
   "web_accessible_resources": [
     {
       "resources": ["js/popup.js"],
       "matches": ["<all_urls>"]
     }
   ],
-  "host_permissions": ["<all_urls>"]
+  "host_permissions": [
+    "https://github.com/",
+    "https://www.acmicpc.net/",
+    "https://school.programmers.co.kr/",
+    "https://solved.ac/api/v3/*"
+  ]
 }
