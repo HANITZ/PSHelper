@@ -130,8 +130,10 @@ class Baekjun {
   };
 
   setBaekjunTimer = () => {
-    this.setTimerTemplate();
-    this.setTimer();
+    window.onload = async () => {
+      await this.setTimerTemplate();
+      this.setTimer();
+    };
   };
 
   setSubmitEvent = () => {
@@ -145,11 +147,12 @@ class Baekjun {
       });
     });
   };
-  
+
   setTimer = async () => {
     const { baekjunTime } = (await getChromeLocalStorage(
       "baekjunTime"
     )) as BaekjunTime;
+
     this.timer = createTimer(baekjunTime, this.reRenderTime);
   };
 
