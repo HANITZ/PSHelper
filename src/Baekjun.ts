@@ -113,8 +113,13 @@ class Baekjun {
           "https://www.acmicpc.net/problem/"
         )[1],
       });
+    }
+
+    const { baekjunTime } = (await getChromeLocalStorage(
+      "baekjunTime"
+    )) as BaekjunTime;
+    if (!baekjunTime) {
       setChromeLocalStorage({ baekjunTime: new Date().getTime() });
-      return;
     }
   };
 
@@ -196,6 +201,7 @@ class Baekjun {
           const solvingTime = Object.values(
             getTimeDiff(baekjunTime, new Date().getTime())
           ).join(" : ");
+          deleteChromeLocalStorage("baekjunTime");
 
           clearInterval(this.timer);
           this.afterSuccess(
