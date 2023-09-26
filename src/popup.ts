@@ -1,5 +1,4 @@
 import {
-  createChromeTabs,
   deleteChromeLocalStorage,
   getChromeLocalStorage,
   setChromeLocalStorage,
@@ -169,10 +168,9 @@ class Popup {
     // logo click
     const enrollElement = $(".logo-button");
     enrollEvent(enrollElement, "click", async () => {
-      createChromeTabs({
-        url: `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}`,
-        active: true,
-      });
+      window.open(
+        `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}`
+      );
     });
     // type Select
     const selectTypeElement = $(".dropdown-select-type");
@@ -308,10 +306,7 @@ class Popup {
     // footer
     const footer = $("footer");
     enrollEvent(footer, "click", () => {
-      createChromeTabs({
-        url: `https://github.com/HANITZ/PSHelper`,
-        active: true,
-      });
+      window.open(`https://github.com/HANITZ/PSHelper`);
     });
   };
 }

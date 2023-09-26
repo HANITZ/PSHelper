@@ -1,8 +1,4 @@
-export const createChromeTabs = ({ ...props }) => {
-  chrome.tabs.create({
-    ...props,
-  });
-};
+
 
 export const setChromeSyncStorage = ({ ...props }, fn = () => {}) => {
   chrome.storage.sync.set({ ...props }, fn);
@@ -48,16 +44,4 @@ export const getChromeMessage = (fn: any) => {
   chrome.runtime.onMessage.addListener(fn);
 };
 
-export const closeCurrentTab = (parent: any) => {
-  let that = parent;
-  chrome.tabs = parent;
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (tabs.length > 0) {
-      let tabId = tabs[0].id;
-      if (!tabId) return;
-      chrome.tabs.remove(tabId, () => {
-        console.log("페이지 닫힘");
-      });
-    }
-  });
-};
+

@@ -41,7 +41,7 @@
       "js": ["js/Baekjun.js"]
     }
   ],
-  "permissions": ["storage", "tabs", "declarativeNetRequest"],
+  "permissions": ["storage", "declarativeNetRequest"],
   "web_accessible_resources": [
     {
       "resources": ["js/popup.js"],
