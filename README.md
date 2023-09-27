@@ -14,7 +14,7 @@
 <p>
   PSHelper는 PS역량을 기르고 싶은 사람들이 알고리즘 문제를 풀 때 보다 효과적으로 학습할 수 있도록 도와주는 것을 목표로 하는 크롬 익스텐션 프로그램입니다.
   <br>
-  <em style="opacity:0.5; font-size: 13px;" >PSHelper는 코딩테스트 준비에 개인 풀이를 github에 자동 푸시해주는 <a href="https://github.com/QasimWani/LeetHub">LeetHub</a>, <a href="https://github.com/BaekjoonHub/BaekjoonHub">백준허브</a>를 참고하여 만든 개인프로젝트 입니다.</em>
+  <p style="opacity:0.5; font-size: 13px;" >PSHelper는 코딩테스트 준비에 개인 풀이를 github에 자동 푸시해주는 <a href="https://github.com/QasimWani/LeetHub">LeetHub</a>, <a href="https://github.com/BaekjoonHub/BaekjoonHub">백준허브</a>를 참고하여 만든 개인프로젝트 입니다.</p>
 </p>
 
 <br/>
