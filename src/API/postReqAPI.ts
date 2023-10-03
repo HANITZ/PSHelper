@@ -49,7 +49,7 @@ export const postNewRepo = async (name: string): Promise<any> => {
       body: data,
     })
   ).json();
-  return res;
+  return res
 };
 export type User = {
   USER: string;

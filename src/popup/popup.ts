@@ -2,13 +2,14 @@ import {
   deleteChromeLocalStorage,
   getChromeLocalStorage,
   setChromeLocalStorage,
-} from "./utils/chromeUtils";
-import { $, enrollEvent } from "./utils/jsUtils";
+} from "../utils/chromeUtils";
+import { $, enrollEvent } from "../utils/jsUtils";
 import "./popup.css";
-import { isObjEmpty } from "./utils/jsUtils";
-import { $$ } from "./utils/jsUtils";
-import { getUserRepos } from "./API/getReqAPI";
-import { postNewRepo } from "./API/postReqAPI";
+import { isObjEmpty } from "../utils/jsUtils";
+import { $$ } from "../utils/jsUtils";
+import { getUserRepos } from "../API/getReqAPI";
+import { postNewRepo } from "../API/postReqAPI";
+import { renderPopup } from "./popupView";
 
 export type Repos = {
   [key: string]: string;
@@ -31,12 +32,10 @@ export type IsTimer = {
 };
 
 class Popup {
-  element: HTMLElement | null;
   repos: Repos[] | undefined;
   #canSubmit = false;
 
-  constructor(element: HTMLElement | null) {
-    this.element = element;
+  constructor() {
     this.setEvent();
     this.init();
     this.setOption();
@@ -44,7 +43,7 @@ class Popup {
 
   init = async () => {
     if (!(await this.checkLogin())) {
-      this.setTemplate("beforeLogin");
+      renderPopup({ type: "beforeLogin" });
       return;
     }
     const { USER: user } = (await getChromeLocalStorage("USER")) as USER;
@@ -52,14 +51,14 @@ class Popup {
     this.setOldRepos();
 
     if (!(await this.checkLinkedRepo())) {
-      this.setTemplate("afterLogin", user);
+      renderPopup({ type: "afterLogin", user });
       return;
     }
 
     const { repoName: linkedRepo } = (await getChromeLocalStorage(
       "repoName"
     )) as RepoName;
-    this.setTemplate("afterLink", user, linkedRepo);
+    renderPopup({ type: "afterLink", user, repoName: linkedRepo });
     return;
   };
 
@@ -72,13 +71,7 @@ class Popup {
   };
 
   setOldRepos = () => {
-    const repoDiv = $(".options-repo");
-    this.repos?.forEach((repo) => {
-      repoDiv.insertAdjacentHTML(
-        "beforeend",
-        `<div class="option-repo">${repo.name}</div>`
-      );
-    });
+    renderPopup({ type: "setOldRepos", repos: this.repos });
     const selectRepoText = $(".select-repo") as HTMLInputElement;
     const repoOptions = $$(".option-repo");
     repoOptions.forEach((option) => {
@@ -96,6 +89,7 @@ class Popup {
     const { isTimer } = (await getChromeLocalStorage("isTimer")) as IsTimer;
     isUploadInputElement.checked = isUpload;
     isTimerInputElement.checked = isTimer;
+
     enrollEvent(isUploadInputElement, "change", async (e) => {
       const { isUpload } = (await getChromeLocalStorage(
         "isUpload"
@@ -109,40 +103,6 @@ class Popup {
     });
   };
 
-  setTemplate = (type: string, user?: string, repo?: string) => {
-    const logoText = $(".logo-text");
-    const repoContainer = $(".repo-container");
-    const logoLoginedText = $(".logo-text-logined");
-    const logoLinkedText = $(".logo-repo-logined");
-    const optionContainer = $(".option-container");
-
-    switch (type) {
-      case "beforeLogin":
-        logoText.style.display = "";
-        repoContainer.style.display = "none";
-        logoLinkedText.style.display = "none";
-        break;
-      case "afterLogin":
-        logoText.style.display = "none";
-        repoContainer.style.display = "";
-        logoLoginedText.style.display = "";
-        logoLinkedText.style.display = "none";
-        logoLoginedText.innerText = `User: ${user}`;
-        optionContainer.style.display = "none";
-        break;
-      case "afterLink":
-        logoText.style.display = "none";
-        logoLoginedText.style.display = "";
-        logoLinkedText.style.display = "";
-        repoContainer.style.display = "none";
-        logoLoginedText.innerText = `User: ${user}`;
-        logoLinkedText.innerText = `Repository: ${repo}`;
-        optionContainer.style.display = "";
-        break;
-      default:
-        break;
-    }
-  };
   validateNewRepoName = async (name: string) => {
     if (name === "") return "이름을 입력해주세요";
     if (name.length >= 20) return "20자 이상의 이름을 설정할 수 없습니다";
@@ -177,43 +137,17 @@ class Popup {
     const selectTypeText = $(".select-type") as HTMLInputElement;
 
     enrollEvent(selectTypeElement, "click", () => {
-      const verifyButton = $("#verify-repo");
-      const enrollButton = $("#create-repo");
-      selectTypeElement.classList.toggle("active");
+      renderPopup({ type: "selectTypeChange" });
       this.#canSubmit = false;
-      verifyButton.style.display = "";
-      enrollButton.style.display = "none";
     });
 
-    enrollEvent(selectTypeText, "blur", (e) => {
-      selectTypeElement.classList.remove("active");
-      const type = selectTypeText.value;
-
-      const defaultRepoDiv = $(".default-select");
-      const newRepoDiv = $(".new-repo-create");
-      const oldRepoDiv = $(".old-repo-select");
-      const newInputEl = $("input", newRepoDiv) as HTMLInputElement;
-      const oldInputEl = $("input", oldRepoDiv) as HTMLInputElement;
+    enrollEvent(selectTypeText, "blur", () => {
+      renderPopup({ type: "afterClickedSelectType" });
+      const newInputEl = $("input", $(".new-repo-create")) as HTMLInputElement;
+      const oldInputEl = $("input", $(".old-repo-select")) as HTMLInputElement;
       newInputEl.value = "";
       oldInputEl.value = "";
-
-      switch (type) {
-        case "New":
-          defaultRepoDiv.style.display = "none";
-          newRepoDiv.style.display = "";
-          oldRepoDiv.style.display = "none";
-          break;
-        case "Old":
-          defaultRepoDiv.style.display = "none";
-          newRepoDiv.style.display = "none";
-          oldRepoDiv.style.display = "";
-          break;
-        default:
-          defaultRepoDiv.style.display = "";
-          newRepoDiv.style.display = "none";
-          oldRepoDiv.style.display = "none";
-          break;
-      }
+      verifyMsg.innerText = "";
     });
 
     const typeOptions = $$(".option-type");
@@ -228,11 +162,8 @@ class Popup {
     const newInputElement = $(".new-repo-input") as HTMLInputElement;
 
     enrollEvent(newInputElement, "keyup", () => {
-      const verifyButton = $("#verify-repo");
-      const enrollButton = $("#create-repo");
-      verifyMsg.style.display = "none";
-      verifyButton.style.display = "";
-      enrollButton.style.display = "none";
+      renderPopup({ type: "TYPENEWREPO" });
+      verifyMsg.innerText = "";
     });
 
     // new repo verify
@@ -243,12 +174,10 @@ class Popup {
       const validateMsg = await this.validateNewRepoName(newRepoName);
       if (validateMsg) {
         const verifyMsg = $(".verify-message") as HTMLSpanElement;
-        verifyMsg.style.display = "";
         verifyMsg.innerText = validateMsg;
         return;
       }
-      verifyButton.style.display = "none";
-      enrollButton.style.display = "";
+      renderPopup({ type: "AFTERVERIFIED" });
       this.#canSubmit = true;
     });
 
@@ -257,11 +186,11 @@ class Popup {
     const selectRepoText = $(".select-repo") as HTMLInputElement;
 
     enrollEvent(selectRepoElement, "click", () => {
-      selectRepoElement.classList.toggle("active");
+      renderPopup({ type: "CLICKREPOBAR" });
     });
 
     enrollEvent(selectRepoText, "blur", () => {
-      selectRepoElement.classList.remove("active");
+      renderPopup({ type: "BLUROLDREPOLIST" });
     });
 
     // new repo enroll
@@ -275,10 +204,8 @@ class Popup {
       setChromeLocalStorage({
         repoName: res.name,
       });
-      const repoContainer = $(".repo-container");
-      repoContainer.style.display = "none";
-      const optionContainer = $(".option-container");
-      optionContainer.style.display = "";
+      
+      inputElement.value = "";
       this.init();
     });
 
@@ -290,7 +217,6 @@ class Popup {
       }
       const inputElement = $(".dropdown-select-repo input") as HTMLInputElement;
       const repoName = inputElement.value;
-      console.log(repoName);
       setChromeLocalStorage({
         repoName: repoName,
       });
@@ -305,13 +231,10 @@ class Popup {
 
     // footer
     const footer = $("footer");
-    enrollEvent(footer, "click", () => {
-      window.open(`https://github.com/HANITZ/PSHelper`);
-    });
+    enrollEvent(footer, "click", () =>
+      window.open(`https://github.com/HANITZ/PSHelper`)
+    );
   };
 }
-try {
-  new Popup($("#root"));
-} catch (e) {
-  throw e;
-}
+
+new Popup();

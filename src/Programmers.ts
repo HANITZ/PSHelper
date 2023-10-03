@@ -17,7 +17,7 @@ import {
 import { FilesReadyToUproad, commitCodeToRepo } from "./API/postReqAPI";
 
 import "./Programmers.css";
-import { IsTimer, IsUpload, RepoName } from "./popup";
+import { IsTimer, IsUpload, RepoName } from "./popup/popup";
 
 type Problem = {
   isSolved: string | "undefined";

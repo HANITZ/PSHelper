@@ -17,7 +17,7 @@ import {
   getChromeLocalStorage,
   setChromeLocalStorage,
 } from "./utils/chromeUtils";
-import { IsTimer, RepoName } from "./popup";
+import { IsTimer, RepoName } from "./popup/popup";
 import {
   getBaekjunProblemDescription,
   getBaekjunSolvedData,
@@ -204,7 +204,7 @@ class Baekjun {
             getTimeDiff(baekjunTime, new Date().getTime())
           ).join(" : ");
           deleteChromeLocalStorage("baekjunTime");
-
+          this.createModalAfterSuccess(solvingTime);
           clearInterval(this.timer);
           this.afterSuccess(
             problemId,
@@ -220,6 +220,31 @@ class Baekjun {
         this.afterFail();
       }
     }, 2000);
+  };
+
+  createModalAfterSuccess = (solvingTime: string) => {
+    const contentElement = $(".wrapper");
+    console.log(contentElement);
+    const html = `
+      <div class="modal" id="modal-baekjun" tabindex="-1" role="dialog" >
+        <div class="modal-baekjun" role="document" >
+          <div class="modal-content">
+            <div class="modal-header" >
+              <button type="button" class="close-button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">x</span>
+              </button>
+              <h4 aria-hidden="true" >정답입니다</h4>
+            </div>
+            <div class="modal-body">
+              <div class="result-container">
+                <span>풀이시간: ${solvingTime}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    insertHTML({ element: contentElement, position: "afterend", html });
   };
 
   afterSuccess = async (
@@ -369,3 +394,4 @@ if (window.location.href.includes("/problem/")) {
 } else if (window.location.href.includes("/submit/")) {
   baekjun.readyToSubmit();
 }
+baekjun.createModalAfterSuccess("12:12:12");
