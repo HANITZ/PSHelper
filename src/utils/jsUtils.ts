@@ -24,13 +24,18 @@ export const getElById: getElById = (targetId) => {
   return element;
 };
 
-type enrollEvent = (
-  el: HTMLElement | Window,
+type EventHandler = (
+  el: HTMLElement | Window | Document,
   type: string,
-  fn: EventListenerOrEventListenerObject
+  fn: EventListenerOrEventListenerObject,
+  options?: object
 ) => void;
-export const enrollEvent: enrollEvent = (el, type, fn) => {
-  el.addEventListener(type, fn);
+export const enrollEvent: EventHandler = (el, type, fn, options) => {
+  el.addEventListener(type, fn, options);
+};
+
+export const removeEvent: EventHandler = (el, type, fn) => {
+  el.removeEventListener(type, fn);
 };
 
 export const isObjEmpty = (obj: Object) => {
@@ -42,14 +47,7 @@ export const isObjEmpty = (obj: Object) => {
   return JSON.stringify(obj) === JSON.stringify({});
 };
 
-type removeEvent = (
-  el: HTMLElement,
-  type: string,
-  fn: EventListenerOrEventListenerObject
-) => void;
-export const removeEvent: removeEvent = (el, type, fn) => {
-  el.removeEventListener(type, fn);
-};
+
 
 export const b64EncodeUnicode = (str: string) => {
   return btoa(
