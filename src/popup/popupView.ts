@@ -1,4 +1,4 @@
-import { $ } from "../utils/jsUtils";
+import { $, insertHTML } from "../utils/jsUtils";
 import { Repos } from "./popup";
 
 type RenderPopup = {
@@ -20,6 +20,8 @@ export const renderPopup = ({ type, user, repoName, repos }: RenderPopup) => {
   const verifyButton = $("#verify-repo");
   const enrollButton = $("#create-repo");
   const selectRepoElement = $(".dropdown-select-repo");
+  const enrollStatusElement = $(".status");
+  const inputElement = $(".new-repo-input") as HTMLInputElement;
 
   switch (type) {
     case "beforeLogin":
@@ -34,6 +36,8 @@ export const renderPopup = ({ type, user, repoName, repos }: RenderPopup) => {
       logoLinkedText.style.display = "none";
       logoLoginedText.innerText = `User: ${user}`;
       optionContainer.style.display = "none";
+      enrollStatusElement.className = "status";
+      inputElement.value = "";
       break;
     case "afterLink":
       repoContainer.style.display = "none";
@@ -41,7 +45,6 @@ export const renderPopup = ({ type, user, repoName, repos }: RenderPopup) => {
       logoText.style.display = "none";
       logoLoginedText.style.display = "";
       logoLinkedText.style.display = "";
-      repoContainer.style.display = "none";
       logoLoginedText.innerText = `User: ${user}`;
       logoLinkedText.innerText = `Repository: ${repoName}`;
       optionContainer.style.display = "";
@@ -59,28 +62,42 @@ export const renderPopup = ({ type, user, repoName, repos }: RenderPopup) => {
       selectTypeElement.classList.toggle("active");
       verifyButton.style.display = "";
       enrollButton.style.display = "none";
+      enrollStatusElement.className = "status";
       break;
 
     case "afterClickedSelectType":
       selectTypeElement.classList.remove("active");
       changeTypeContents(selectTypeText.value);
       break;
-    case "TYPENEWREPO":
+    case "typeNewRepo":
       verifyButton.style.display = "";
       enrollButton.style.display = "none";
       break;
 
-    case "AFTERVERIFIED":
+    case "afterVerified":
       verifyButton.style.display = "none";
       enrollButton.style.display = "";
       break;
-    case "CLICKREPOBAR":
+    case "clickRepoBar":
       selectRepoElement.classList.toggle("active");
       break;
-    case "BLUROLDREPOLIST":
+    case "blurOldRepoList":
       selectRepoElement.classList.remove("active");
       break;
-
+    case "startLoading":
+      enrollStatusElement.classList.add("loading-enroll");
+      break;
+    case "successEnroll":
+      enrollStatusElement.classList.remove("loading-enroll");
+      enrollStatusElement.classList.add("success-enroll");
+      break;
+    case "failEnroll":
+      enrollStatusElement.classList.remove("loading-enroll");
+      enrollStatusElement.classList.add("fail-enroll");
+      break;
+    case "resetStatus":
+      enrollStatusElement.className = "status";
+      break;
     default:
       break;
   }

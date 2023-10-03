@@ -3,7 +3,7 @@ import {
   getChromeLocalStorage,
   setChromeLocalStorage,
 } from "../utils/chromeUtils";
-import { $, enrollEvent } from "../utils/jsUtils";
+import { $, enrollEvent, removeEvent } from "../utils/jsUtils";
 import "./popup.css";
 import { isObjEmpty } from "../utils/jsUtils";
 import { $$ } from "../utils/jsUtils";
@@ -162,7 +162,7 @@ class Popup {
     const newInputElement = $(".new-repo-input") as HTMLInputElement;
 
     enrollEvent(newInputElement, "keyup", () => {
-      renderPopup({ type: "TYPENEWREPO" });
+      renderPopup({ type: "typeNewRepo" });
       verifyMsg.innerText = "";
     });
 
@@ -177,7 +177,7 @@ class Popup {
         verifyMsg.innerText = validateMsg;
         return;
       }
-      renderPopup({ type: "AFTERVERIFIED" });
+      renderPopup({ type: "afterVerified" });
       this.#canSubmit = true;
     });
 
@@ -186,11 +186,11 @@ class Popup {
     const selectRepoText = $(".select-repo") as HTMLInputElement;
 
     enrollEvent(selectRepoElement, "click", () => {
-      renderPopup({ type: "CLICKREPOBAR" });
+      renderPopup({ type: "clickRepoBar" });
     });
 
     enrollEvent(selectRepoText, "blur", () => {
-      renderPopup({ type: "BLUROLDREPOLIST" });
+      renderPopup({ type: "blurOldRepoList" });
     });
 
     // new repo enroll
@@ -200,12 +200,24 @@ class Popup {
       }
       const inputElement = $(".new-repo-input") as HTMLInputElement;
       const repoName = inputElement.value.trim();
-      const res = await postNewRepo(repoName);
-      setChromeLocalStorage({
-        repoName: res.name,
-      });
-      
-      inputElement.value = "";
+      renderPopup({ type: "startLoading" });
+      try {
+        const res = await postNewRepo(repoName);
+        setChromeLocalStorage({
+          repoName: res.name,
+        });
+        renderPopup({ type: "successEnroll" });
+      } catch {
+        renderPopup({ type: "failEnroll" });
+        enrollEvent(
+          document,
+          "click",
+          () => {
+            renderPopup({ type: "resetStatus" });
+          },
+          { once: true }
+        );
+      }
       this.init();
     });
 

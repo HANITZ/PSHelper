@@ -427,3 +427,74 @@ footer {
   font-weight: 500px;
   color: #fff;
 }
+
+.loading-enroll {
+  display: inline-block;
+  position: relative;
+  left: 97px;
+  top: -23px;
+  width: 80px;
+}
+.loading-enroll > div {
+  display: inline-block;
+  width: 4px;
+  background: #afa8de;
+  animation: loading-enroll 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+}
+.loading-enroll div:nth-child(1) {
+  animation-delay: -0.24s;
+}
+.loading-enroll div:nth-child(2) {
+  animation-delay: -0.12s;
+}
+.loading-enroll div:nth-child(3) {
+  animation-delay: 0;
+}
+@keyframes loading-enroll {
+  0% {
+    top: 8px;
+    height: 16px;
+  }
+  50%,
+  100% {
+    top: 24px;
+    height: 7px;
+  }
+}
+
+.success-enroll {
+  display: inline-block;
+  position: relative;
+  left: 104px;
+  top: -23px;
+  transform: rotate(45deg);
+  width: 5px;
+  height: 10px;
+  border-bottom: 4px solid #afa8de;
+  border-right: 4px solid #afa8de;
+}
+
+.fail-enroll {
+  background: #f9f9f9;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  left: 104px;
+  top: -23px;
+}
+
+.fail-enroll:after {
+  content: "";
+  height: 18px;
+  border-left: 5px solid #cd8084;
+  position: absolute;
+  transform: rotate(45deg);
+}
+
+.fail-enroll:before {
+  content: "";
+  height: 18px;
+  border-left: 5px solid #cd8084;
+  position: absolute;
+  transform: rotate(-45deg);
+}
