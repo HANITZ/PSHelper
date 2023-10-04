@@ -9,7 +9,7 @@ import { isObjEmpty } from "../utils/jsUtils";
 import { $$ } from "../utils/jsUtils";
 import { getUserRepos } from "../API/getReqAPI";
 import { postNewRepo } from "../API/postReqAPI";
-import { renderPopup } from "./popupView";
+import { renderPopup } from "./renderPopup";
 
 export type Repos = {
   [key: string]: string;

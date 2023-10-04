@@ -1,6 +1,6 @@
-import { getChromeLocalStorage } from "./utils/chromeUtils";
-import { IsTimer } from "./popup/popup";
-import { $ } from "./utils/jsUtils";
+import { getChromeLocalStorage } from "../utils/chromeUtils";
+import { IsTimer } from "../Popup/Popup";
+import { $ } from "../utils/jsUtils";
 
 class Leetcode {
   constructor() {

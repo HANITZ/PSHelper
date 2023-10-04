@@ -9,15 +9,15 @@ import {
   getTimeDiff,
   hasElement,
   insertHTML,
-} from "./utils/jsUtils";
+} from "../utils/jsUtils";
 import {
   setChromeLocalStorage,
   getChromeLocalStorage,
-} from "./utils/chromeUtils";
-import { FilesReadyToUproad, commitCodeToRepo } from "./API/postReqAPI";
+} from "../utils/chromeUtils";
+import { FilesReadyToUproad, commitCodeToRepo } from "../API/postReqAPI";
 
 import "./Programmers.css";
-import { IsTimer, IsUpload, RepoName } from "./popup/popup";
+import { IsTimer, IsUpload, RepoName } from "../Popup/Popup";
 
 type Problem = {
   isSolved: string | "undefined";

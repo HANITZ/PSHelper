@@ -21,6 +21,34 @@
 <hr/>
 <br/>
 
+# Directory Structure
+
+```shell
+/src
+├── API
+│   ├─ getReqAPI.ts
+│   └─ postReqAPI.ts
+├── background
+│   ├─ backgroundAPI
+│   │   └─ getReqBackground.ts
+│   └─ background.ts
+├── Baekjun
+│   ├─ Baekjun.ts
+│   └─ Baekjun.css
+├── Programmers
+│   ├─ Programmers.ts
+│   └─ Programmers.css
+├── Popup
+│   ├─ Popup.ts
+│   └─ Popup.css
+├── utils
+│   ├─ chromeUtils.ts
+│   └─ jsUtils.ts
+└── Giuhub.ts
+```
+
+# Architecture
+![](asset/architecture.png)
 # 기능 목록
 
 <p style="font-weight: 700; font-size: 20px" >타이머</p>

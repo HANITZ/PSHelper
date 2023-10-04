@@ -7,12 +7,12 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
   entry: {
-    popup: path.join(srcDir, "popup/popup.ts"),
+    popup: path.join(srcDir, "Popup/Popup.ts"),
     background: path.join(srcDir, "background/background.ts"),
     Github: path.join(srcDir, "Github.ts"),
-    Programmers: path.join(srcDir, "Programmers.ts"),
-    Leetcode: path.join(srcDir, "Leetcode.ts"),
-    Baekjun: path.join(srcDir, "Baekjun.ts"),
+    Programmers: path.join(srcDir, "Programmers/Programmers.ts"),
+    Leetcode: path.join(srcDir, "Leetcode/Leetcode.ts"),
+    Baekjun: path.join(srcDir, "Baekjun/Baekjun.ts"),
   },
 
   module: {

@@ -1,5 +1,5 @@
-import { $, insertHTML } from "../utils/jsUtils";
-import { Repos } from "./popup";
+import { $ } from "../utils/jsUtils";
+import { Repos } from "./Popup";
 
 type RenderPopup = {
   type: string;
@@ -11,6 +11,7 @@ type RenderPopup = {
 export const renderPopup = ({ type, user, repoName, repos }: RenderPopup) => {
   const logoText = $(".logo-text");
   const repoContainer = $(".repo-container");
+
   const logoLoginedText = $(".logo-text-logined");
   const logoLinkedText = $(".logo-repo-logined");
   const optionContainer = $(".option-container");

@@ -3,7 +3,7 @@
 
   "name": "PSHelper",
   "description": "알고리즘 문제풀이 도우미",
-  "version": "1.0",
+  "version": "1.1",
 
   "action": {
     "default_icon": "PSHelper.png",

@@ -10,20 +10,20 @@ import {
   LANGUAGES,
   SOLVEDAC_LEVEL,
   Time,
-} from "./utils/jsUtils";
+} from "../utils/jsUtils";
 import "./Baekjun.css";
 import {
   deleteChromeLocalStorage,
   getChromeLocalStorage,
   setChromeLocalStorage,
-} from "./utils/chromeUtils";
-import { IsTimer, RepoName } from "./popup/popup";
+} from "../utils/chromeUtils";
+import { IsTimer, RepoName } from "../Popup/Popup";
 import {
   getBaekjunProblemDescription,
   getBaekjunSolvedData,
   getProblemInfoBySolvedAc,
-} from "./API/getReqAPI";
-import { commitCodeToRepo } from "./API/postReqAPI";
+} from "../API/getReqAPI";
+import { commitCodeToRepo } from "../API/postReqAPI";
 
 type BaekjunProblemId = {
   BaekjunProblemId: string;
