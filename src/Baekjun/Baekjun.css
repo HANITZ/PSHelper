@@ -81,12 +81,12 @@
   transform: rotate(-45deg);
 }
 
-.modal {
+.modal-baekjun {
   background-color: rgba(40, 56, 80, 0.8);
   display: block;
 }
 
-.modal-baekjun {
+.modal-document {
   width: 600px;
   margin: 40px auto;
 }

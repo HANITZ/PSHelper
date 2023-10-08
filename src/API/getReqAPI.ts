@@ -1,3 +1,4 @@
+import { getProblemInfoBySolvedAcAPI } from "../background/backgroundAPI/getReqBackgroundAPI";
 import { getChromeLocalStorage, sendChromeMessage } from "../utils/chromeUtils";
 import { $, htmlEntityDecode } from "../utils/jsUtils";
 import { User, repoNameObj } from "./postReqAPI";
@@ -141,6 +142,10 @@ export const getProblemInfoBySolvedAc = async (problemId: string) => {
     task: "getProblemInfoBySolvedAc",
     problemId,
   });
+  // 임시
+  const a = getProblemInfoBySolvedAcAPI(problemId);
+  console.log(a);
+  //
 
   return data;
 };

@@ -204,7 +204,7 @@ class Baekjun {
             getTimeDiff(baekjunTime, new Date().getTime())
           ).join(" : ");
           deleteChromeLocalStorage("baekjunTime");
-          this.createModalAfterSuccess(solvingTime);
+          // this.createModalAfterSuccess(solvingTime);
           clearInterval(this.timer);
           this.afterSuccess(
             problemId,
@@ -226,8 +226,8 @@ class Baekjun {
     const contentElement = $(".wrapper");
     console.log(contentElement);
     const html = `
-      <div class="modal" id="modal-baekjun" tabindex="-1" role="dialog" >
-        <div class="modal-baekjun" role="document" >
+      <div class="modal-baekjun"  tabindex="-1" role="dialog" >
+        <div class="modal-document" role="document" >
           <div class="modal-content">
             <div class="modal-header" >
               <button type="button" class="close-button" data-dismiss="modal" aria-label="Close">
