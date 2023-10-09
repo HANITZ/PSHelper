@@ -18,6 +18,8 @@ import { FilesReadyToUproad, commitCodeToRepo } from "../API/postReqAPI";
 
 import "./Programmers.css";
 import { IsTimer, IsUpload, RepoName } from "../Popup/Popup";
+import { errorMsg } from "../utils/Constants";
+import { AlgorithmSite } from "../Component/AlgorithmSite";
 
 type Problem = {
   isSolved: string | "undefined";
@@ -43,41 +45,31 @@ type makeFilesParam = {
   avgMemory: string;
 };
 
-class Programmers {
+class Programmers extends AlgorithmSite {
   timer: NodeJS.Timer | undefined;
 
   constructor() {
+    super();
     this.init();
   }
 
   init = async () => {
     const { repoName } = (await getChromeLocalStorage("repoName")) as RepoName;
-    if (!repoName) throw new Error("Repository가 아직 설정되지 않았습니다.");
+    if (!repoName) throw new Error(errorMsg.NotFoundRepo);
   };
   setProgrammersTimer = () => {
     this.setTimerLargeTemplate();
     this.setTimerSmallTemplate();
-    this.setTimer();
-  };
-
-  setTimer = async () => {
     const startTime = new Date().getTime();
     setChromeLocalStorage({ ProgrammersTime: startTime });
-    this.timer = createTimer(startTime, this.reRenderTime);
-  };
-
-  reRenderTime = ({ h, m, s }: Time) => {
-    const timeElements = $$(".nav-timer");
-    timeElements.forEach((el) => {
-      el.innerText = `Timer: ${h}:${m}:${s}`;
-    });
+    this.setTimer(startTime);
   };
 
   setTimerLargeTemplate = () => {
     const element = $(".nav.navbar-nav");
     const position = "afterbegin";
     const html = `<li class="nav-item"   >
-    <p class="nav-timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: 00:00:00</p>
+    <p class="timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: 00:00:00</p>
     </li>`;
     insertHTML({ element, position, html });
   };
@@ -85,7 +77,7 @@ class Programmers {
     const element = $(".navbar");
     const position = "beforeend";
     const html = `<div class="nav-small-timer"  style=""  >
-    <p class="nav-timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: 00:00:00</p>
+    <p class="timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: 00:00:00</p>
     </div>`;
     insertHTML({ element, position, html });
   };
@@ -99,6 +91,7 @@ class Programmers {
       }
     }, 1000);
   };
+
   setProblemsEvent = (problems: HTMLElement[]) => {
     problems.slice(1).forEach((tr) => {
       const isSolved = $("td.status.solved", tr) ? "solved" : "unsolved";
@@ -141,23 +134,11 @@ class Programmers {
             this.startModalLoading(modalElement);
           }
         }
+
         if (modalElement && this.checkSuccess(modalElement)) {
-          const solvedData = await this.parseCode();
+          this.afterSuccess(modalElement)
 
           clearInterval(interval);
-          const { isUpload } = (await getChromeLocalStorage(
-            "isUpload"
-          )) as IsUpload;
-          if (isUpload) {
-            await commitCodeToRepo(solvedData);
-          }
-          const { ProgrammersTime: startTime } = (await getChromeLocalStorage(
-            "ProgrammersTime"
-          )) as ProgrammersTime;
-          const solvingTime = Object.values(
-            getTimeDiff(startTime, new Date().getTime())
-          ).join(" : ");
-          this.renderModalAfterSuccess(modalElement, solvingTime);
         }
         if (nowTime - startTime >= 20000) {
           clearInterval(interval);
@@ -166,6 +147,25 @@ class Programmers {
       }, 1000);
     });
   };
+
+  afterSuccess = async (modalElement:HTMLElement) => {
+    const code = this.parseCod
+    const solvedData = await this.parseCode();
+    const { isUpload } = (await getChromeLocalStorage(
+      "isUpload"
+    )) as IsUpload;
+    if (isUpload) {
+      await commitCodeToRepo(solvedData);
+    }
+
+    const { ProgrammersTime: startTime } = (await getChromeLocalStorage(
+      "ProgrammersTime"
+    )) as ProgrammersTime;
+    const solvingTime = Object.values(
+      getTimeDiff(startTime, new Date().getTime())
+    ).join(" : ");
+    this.renderModalAfterSuccess(modalElement, solvingTime);
+  }
 
   startModalLoading = (modalElement: HTMLElement) => {
     const bodyElement = $(".modal-body", modalElement);
@@ -180,6 +180,7 @@ class Programmers {
       `
     );
   };
+
 
   renderModalAfterSuccess = (modalElement: HTMLElement, time?: string) => {
     const markTag = $("#solve-result-mark", modalElement);
@@ -203,6 +204,57 @@ class Programmers {
       return true;
     }
     return false;
+  };
+
+    
+  parseCod = () => {
+    return $("textarea#code").innerText;
+  }
+
+  makeFiles = async ({
+    link,
+    problemId,
+    division,
+    problemDescription,
+    languageExtension,
+    resultMessage,
+    code,
+    avgTime,
+    avgMemory,
+  }: makeFilesParam): Promise<FilesReadyToUproad> => {
+    const { level, isSolved, finishedCount, acceptanceRate } =
+      (await getChromeLocalStorage("Problem")) as Problem;
+    const title = $("li.algorithm-title").innerText.replace(/\\n/g, "").trim();
+
+    const directory = `프로그래머스/${level}/${problemId}.${title}`.replace(
+      " ",
+      ""
+    );
+    const message = `[${level}] Title: ${title}, AvgTime: ${avgTime}, AvgMemory: ${avgMemory}`;
+    const fileName = `${convertSingleCharToDoubleChar(
+      title
+    )}.${languageExtension}`;
+
+    const readMe =
+      `# [${level}] ${title} - ${problemId} \n\n` +
+      `[문제 링크](${link}) \n\n` +
+      `### 성능 요약\n\n` +
+      `평균 메모리: ${avgMemory}MB, ` +
+      `평균 소요 시간: ${avgTime}ms\n\n` +
+      `### 구분\n\n` +
+      `${division.replace("/", " > ")}\n\n` +
+      `### 채점결과\n\n` +
+      `${resultMessage}\n\n` +
+      `### 문제 설명\n\n` +
+      `${problemDescription}\n\n` +
+      `> 출처: 프로그래머스 코딩 테스트 연습, https://programmers.co.kr/learn/challenges`;
+    return {
+      directory,
+      message,
+      fileName,
+      readMe,
+      code,
+    };
   };
 
   parseCode = async () => {
@@ -278,51 +330,7 @@ class Programmers {
       )
       .map((num) => num.toFixed(2));
   };
-  makeFiles = async ({
-    link,
-    problemId,
-    division,
-    problemDescription,
-    languageExtension,
-    resultMessage,
-    code,
-    avgTime,
-    avgMemory,
-  }: makeFilesParam): Promise<FilesReadyToUproad> => {
-    const { level, isSolved, finishedCount, acceptanceRate } =
-      (await getChromeLocalStorage("Problem")) as Problem;
-    const title = $("li.algorithm-title").innerText.replace(/\\n/g, "").trim();
 
-    const directory = `프로그래머스/${level}/${problemId}.${title}`.replace(
-      " ",
-      ""
-    );
-    const message = `[${level}] Title: ${title}, AvgTime: ${avgTime}, AvgMemory: ${avgMemory}`;
-    const fileName = `${convertSingleCharToDoubleChar(
-      title
-    )}.${languageExtension}`;
-
-    const readMe =
-      `# [${level}] ${title} - ${problemId} \n\n` +
-      `[문제 링크](${link}) \n\n` +
-      `### 성능 요약\n\n` +
-      `평균 메모리: ${avgMemory}MB, ` +
-      `평균 소요 시간: ${avgTime}ms\n\n` +
-      `### 구분\n\n` +
-      `${division.replace("/", " > ")}\n\n` +
-      `### 채점결과\n\n` +
-      `${resultMessage}\n\n` +
-      `### 문제 설명\n\n` +
-      `${problemDescription}\n\n` +
-      `> 출처: 프로그래머스 코딩 테스트 연습, https://programmers.co.kr/learn/challenges`;
-    return {
-      directory,
-      message,
-      fileName,
-      readMe,
-      code,
-    };
-  };
 }
 
 const programmers = new Programmers();
