@@ -4,10 +4,11 @@ const CopyPlugin = require("copy-webpack-plugin");
 const srcDir = path.join(__dirname, "..", "src");
 const Dotenv = require("dotenv-webpack");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const HtmlPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: {
-    popup: path.join(srcDir, "Popup/Popup.ts"),
+    popup: path.join(srcDir, "view/Popup/popup.ts"),
     background: path.join(srcDir, "background/background.ts"),
     Github: path.join(srcDir, "Github.ts"),
     Programmers: path.join(srcDir, "Programmers/Programmers.ts"),
@@ -34,9 +35,16 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new HtmlPlugin({
+      template: "./popup.html",
+      filename: "popup.html",
+      scriptLoading: "defer",
+      inject: "body",
+      chunks: ["popup"],
+    }),
     new Dotenv(),
     new CopyPlugin({
-      patterns: [{ from: ".", to: "../", context: "public" }],
+      patterns: [{ from: ".", to: "./", context: "public" }],
       options: {},
     }),
   ],
@@ -44,8 +52,9 @@ module.exports = {
     extensions: [".ts", ".js"],
   },
   output: {
-    path: path.join(__dirname, "../dist/js"),
-    filename: "[name].js",
+    path: path.join(__dirname, "../dist"),
+    filename: "js/[name].js",
+    clean: true,
   },
 
   // optimization: {
