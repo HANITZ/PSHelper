@@ -7,6 +7,10 @@ type PropsOption = {
 
 export default class OptionPopup extends Component<PropsOption> {
   template(): string {
-    return "fghfgh";
+    return `
+    <div class="option-container" >
+    
+    </div>
+    `
   }
 }

@@ -9,9 +9,11 @@ export const $: $ = (targetName, parentEl) => {
   return element as HTMLElement;
 };
 
-export const selectEl = (selector: string, context: any): Element => {
-  return context.querySelector(selector);
-};
+export const selectEl = (selector: string, context: any): Element =>
+  context.querySelector(selector);
+
+export const selectAllEl = (selector: string, context: any): Element[] =>
+  context.querySelectorAll(selector);
 
 type $$ = (targetName: string, parentEl?: HTMLElement) => HTMLElement[];
 export const $$: $$ = (targetName, parentEl) => {
@@ -394,16 +396,13 @@ export const getReadmeText = ({
       `${category}\n\n` +
       `### 문제 설명\n\n${description}\n\n`;
 
-export function addComponents(this: Component<any>) {
-  console.log(
-    Array.from(
-      new DOMParser().parseFromString(this.template(), "text/html").body
-        .children
-    )
-  );
-  Array.from(
+export function addComponents(this: any) {
+  const node = this.node;
+
+  const newNode = Array.from(
     new DOMParser().parseFromString(this.template(), "text/html").body.children
-  ).forEach((element) => {
-    this.node.appendChild(element);
-  });
+  );
+  node.parentNode.insertBefore(newNode[0], node.nextSibling);
+  this.node = node.nextSibling;
+  node.remove();
 }

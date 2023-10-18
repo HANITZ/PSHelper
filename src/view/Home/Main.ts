@@ -1,6 +1,7 @@
 import { selectEl } from "../../utils/jsUtils";
-import Component from "./Component";
+import Component, { ComponentProps } from "./Component";
 import Logo from "./Logo/Logo";
+import Repository from "./Repository/Repository";
 
 type PropsMain = {
   user: string;
@@ -8,19 +9,37 @@ type PropsMain = {
 };
 
 export default class Main extends Component<PropsMain> {
+  constructor({ node, state }: ComponentProps<PropsMain>) {
+    const initialState = {
+      ...state,
+      type: "default",
+    };
+    super({ node, state: initialState });
+  }
+
   async createChildComponents() {
+    const { user, repoName } = this.state;
+
     new Logo({
-      node: selectEl(".logo-container", this.node),
+      node: selectEl("LogoContainer", this.node),
       state: this.state,
     });
+
+    if (user && !repoName) {
+      new Repository({
+        node: selectEl("RepoContainer", this.node),
+        state: {},
+      });
+    }
   }
 
   template() {
     const { user, repoName } = this.state;
-    console.log(user, repoName);
     return `
-    <div class="logo-container"></div>
-    ${user ? '<div class="repo-container"></div>' : ""}
+    <div class="main-container" >
+      <LogoContainer></LogoContainer>
+      ${user ? (repoName ? "" : '<RepoContainer></RepoContainer>') : ""}
+    </div>
     `;
   }
 }

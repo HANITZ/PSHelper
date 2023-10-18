@@ -415,10 +415,13 @@ body {
   transform: translateX(9px);
 }
 
-footer {
+.footer {
   display: flex;
   justify-content: center;
-  margin-top: auto;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* margin-top: auto; */
   cursor: pointer;
   background: linear-gradient(to bottom, #463f6b 50.31%, #000 130.13%);
 }

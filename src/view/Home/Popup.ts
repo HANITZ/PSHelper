@@ -11,26 +11,24 @@ type PropsPopup = {};
 
 export default class Popup extends Component<PropsPopup> {
   constructor({ node }: ComponentProps<PropsPopup>) {
-    const state = {
-      isTimer: true,
-      isUpload: true,
-    };
+    const state = {};
     super({ node, state });
   }
   async createChildComponents() {
     const { USER } = (await getChromeLocalStorage("USER")) as User;
     const { repoName } = (await getChromeLocalStorage("repoName")) as RepoName;
-
+    console.log("시작");
+    console.log(this.node);
     const mainEl = new Main({
-      node: selectEl(".main-container", this.node),
+      node: selectEl("MainContainer", this.node),
       state: {
         user: USER,
         repoName,
       },
     });
-
+    console.log("통과");
     const optionEl = new OptionPopup({
-      node: selectEl(".option-container", this.node),
+      node: selectEl("OptionContainer", this.node),
       state: {
         isUpload: true,
         isTimer: true,
@@ -38,16 +36,18 @@ export default class Popup extends Component<PropsPopup> {
     });
 
     const footerBtn = new Footer({
-      node: selectEl("footer", this.node),
+      node: selectEl("Footer", this.node),
       state: {},
     });
   }
 
   template() {
     return `
-  <div class="main-container"></div>
-  <div class="option-container" style="display: none"></div>
-  <footer></footer>
+    <div id="root" >
+      <MainContainer ></MainContainer>
+      <OptionContainer></OptionContainer>
+      <Footer></Footer>
+    <div >
   `;
   }
 }

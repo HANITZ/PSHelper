@@ -22,17 +22,15 @@ export default class Logo extends Component<PropsLogo> {
   template(): string {
     const { repoName, user } = this.state;
     return `
-        <img class="logo-button" src="./PSHelper.png" alt="" />
-        ${
-            user
-            ? `<div class="logo-text-logined" >User: ${user}</div>`
-            : '<div class="logo-text" >Click Logo to connect to GitHub</div>'
-        }
-        ${
-            repoName
-            ?  `<div class="logo-repo-logined" >Repository: ${repoName}</div>`
-            : ``
-        }
-        `;
+    <div class="logo-container">
+      <img class="logo-button" src="./PSHelper.png" alt="" />
+      ${user
+      ? `<div class="logo-text-logined" >User: ${user}</div>`
+      : '<div class="logo-text" >Click Logo to connect to GitHub</div>'}
+      ${repoName
+      ?  `<div class="logo-repo-logined" >Repository: ${repoName}</div>`
+      : ``}
+    </div>
+    `;
   }
 }
