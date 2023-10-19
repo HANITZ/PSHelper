@@ -1,4 +1,4 @@
-import { addComponents } from "../../utils/jsUtils";
+import { addComponents, isSameTwo } from "../../utils/jsUtils";
 
 export type ComponentProps<T> = {
   node: Element;
@@ -14,9 +14,9 @@ export default abstract class Component<T> {
     this.render();
   }
 
-  setState(newState: Partial<T>):void {
-    if(!this.checkChangeState(newState)){
-      return
+  setState(newState: Partial<T>): void {
+    if (!this.checkChangeState(newState)) {
+      return;
     }
 
     this.state = {
@@ -25,26 +25,32 @@ export default abstract class Component<T> {
     };
     this.render();
   }
-  
-  checkChangeState(newState: Partial<T>):boolean{
+
+  checkChangeState(newState: Partial<T>): boolean {
     for (const key in newState) {
       if (!Object.prototype.hasOwnProperty.call(newState, key)) {
-        throw new Error(`${key}는 상태에 존재하지 않는 변수입니다.`)
+        console.log(this);
+        throw new Error(`${key}는 상태에 존재하지 않는 변수입니다.`);
       }
-      if(this.state[key] === newState[key]){
-        return false
+
+      if (!isSameTwo(this.state[key], newState[key])) {
+        return true;
       }
     }
-    return true
+    return false;
   }
 
   render(): void {
     addComponents.call(this);
     this.createChildComponents();
+    this.componentDidMount();
     this.setEvent();
   }
+  async componentDidMount():Promise<void>{
 
-  async createChildComponents(): Promise<void> {}
+  }
+
+  createChildComponents():void {}
 
   update(): void {}
 
