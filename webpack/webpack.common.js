@@ -8,7 +8,7 @@ const HtmlPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: {
-    popup: path.join(srcDir, "view/Popup/popup.ts"),
+    popup: path.join(srcDir, "view/Home/index.ts"),
     background: path.join(srcDir, "background/background.ts"),
     Github: path.join(srcDir, "Github.ts"),
     Programmers: path.join(srcDir, "Programmers/Programmers.ts"),

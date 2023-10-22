@@ -1,53 +1,64 @@
 import { User } from "../../API/postReqAPI";
 import { RepoName } from "../../Popup/Popup";
 import { getChromeLocalStorage } from "../../utils/chromeUtils";
-import { $, selectEl } from "../../utils/jsUtils";
+import { selectEl } from "../../utils/jsUtils";
 import Component, { ComponentProps } from "./Component";
-import Footer from "./Footer";
-import Main from "./Main";
-import OptionPopup from "./OptionPopup";
+import Footer from "./Footer/Footer";
+import Main from "./Main/Main";
+import OptionPopup from "./OptionPopup/OptionPopup";
+import "./Popup.css";
 
-type PropsPopup = {};
+type PropsPopup = {
+  user?: string;
+  repoName?: string;
+};
 
 export default class Popup extends Component<PropsPopup> {
-  constructor({ node }: ComponentProps<PropsPopup>) {
-    const state = {};
-    super({ node, state });
-  }
-  async createChildComponents() {
-    const { USER } = (await getChromeLocalStorage("USER")) as User;
-    const { repoName } = (await getChromeLocalStorage("repoName")) as RepoName;
-    console.log("시작");
-    console.log(this.node);
-    const mainEl = new Main({
+  createChildComponents() {
+    const { user, repoName } = this.state;
+
+    new Main({
       node: selectEl("MainContainer", this.node),
       state: {
-        user: USER,
+        user,
         repoName,
-      },
-    });
-    console.log("통과");
-    const optionEl = new OptionPopup({
-      node: selectEl("OptionContainer", this.node),
-      state: {
-        isUpload: true,
-        isTimer: true,
+        setStatePopup: this.setState.bind(this),
       },
     });
 
-    const footerBtn = new Footer({
+    if (repoName) {
+      new OptionPopup({
+        node: selectEl("OptionContainer", this.node),
+        state: {},
+      });
+    }
+
+    new Footer({
       node: selectEl("Footer", this.node),
       state: {},
     });
   }
 
+  async componentDidMount(): Promise<void> {
+    const { USER: user } = (await getChromeLocalStorage("USER")) as User;
+    const { repoName } = (await getChromeLocalStorage("repoName")) as RepoName;
+
+    this.setState({ user, repoName });
+  }
+
   template() {
+    const { repoName } = this.state;
+
     return `
     <div id="root" >
-      <MainContainer ></MainContainer>
-      <OptionContainer></OptionContainer>
-      <Footer></Footer>
-    <div >
+      <MainContainer  class="main-container"></MainContainer>
+      ${
+        repoName
+          ? `<OptionContainer class="option-container"></OptionContainer>`
+          : ``
+      }
+      <Footer class="footer"></Footer>
+    <div>
   `;
   }
 }

@@ -1,0 +1,24 @@
+.fail-enroll {
+  background: #f9f9f9;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  left: 104px;
+  top: -44px;
+}
+
+.fail-enroll:after {
+  content: "";
+  height: 18px;
+  border-left: 5px solid #cd8084;
+  position: absolute;
+  transform: rotate(45deg);
+}
+
+.fail-enroll:before {
+  content: "";
+  height: 18px;
+  border-left: 5px solid #cd8084;
+  position: absolute;
+  transform: rotate(-45deg);
+}

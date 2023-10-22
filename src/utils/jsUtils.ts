@@ -398,11 +398,25 @@ export const getReadmeText = ({
 
 export function addComponents(this: any) {
   const node = this.node;
-
   const newNode = Array.from(
     new DOMParser().parseFromString(this.template(), "text/html").body.children
   );
   node.parentNode.insertBefore(newNode[0], node.nextSibling);
   this.node = node.nextSibling;
+  const nodeClass = node.classList.value.trim();
+  if (nodeClass) {
+    this.node.className = nodeClass;
+  }
   node.remove();
+}
+
+export function isSameTwo(a: any, b: any) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+export function isUndefined(a: any): boolean {
+  if (typeof a === "undefined") {
+    return true;
+  }
+  return false;
 }

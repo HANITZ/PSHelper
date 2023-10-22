@@ -7,13 +7,9 @@ import { $, enrollEvent, removeEvent } from "../utils/jsUtils";
 import "./popup.css";
 import { isObjEmpty } from "../utils/jsUtils";
 import { $$ } from "../utils/jsUtils";
-import { getUserRepos } from "../API/getReqAPI";
+import { Repos, getUserRepos } from "../API/getReqAPI";
 import { postNewRepo } from "../API/postReqAPI";
 import { renderPopup } from "./renderPopup";
-
-export type Repos = {
-  [key: string]: string;
-};
 
 type USER = {
   USER: string;
@@ -29,6 +25,14 @@ export type IsUpload = {
 
 export type IsTimer = {
   isTimer: boolean;
+};
+
+export type Timer = {
+  Timer: boolean;
+};
+
+export type Upload = {
+  Upload: boolean;
 };
 
 class Popup {

@@ -1,0 +1,11 @@
+.success-enroll {
+  display: inline-block;
+  position: relative;
+  left: 104px;
+  top: -44px;
+  transform: rotate(45deg);
+  width: 5px;
+  height: 10px;
+  border-bottom: 4px solid #afa8de;
+  border-right: 4px solid #afa8de;
+}

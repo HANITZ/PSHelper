@@ -1,0 +1,57 @@
+{
+  "manifest_version": 3,
+
+  "name": "PSHelper",
+  "description": "알고리즘 문제풀이 도우미",
+  "version": "1.1",
+
+  "action": {
+    "default_icon": "PSHelper.png",
+    "default_popup": "popup.html"
+  },
+
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset",
+        "enabled": true,
+        "path": "rule.json"
+      }
+    ]
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*"],
+      "js": ["js/Github.js"]
+    },
+    {
+      "matches": ["https://school.programmers.co.kr/*"],
+      "js": ["js/Programmers.js"]
+    },
+    {
+      "matches": ["https://leetcode.com/*"],
+      "js": ["js/Leetcode.js"]
+    },
+    {
+      "matches": ["https://www.acmicpc.net/*"],
+      "js": ["js/Baekjun.js"]
+    }
+  ],
+  "permissions": ["storage", "declarativeNetRequest"],
+  "web_accessible_resources": [
+    {
+      "resources": ["js/popup.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "host_permissions": [
+    "https://github.com/",
+    "https://www.acmicpc.net/",
+    "https://school.programmers.co.kr/",
+    "https://solved.ac/api/v3/*"
+  ]
+}

@@ -37,13 +37,15 @@ export const getAccessToken = async (code: string): Promise<any> => {
 
   return res;
 };
-export type repos = {
-  [key: string]: string;
-};
+
 type Token = {
   GITHUB_TOKEN: string;
 };
-export const getUserRepos = async (): Promise<repos[]> => {
+
+export type Repos = {
+  [key: string]: string;
+};
+export const getUserRepos = async (): Promise<Repos[]> => {
   const { GITHUB_TOKEN } = (await getChromeLocalStorage(
     "GITHUB_TOKEN"
   )) as Token;
@@ -133,7 +135,7 @@ export const getBaekjunProblemDescription = async (problemId: string) => {
   const description = htmlEntityDecode(
     $("#problem_description", html).innerHTML.trim()
   );
-  return { input, output, description };
+  return description+input+output
 };
 
 export const getProblemInfoBySolvedAc = async (problemId: string) => {

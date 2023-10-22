@@ -1,0 +1,26 @@
+.repo-type {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 80px;
+}
+
+.repo-content {
+}
+
+.before-select-type {
+  border-radius: 7px;
+  padding: 5px 5px;
+  cursor: auto;
+  font-size: 11px;
+  background: #f3f3f3;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  outline: none;
+  border: none;
+}
+
+
+
+.old-repo-select {
+  display: flex;
+  flex-direction: row;
+}

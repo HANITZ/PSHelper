@@ -1,15 +1,14 @@
 import {
   $,
   convertSingleCharToDoubleChar,
-  createTimer,
   enrollEvent,
   getQueryParam,
+  getReadmeText,
   getTimeDiff,
   hasElement,
   insertHTML,
   LANGUAGES,
   SOLVEDAC_LEVEL,
-  Time,
 } from "../utils/jsUtils";
 import "./Baekjun.css";
 import {
@@ -17,7 +16,7 @@ import {
   getChromeLocalStorage,
   setChromeLocalStorage,
 } from "../utils/chromeUtils";
-import { IsTimer, RepoName } from "../Popup/Popup";
+import { IsTimer, IsUpload, RepoName } from "../Popup/Popup";
 import {
   getBaekjunProblemDescription,
   getBaekjunSolvedData,
@@ -27,27 +26,27 @@ import { commitCodeToRepo } from "../API/postReqAPI";
 import { chromeStorageId, errorMsg } from "../utils/Constants";
 import { AlgorithmSite } from "../Component/AlgorithmSite";
 
-type BaekjunProblemId = {
+interface BaekjunProblemId {
   BaekjunProblemId: string;
-};
+}
 
-type BaekjunTime = {
+interface BaekjunTime {
   baekjunTime: number;
-};
+}
 
-type SubmitedProblem = {
+interface SubmitedProblem {
   submitedProblem: string;
-};
+}
 
-type BaekjunTag = {
+interface BaekjunTag {
   aliases: { alies: string }[];
   bojTagId: number;
   displayNames: { language: string; name: string; short: string }[];
   isMeta: boolean;
   key: string;
   problemCount: number;
-};
-type BaekjunProblem = {
+}
+interface BaekjunProblem {
   problemId: number;
   titleKo: string;
   titles: [
@@ -61,7 +60,7 @@ type BaekjunProblem = {
   isSolvable: boolean;
   isPartial: boolean;
   acceptedUserCount: number;
-  level: number;
+  level: string;
   votedUserCount: number;
   sprout: boolean;
   givesNoRating: boolean;
@@ -69,30 +68,43 @@ type BaekjunProblem = {
   averageTries: number;
   official: boolean;
   tags: BaekjunTag[];
-};
+}
 
-type BaekjunScript = {
+export type ParamCreateProblemContent = {
   description: string;
-  input: string;
-  output: string;
-};
-
-type ParamCreateReadme = {
-  description: string;
-  input: string;
-  output: string;
-  acceptedUserCount: number;
-  averageTries: number;
-  official: boolean;
-  level: number;
-  titleKo: string;
+  acceptedUserCount?: number;
+  averageTries?: number;
+  official?: boolean;
+  title: string;
   problemId: string;
   solvingTime: string;
   spentTime: string;
   spentMemory: string;
-  tags: BaekjunTag[];
+  category: string;
   language: string;
 };
+type BaekjunLevel = {
+  level: string;
+};
+type ParamBaekCreateProblemContent = ParamCreateProblemContent & BaekjunLevel;
+type ParamBaekGetMessage = ParamGetMessage & BaekjunLevel;
+type ParamBaekGetDirectory = ParamGetDirectory & BaekjunLevel;
+export interface ParamGetMessage {
+  title: string;
+  spentMemory: string;
+  spentTime: string;
+  solvingTime: string;
+}
+
+export interface ParamGetDirectory {
+  problemId: string;
+  title: string;
+}
+
+export interface ParamGetFileName {
+  title: string;
+  language: string;
+}
 
 class Baekjun extends AlgorithmSite {
   timer: NodeJS.Timer | undefined;
@@ -171,7 +183,7 @@ class Baekjun extends AlgorithmSite {
     const { submitedProblem } = (await getChromeLocalStorage(
       chromeStorageId.submitedProblemId
     )) as SubmitedProblem;
-
+    console.log(submitedProblem);
     if (submitedProblem && submitedProblem === getQueryParam("problem_id")) {
       deleteChromeLocalStorage(chromeStorageId.submitedProblemId);
       this.afterSubmit();
@@ -187,7 +199,6 @@ class Baekjun extends AlgorithmSite {
   };
   afterSubmit = async () => {
     this.startLoading();
-
     const checkSuccessInterval = setInterval(async () => {
       const statusTable = $("#status-table") as HTMLTableElement;
       const submitedInfo = statusTable.rows[1];
@@ -196,37 +207,21 @@ class Baekjun extends AlgorithmSite {
       if (hasElement(".result-ac", resultElement)) {
         clearInterval(checkSuccessInterval);
         if (this.checkSuccess()) {
-          const { baekjunTime } = (await getChromeLocalStorage(
-            "baekjunTime"
-          )) as BaekjunTime;
-          const submissionId = submitedInfo.cells[0].innerText;
-          const problemId = getQueryParam("problem_id");
-          const spentTime = submitedInfo.cells[5].innerText;
-          const spentMemory = submitedInfo.cells[4].innerText;
-          const language = $("a", submitedInfo.cells[6]).innerText;
-          const solvingTime = Object.values(
-            getTimeDiff(baekjunTime, new Date().getTime())
-          ).join(" : ");
-          deleteChromeLocalStorage("baekjunTime");
-          // this.createModalAfterSuccess(solvingTime);
           clearInterval(this.timer);
-          this.afterSuccess(
-            problemId,
-            submissionId,
-            solvingTime,
-            spentTime,
-            spentMemory,
-            language
-          );
+          this.afterSuccess(submitedInfo);
           return;
         }
 
         this.afterFail();
       }
-    }, 2000);
+      if (hasElement(".result-rte", resultElement)) {
+        this.afterFail();
+        clearInterval(this.timer);
+      }
+    }, 1500);
   };
 
-  createModalAfterSuccess = (solvingTime: string) => {
+  renderModalAfterSuccess = (solvingTime: string) => {
     const contentElement = $(".wrapper");
     console.log(contentElement);
     const html = `
@@ -251,17 +246,22 @@ class Baekjun extends AlgorithmSite {
     insertHTML({ element: contentElement, position: "afterend", html });
   };
 
-  afterSuccess = async (
-    problemId: string,
-    submissionId: string,
-    solvingTime: string,
-    spentTime: string,
-    spentMemory: string,
-    language: string
-  ) => {
+  afterSuccess = async (submitedInfo: HTMLTableRowElement) => {
+    const { isUpload } = (await getChromeLocalStorage("isUpload")) as IsUpload;
+    const { baekjunTime } = (await getChromeLocalStorage(
+      "baekjunTime"
+    )) as BaekjunTime;
+    const submissionId = submitedInfo.cells[0].innerText;
+    const problemId = getQueryParam("problem_id");
+    const spentTime = submitedInfo.cells[5].innerText;
+    const spentMemory = submitedInfo.cells[4].innerText;
+    const language = $("a", submitedInfo.cells[6]).innerText;
+    const solvingTime = Object.values(
+      getTimeDiff(baekjunTime, new Date().getTime())
+    ).join(" : ");
     const code = await getBaekjunSolvedData(submissionId);
-    const { description, input, output }: BaekjunScript =
-      await getBaekjunProblemDescription(problemId);
+    const description = await getBaekjunProblemDescription(problemId);
+
     const {
       acceptedUserCount,
       averageTries,
@@ -270,75 +270,88 @@ class Baekjun extends AlgorithmSite {
       titleKo,
       tags,
     }: BaekjunProblem = await getProblemInfoBySolvedAc(problemId);
+    const category = tags.map((tag) => tag.displayNames[0].name).join(", ");
+    
 
-    const { directory, message, fileName, readMe } = this.createReadme({
+    const problemContent = this.createProblemContent({
       description,
-      input,
-      output,
       acceptedUserCount,
       averageTries,
       official,
       level,
-      titleKo,
+      title: titleKo,
       problemId,
       solvingTime,
       spentTime,
       spentMemory,
-      tags,
+      category,
       language,
     });
-    await commitCodeToRepo({ directory, message, fileName, readMe, code });
+
+    if (isUpload) {
+      await commitCodeToRepo({ ...problemContent, code });
+    }
+    this.renderModalAfterSuccess(solvingTime);
     await this.renderSuccessMark();
+    deleteChromeLocalStorage("baekjunTime");
   };
 
   afterFail = () => {
     this.renderFailMark();
   };
 
-  createReadme = ({
+  createProblemContent = ({
     description,
-    input,
-    output,
     acceptedUserCount,
     averageTries,
     official,
     level,
-    titleKo,
+    title,
     problemId,
     solvingTime,
     spentTime,
     spentMemory,
-    tags,
+    category,
     language,
-  }: ParamCreateReadme) => {
-    const directory = `Baekjun/${SOLVEDAC_LEVEL[level].replace(
-      / .*/,
-      ""
-    )}/${problemId}. ${convertSingleCharToDoubleChar(titleKo)}`;
-    const message = `[${level}] ${titleKo} - Time: ${spentTime} ms, Memory: ${spentMemory} KB, Time to solve: ${solvingTime}`;
-    const category = tags.map((tag) => tag.displayNames[0].name).join(", ");
-    const fileName = `${convertSingleCharToDoubleChar(titleKo)}.${
-      LANGUAGES[language]
-    }`;
-    // prettier - ignore - start;
-    const readMe =
-      `# [${level}] ${titleKo} - ${problemId} \n\n` +
-      `[문제 링크](https://www.acmicpc.net/problem/${problemId}) \n\n` +
-      `### 성능 요약\n\n` +
-      `메모리: ${spentMemory} KB, ` +
-      `시간: ${spentTime} ms\n\n` +
-      `풀이시간: ${solvingTime}\n\n` +
-      `### 분류\n\n` +
-      `${category}\n\n` +
-      (!!description
-        ? "" +
-          `### 문제 설명\n\n${description}\n\n` +
-          `### 입력 \n\n ${input}\n\n` +
-          `### 출력 \n\n ${output}\n\n`
-        : "");
+  }: ParamBaekCreateProblemContent) => {
+    const directory = this.getDirectory({ level, problemId, title });
+    const message = this.getMessage({
+      level,
+      spentMemory,
+      spentTime,
+      solvingTime,
+      title,
+    });
+    const fileName = this.getFileName({ title, language });
+
+    const readMe = getReadmeText({
+      level,
+      title,
+      solvingTime,
+      problemId,
+      spentMemory,
+      spentTime,
+      category,
+      description,
+    });
 
     return { directory, message, fileName, readMe };
   };
+  getFileName = ({ title, language }: ParamGetFileName) =>
+    `${convertSingleCharToDoubleChar(title)}.${LANGUAGES[language]}`;
+  getMessage = ({
+    level,
+    title,
+    spentMemory,
+    spentTime,
+    solvingTime,
+  }: ParamBaekGetMessage) =>
+    `[${SOLVEDAC_LEVEL[level]}] Title: ${title} - Time: ${spentTime} ms, Memory: ${spentMemory} KB, Time to solve: ${solvingTime}`;
+  getDirectory = ({ level, problemId, title }: ParamBaekGetDirectory) =>
+    `Baekjun/${SOLVEDAC_LEVEL[level].replace(
+      / .*/,
+      ""
+    )}/${problemId}. ${convertSingleCharToDoubleChar(title)}`;
 
   getSolvedData = (submissionId: string) => {};
 

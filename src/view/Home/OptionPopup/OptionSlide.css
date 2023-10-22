@@ -1,0 +1,59 @@
+.option span {
+  font-size: 15px;
+  font-weight: 500;
+  margin-right: auto;
+}
+
+.repo-switch {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 18px;
+  margin-right: 6px;
+}
+
+.repo-switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  border-radius: 34px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+
+  &::before {
+    position: absolute;
+    content: "";
+    border-radius: 50%;
+    height: 14px;
+    width: 14px;
+    left: 3.5px;
+    bottom: 2.5px;
+    background-color: #fff;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+}
+
+
+.repo-switch input:checked + .slider {
+  background-color: #afa8de;
+  border-color: #fff;
+}
+
+.repo-switch input:focus + .slider {
+  box-shadow: 0 0 1px #afa8de;
+}
+
+.repo-switch input:checked + .slider:before {
+  -webkit-transform: translateX(9px);
+  -ms-transform: translateX(9px);
+  transform: translateX(9px);
+}

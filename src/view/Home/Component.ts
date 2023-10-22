@@ -12,6 +12,7 @@ export default abstract class Component<T> {
     this.node = node;
     this.state = state;
     this.render();
+    this.componentDidMount();
   }
 
   setState(newState: Partial<T>): void {
@@ -29,7 +30,6 @@ export default abstract class Component<T> {
   checkChangeState(newState: Partial<T>): boolean {
     for (const key in newState) {
       if (!Object.prototype.hasOwnProperty.call(newState, key)) {
-        console.log(this);
         throw new Error(`${key}는 상태에 존재하지 않는 변수입니다.`);
       }
 
@@ -43,14 +43,11 @@ export default abstract class Component<T> {
   render(): void {
     addComponents.call(this);
     this.createChildComponents();
-    this.componentDidMount();
     this.setEvent();
   }
-  async componentDidMount():Promise<void>{
+  async componentDidMount(): Promise<void> {}
 
-  }
-
-  createChildComponents():void {}
+  createChildComponents(): void {}
 
   update(): void {}
 
