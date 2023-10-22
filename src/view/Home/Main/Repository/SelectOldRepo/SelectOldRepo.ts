@@ -13,7 +13,6 @@ type PropsSelectOldRepo = {
 
 export default class SelectOldRepo extends Component<PropsSelectOldRepo> {
   setEvent() {
-    const { setStatePopup } = this.state;
     selectEl(".dropdown-select-repo", this.node).addEventListener(
       "click",
       (e) => {
@@ -26,16 +25,6 @@ export default class SelectOldRepo extends Component<PropsSelectOldRepo> {
       e.preventDefault();
       const inputEl = e.target as HTMLInputElement;
       this.setState({ selected: inputEl.value });
-
-      this.node.addEventListener("click", (e) => {
-        e.preventDefault();
-        sendChromeMessage({
-          action: "repoName",
-          method: "post",
-          repoName: this.state.selected,
-        });
-        setStatePopup({ repoName: this.state.selected });
-      });
     });
 
     selectAllEl(".option-repo", this.node).forEach((element) => {
@@ -48,15 +37,26 @@ export default class SelectOldRepo extends Component<PropsSelectOldRepo> {
   }
 
   createChildComponents() {
-    const { setStatePopup, selected } = this.state;
+    const { selected } = this.state;
+
     if (selected) {
       new LinkButton({
         node: selectEl("LinkButton", this.node),
         state: {
           btnName: "Link",
+          LinkHandler: this.LinkHandler.bind(this),
         },
       });
     }
+  }
+  LinkHandler() {
+    const { setStatePopup } = this.state;
+    sendChromeMessage({
+      action: "repoName",
+      method: "post",
+      repoName: this.state.selected,
+    });
+    setStatePopup({ repoName: this.state.selected });
   }
 
   template() {

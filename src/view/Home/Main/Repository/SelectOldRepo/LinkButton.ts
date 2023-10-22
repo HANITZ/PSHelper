@@ -3,11 +3,16 @@ import Component from "../../../Component";
 
 type PropsButton = {
   btnName?: string;
+  LinkHandler: Function;
 };
 
 export default class LinkButton extends Component<PropsButton> {
   setEvent() {
-    this.node.addEventListener("click", () => {});
+    const { LinkHandler } = this.state;
+    this.node.addEventListener("click", (e) => {
+      e.preventDefault();
+      LinkHandler();
+    });
   }
 
   template() {

@@ -5,7 +5,7 @@ import {
 } from "../../../utils/chromeUtils";
 import { isUndefined, selectEl } from "../../../utils/jsUtils";
 import Component from "../Component";
-import OptionSlide from "./OptionSlide";
+import OptionSlide from "./OptionSlide/OptionSlide";
 import "./OptionPopup.css";
 
 type PropsOptionPopup = {
