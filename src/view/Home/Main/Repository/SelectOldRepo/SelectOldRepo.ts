@@ -1,7 +1,6 @@
 import { Repos } from "../../../../../API/getReqAPI";
 import { selectAllEl, selectEl, sendChromeMessage } from "@utils";
-import { Component } from "@Component";
-import LinkButton from "./LinkButton";
+import { Component, Button } from "@Components";
 import "./SelectOldRepo.css";
 
 type PropsSelectOldRepo = {
@@ -39,13 +38,13 @@ export default class SelectOldRepo extends Component<PropsSelectOldRepo> {
     const { selected } = this.state;
 
     if (selected) {
-      new LinkButton({
+      new Button({
         node: selectEl("LinkButton", this.node),
         state: {
-          btnName: "Link",
-          LinkHandler: this.LinkHandler.bind(this),
-        },
-      });
+          name: "Link",
+          onClick: this.LinkHandler.bind(this)
+        }
+      })
     }
   }
   LinkHandler() {

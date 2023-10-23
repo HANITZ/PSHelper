@@ -1,4 +1,4 @@
-import { Component } from "@Component";
+import { Component } from "@Components";
 
 type PropsNewRepoInput = {
   text?: string;

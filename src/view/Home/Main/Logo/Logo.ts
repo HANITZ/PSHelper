@@ -1,5 +1,5 @@
 import { selectEl, sendChromeMessage } from "@utils";
-import { Component } from "@Component";
+import { Component } from "@Components";
 import "./Logo.css";
 
 type PropsLogo = {

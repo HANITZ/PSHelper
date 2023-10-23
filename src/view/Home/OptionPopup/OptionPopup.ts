@@ -4,7 +4,7 @@ import {
   getChromeLocalStorage,
   sendChromeMessage,
 } from "@utils";
-import { Component } from "@Component";
+import { Component } from "@Components";
 import { OptionSlide } from "@OptionPopup/OptionSlide";
 import "./OptionPopup.css";
 

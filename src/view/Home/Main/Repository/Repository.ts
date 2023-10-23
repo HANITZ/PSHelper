@@ -1,6 +1,6 @@
 import { Repos, getUserRepos } from "../../../../API/getReqAPI";
 import { selectEl } from "@utils";
-import { Component } from "@Component";
+import { Component } from "@Components";
 import { CreateNewRepo } from "@CreateNewRepo";
 import { SelectOldRepo } from "@SelectOldRepo";
 import { SelectType } from "@SelectType";

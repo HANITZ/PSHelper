@@ -1,7 +1,23 @@
-import { getChromeMessage, setChromeLocalStorage } from "../utils/chromeUtils";
+import { getChromeMessage, setChromeLocalStorage } from "@utils";
 import { getProblemInfoBySolvedAcAPI } from "./backgroundAPI/getReqBackgroundAPI";
 
 const messageHandler = (req: any, sender: any, sendResponse: any) => {
+  // switch (req.action) {
+  //   case "PSHELPER_TOKEN":
+  //     setChromeLocalStorage({
+  //       GITHUB_TOKEN: req.token,
+  //       USER: req.user.login,
+  //     }).then(sendResponse({ success: true }));
+  //     sendResponse({ success: true });
+  //     break;
+
+  //   case "baekjun":
+  //     break;
+
+  //   case "repoName":
+  //     break;
+  // }
+
   if (req.action === "PSHELPER_TOKEN") {
     setChromeLocalStorage({
       GITHUB_TOKEN: req.token,

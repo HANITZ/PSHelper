@@ -1,4 +1,4 @@
-import Component from "../Components/Core/Component/Component";
+import Component from "../Components/Component/Component";
 
 type $ = (targetName: string, parentEl?: HTMLElement | Document) => HTMLElement;
 export const $: $ = (targetName, parentEl) => {
@@ -420,5 +420,3 @@ export function isUndefined(a: any): boolean {
   }
   return false;
 }
-
-

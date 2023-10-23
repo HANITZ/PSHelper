@@ -1,11 +1,8 @@
 import { Repos } from "../../../../../API/getReqAPI";
 import { postNewRepo } from "../../../../../API/postReqAPI";
 import { isUndefined, selectEl, sendChromeMessage } from "@utils";
-import { Component } from "@Component";
-import CancelRepoButton from "./CancelRepoButton";
-import EnrollButton from "./EnrollButton";
+import { Component, Button } from "@Components";
 import { Status } from "@Status";
-import VerifyButton from "./VerifyButton";
 import VerifyMessage from "./VerifyMessage";
 import "./CreateNewRepo.css";
 
@@ -37,29 +34,28 @@ export default class CreateNewRepo extends Component<PropsCreateNewRepo> {
     }
 
     if (isVerified) {
-      new EnrollButton({
+      new Button({
         node: selectEl("EnrollButton", this.node),
         state: {
-          btnName: "Enroll",
-          enrollHandler: this.enrollHandler.bind(this),
+          name: "Enroll",
+          onClick: this.enrollHandler.bind(this),
         },
       });
 
-      new CancelRepoButton({
+      new Button({
         node: selectEl("CancelRepoButton", this.node),
         state: {
-          btnName: "Cancel",
-          setStateNewRepo: this.setState.bind(this),
+          name: "Cancel",
+          onClick: () => this.setState({ isVerified: false, textValue: "" }),
         },
       });
       return;
     }
-
-    new VerifyButton({
+    new Button({
       node: selectEl("VerifyButton", this.node),
       state: {
-        btnName: "Verify",
-        verifyHandler: this.verifyHandler.bind(this),
+        name: "Verify",
+        onClick: this.verifyHandler.bind(this),
       },
     });
   }

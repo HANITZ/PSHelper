@@ -1,7 +1,5 @@
-import { selectEl } from "../../../utils/jsUtils";
-import Component, {
-  ComponentProps,
-} from "../../../Components/Core/Component/Component";
+import { selectEl } from "@utils";
+import { Component } from "@Components";
 import { Logo } from "@Logo";
 import Repository from "./Repository/Repository";
 import "./Main.css";

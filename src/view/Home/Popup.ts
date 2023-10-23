@@ -1,6 +1,6 @@
 import { User } from "../../API/postReqAPI";
 import { selectEl, getChromeLocalStorage } from "@utils";
-import { Component } from "@Component";
+import { Component } from "@Components";
 import { Footer } from "@Footer";
 import { Main } from "@Main";
 import { OptionPopup } from "@OptionPopup";
