@@ -1,11 +1,11 @@
-import { Timer, Upload } from "../../../Popup/Popup";
 import {
+  isUndefined,
+  selectEl,
   getChromeLocalStorage,
   sendChromeMessage,
-} from "../../../utils/chromeUtils";
-import { isUndefined, selectEl } from "../../../utils/jsUtils";
-import Component from "../Component";
-import OptionSlide from "./OptionSlide/OptionSlide";
+} from "@utils";
+import { Component } from "@Component";
+import { OptionSlide } from "@OptionPopup/OptionSlide";
 import "./OptionPopup.css";
 
 type PropsOptionPopup = {
@@ -36,8 +36,12 @@ export default class OptionPopup extends Component<PropsOptionPopup> {
     });
   }
   async componentDidMount() {
-    let { Timer } = (await getChromeLocalStorage("Timer")) as Timer;
-    let { Upload } = (await getChromeLocalStorage("Upload")) as Upload;
+    let { Timer } = (await getChromeLocalStorage("Timer")) as {
+      Timer: boolean;
+    };
+    let { Upload } = (await getChromeLocalStorage("Upload")) as {
+      Upload: boolean;
+    };
 
     if (isUndefined(Timer)) {
       Timer = true;

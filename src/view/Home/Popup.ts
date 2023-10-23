@@ -1,11 +1,9 @@
 import { User } from "../../API/postReqAPI";
-import { RepoName } from "../../Popup/Popup";
-import { getChromeLocalStorage } from "../../utils/chromeUtils";
-import { selectEl } from "../../utils/jsUtils";
-import Component, { ComponentProps } from "./Component";
-import Footer from "./Footer/Footer";
-import Main from "./Main/Main";
-import OptionPopup from "./OptionPopup/OptionPopup";
+import { selectEl, getChromeLocalStorage } from "@utils";
+import { Component } from "@Component";
+import { Footer } from "@Footer";
+import { Main } from "@Main";
+import { OptionPopup } from "@OptionPopup";
 import "./Popup.css";
 
 type PropsPopup = {
@@ -41,7 +39,9 @@ export default class Popup extends Component<PropsPopup> {
 
   async componentDidMount(): Promise<void> {
     const { USER: user } = (await getChromeLocalStorage("USER")) as User;
-    const { repoName } = (await getChromeLocalStorage("repoName")) as RepoName;
+    const { repoName } = (await getChromeLocalStorage("repoName")) as {
+      repoName: string;
+    };
 
     this.setState({ user, repoName });
   }

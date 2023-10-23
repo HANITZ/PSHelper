@@ -81,7 +81,7 @@
 .option-type {
   padding: 2px 7px;
   cursor: pointer;
-  :hover {
+  &:hover {
     border-radius: 2px;
     background: #62baea;
     color: #fff;

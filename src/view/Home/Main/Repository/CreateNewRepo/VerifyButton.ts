@@ -1,5 +1,4 @@
-import { selectEl } from "../../../../../utils/jsUtils";
-import Component from "../../../Component";
+import { Component } from "@Component";
 
 type PropsVerifyButton = {
   btnName?: string;

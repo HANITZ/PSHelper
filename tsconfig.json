@@ -1,13 +1,15 @@
 {
+  "extends": "./tsconfig.path.json",
+  "include": ["src/**/*"],
+  "outDir": "dist/js",
   "compilerOptions": {
     "strict": true,
     "target": "es6",
     "moduleResolution": "bundler",
-    "module": "ES6",
+    "module": "ESNext",
     "esModuleInterop": true,
     "sourceMap": false,
     "rootDir": "src",
-    "outDir": "dist/js",
     "noEmitOnError": true,
     "typeRoots": ["node_modules/@types"]
   }

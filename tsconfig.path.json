@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@assets": ["./assets"],
+      "@assets/*": ["./assets/*"],
+      "@Component": ["./Components/Core/Component"],
+      "@Footer": ["./view/Home/Footer"],
+      "@Main": ["./view/Home/Main"],
+      "@Logo": ["./view/Home/Main/Logo"],
+      "@Repository": ["./view/Home/Main/Repository"],
+      "@SelectType": ["./view/Home/Main/Repository/SelectType"],
+      "@SelectOldRepo": ["./view/Home/Main/Repository/SelectOldRepo"],
+      "@CreateNewRepo": ["./view/Home/Main/Repository/CreateNewRepo"],
+      "@Status": ["./view/Home/Main/Repository/CreateNewRepo/Status"],
+      "@OptionPopup": ["./view/Home/OptionPopup"],
+      "@OptionPopup/*": ["./view/Home/OptionPopup/*"],
+      "@utils": ["./utils"]
+    }
+  }
+}

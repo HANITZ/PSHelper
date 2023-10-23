@@ -1,11 +1,10 @@
 import { Repos } from "../../../../../API/getReqAPI";
 import { postNewRepo } from "../../../../../API/postReqAPI";
-import { sendChromeMessage } from "../../../../../utils/chromeUtils";
-import { isUndefined, selectEl } from "../../../../../utils/jsUtils";
-import Component from "../../../Component";
+import { isUndefined, selectEl, sendChromeMessage } from "@utils";
+import { Component } from "@Component";
 import CancelRepoButton from "./CancelRepoButton";
 import EnrollButton from "./EnrollButton";
-import Status from "./Status/Status";
+import { Status } from "@Status";
 import VerifyButton from "./VerifyButton";
 import VerifyMessage from "./VerifyMessage";
 import "./CreateNewRepo.css";

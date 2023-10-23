@@ -5,6 +5,8 @@ const srcDir = path.join(__dirname, "..", "src");
 const Dotenv = require("dotenv-webpack");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlPlugin = require("html-webpack-plugin");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const tsConfigPath = path.resolve(__dirname, "../tsconfig.json");
 
 module.exports = {
   entry: {
@@ -50,6 +52,11 @@ module.exports = {
   ],
   resolve: {
     extensions: [".ts", ".js"],
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: tsConfigPath,
+      }),
+    ],
   },
   output: {
     path: path.join(__dirname, "../dist"),

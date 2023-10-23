@@ -1,6 +1,6 @@
 import { selectAllEl, selectEl } from "../../../../../utils/jsUtils";
-import Component from "../../../Component";
-import "./SelectType.css"
+import { Component } from "@Component";
+import "./SelectType.css";
 
 type PropsSelectType = {
   type?: string;

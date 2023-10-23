@@ -1,4 +1,4 @@
-import { addComponents, isSameTwo } from "../../utils/jsUtils";
+import { addComponents, isSameTwo } from "../../../utils/jsUtils";
 
 export type ComponentProps<T> = {
   node: Element;

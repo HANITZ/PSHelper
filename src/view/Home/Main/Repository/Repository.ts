@@ -1,9 +1,9 @@
 import { Repos, getUserRepos } from "../../../../API/getReqAPI";
-import { selectEl } from "../../../../utils/jsUtils";
-import Component from "../../Component";
-import CreateNewRepo from "./CreateNewRepo/CreateNewRepo";
-import SelectOldRepo from "./SelectOldRepo/SelectOldRepo";
-import SelectType from "./SelectType/SelectType";
+import { selectEl } from "@utils";
+import { Component } from "@Component";
+import { CreateNewRepo } from "@CreateNewRepo";
+import { SelectOldRepo } from "@SelectOldRepo";
+import { SelectType } from "@SelectType";
 import "./Repository.css";
 
 type PropsRepository = {

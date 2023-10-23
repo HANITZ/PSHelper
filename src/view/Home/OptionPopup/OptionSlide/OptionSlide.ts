@@ -1,6 +1,6 @@
 import { sendChromeMessage } from "../../../../utils/chromeUtils";
 import { selectEl } from "../../../../utils/jsUtils";
-import Component from "../../Component";
+import Component from "../../../../Components/Core/Component/Component";
 import "./OptionSlide.css";
 
 type PropsOption = {

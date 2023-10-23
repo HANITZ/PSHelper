@@ -1,6 +1,5 @@
-import { sendChromeMessage } from "../../../../utils/chromeUtils";
-import { selectEl } from "../../../../utils/jsUtils";
-import Component from "../../Component";
+import { selectEl, sendChromeMessage } from "@utils";
+import { Component } from "@Component";
 import "./Logo.css";
 
 type PropsLogo = {

@@ -21,7 +21,7 @@ import { FilesReadyToUproad, commitCodeToRepo } from "../API/postReqAPI";
 import "./Programmers.css";
 import { IsTimer, IsUpload, RepoName } from "../Popup/Popup";
 import { errorMsg } from "../utils/Constants";
-import { AlgorithmSite } from "../Component/AlgorithmSite";
+import { AlgorithmSite } from "../Components/AlgorithmSite";
 import {
   ParamCreateProblemContent,
   ParamGetDirectory,

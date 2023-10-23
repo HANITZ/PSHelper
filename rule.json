@@ -11,7 +11,7 @@
     },
     "condition": {
       "domains": ["acmicpc.net"],
-      "resourceTypes": ["xmlhttprequest"]
+      "resourceTypes": ["fetch"]
     }
   }
 ]

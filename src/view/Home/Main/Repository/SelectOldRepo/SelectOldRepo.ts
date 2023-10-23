@@ -1,7 +1,6 @@
 import { Repos } from "../../../../../API/getReqAPI";
-import { sendChromeMessage } from "../../../../../utils/chromeUtils";
-import { selectAllEl, selectEl } from "../../../../../utils/jsUtils";
-import Component from "../../../Component";
+import { selectAllEl, selectEl, sendChromeMessage } from "@utils";
+import { Component } from "@Component";
 import LinkButton from "./LinkButton";
 import "./SelectOldRepo.css";
 

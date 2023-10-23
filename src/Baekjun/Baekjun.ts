@@ -24,7 +24,7 @@ import {
 } from "../API/getReqAPI";
 import { commitCodeToRepo } from "../API/postReqAPI";
 import { chromeStorageId, errorMsg } from "../utils/Constants";
-import { AlgorithmSite } from "../Component/AlgorithmSite";
+import { AlgorithmSite } from "../Components/AlgorithmSite";
 
 interface BaekjunProblemId {
   BaekjunProblemId: string;
@@ -271,7 +271,6 @@ class Baekjun extends AlgorithmSite {
       tags,
     }: BaekjunProblem = await getProblemInfoBySolvedAc(problemId);
     const category = tags.map((tag) => tag.displayNames[0].name).join(", ");
-    
 
     const problemContent = this.createProblemContent({
       description,
