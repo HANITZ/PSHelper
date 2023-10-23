@@ -1,8 +1,7 @@
 import { Repos } from "../../../../../API/getReqAPI";
 import { postNewRepo } from "../../../../../API/postReqAPI";
 import { isUndefined, selectEl, sendChromeMessage } from "@utils";
-import { Component, Button } from "@Components";
-import { Status } from "@Status";
+import { Component, Button, Status } from "@Components";
 import VerifyMessage from "./VerifyMessage";
 import "./CreateNewRepo.css";
 
