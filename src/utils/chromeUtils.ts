@@ -20,7 +20,7 @@ export const setChromeLocalStorage = ({ ...props }):Promise<any> => {
 };
 
 type Fn = (data: object) => {};
-type getChromeLocalStorage = (key: string) => object;
+type getChromeLocalStorage = (key: string) => Promise<object>;
 
 export const getChromeLocalStorage: getChromeLocalStorage = (key) => {
   return chrome.storage.local.get([key]);

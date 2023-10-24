@@ -15,7 +15,7 @@ module.exports = {
     Github: path.join(srcDir, "Github.ts"),
     Programmers: path.join(srcDir, "Programmers/Programmers.ts"),
     Leetcode: path.join(srcDir, "Leetcode/Leetcode.ts"),
-    Baekjun: path.join(srcDir, "Baekjun/Baekjun.ts"),
+    Baekjun: path.join(srcDir, "view/AlgorithmSite/Baekjun/index.ts"),
   },
 
   module: {

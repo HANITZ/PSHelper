@@ -37,6 +37,7 @@ const messageHandler = (req: any, sender: any, sendResponse: any) => {
       });
     }
   } else if (req.action === "Timer" && req.method === "post") {
+    console.log(req);
     setChromeLocalStorage({ Timer: req.isActive });
   } else if (req.action === "Upload" && req.method === "post") {
     setChromeLocalStorage({ Upload: req.isActive });

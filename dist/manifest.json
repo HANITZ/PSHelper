@@ -50,8 +50,8 @@
   ],
   "host_permissions": [
     "https://github.com/",
-    "https://www.acmicpc.net/",
-    "https://school.programmers.co.kr/",
+    "https://www.acmicpc.net/*",
+    "https://school.programmers.co.kr/*",
     "https://solved.ac/api/v3/*"
   ]
 }

@@ -1,4 +1,4 @@
-import { Component } from "Components/Component";
+import { Component } from "@Components";
 
 type PropsButton = {
   name?: string;

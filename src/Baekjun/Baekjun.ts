@@ -24,7 +24,7 @@ import {
 } from "../API/getReqAPI";
 import { commitCodeToRepo } from "../API/postReqAPI";
 import { chromeStorageId, errorMsg } from "../utils/Constants";
-import { AlgorithmSite } from "../Components/AlgorithmSite";
+import { AlgorithmSite } from "@Components";
 
 interface BaekjunProblemId {
   BaekjunProblemId: string;
@@ -148,7 +148,7 @@ class Baekjun extends AlgorithmSite {
 
   startSolving = async () => {
     const { isTimer } = (await getChromeLocalStorage(
-      chromeStorageId.isTimer
+      chromeStorageId.Timer
     )) as IsTimer;
     if (isTimer) {
       this.setBaekjunTimer();

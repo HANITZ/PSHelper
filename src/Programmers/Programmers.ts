@@ -21,7 +21,7 @@ import { FilesReadyToUproad, commitCodeToRepo } from "../API/postReqAPI";
 import "./Programmers.css";
 import { IsTimer, IsUpload, RepoName } from "../Popup/Popup";
 import { errorMsg } from "../utils/Constants";
-import { AlgorithmSite } from "../Components/AlgorithmSite";
+import { AlgorithmSite } from "@Components";
 import {
   ParamCreateProblemContent,
   ParamGetDirectory,
@@ -82,6 +82,7 @@ class Programmers extends AlgorithmSite {
   };
 
   setTimerLargeTemplate = () => {
+    
     const element = $(".nav.navbar-nav");
     const position = "afterbegin";
     const html = `<li class="nav-item"   >
@@ -131,7 +132,8 @@ class Programmers extends AlgorithmSite {
   };
 
   startSolving = async () => {
-    const { isTimer } = (await getChromeLocalStorage("isTimer")) as IsTimer;
+    const { Timer:isTimer } = (await getChromeLocalStorage("Timer")) as {Timer: boolean}
+    console.log(isTimer);
     if (isTimer) {
       this.setProgrammersTimer();
     }
@@ -207,7 +209,7 @@ class Programmers extends AlgorithmSite {
   };
 
   afterSuccess = async (modalElement: HTMLElement) => {
-    const { isUpload } = (await getChromeLocalStorage("isUpload")) as IsUpload;
+    const { Upload:isUpload } = (await getChromeLocalStorage("Upload")) as {Upload: boolean}
     const { ProgrammersTime: startTime } = (await getChromeLocalStorage(
       "ProgrammersTime"
     )) as ProgrammersTime;

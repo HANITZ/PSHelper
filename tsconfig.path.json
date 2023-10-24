@@ -17,6 +17,7 @@
       "@OptionPopup/*": ["./view/Home/OptionPopup/*"],
       "@utils": ["./utils"],
       "@Timer": ["./Controller/Timer"],
+      "@Data/*": ["./Data/*"]
     }
   }
 }

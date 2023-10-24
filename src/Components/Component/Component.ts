@@ -1,4 +1,4 @@
-import { addComponents, isSameTwo } from "../../utils/jsUtils";
+import { addComponents, isSameTwo } from "@utils";
 
 export type ComponentProps<T> = {
   node: Element;
@@ -49,7 +49,9 @@ export default abstract class Component<T> {
 
   createChildComponents(): void {}
 
-  update(): void {}
+  update(): void {
+    
+  }
 
   template(): string {
     return "";

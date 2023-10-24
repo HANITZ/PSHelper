@@ -11,6 +11,8 @@ import { Repos, getUserRepos } from "../API/getReqAPI";
 import { postNewRepo } from "../API/postReqAPI";
 import { renderPopup } from "./renderPopup";
 
+
+
 type USER = {
   USER: string;
 };
@@ -28,12 +30,12 @@ export type IsTimer = {
 };
 
 export type Timer = {
-  Timer: boolean;
-};
+  Timer: boolean
+}
 
 export type Upload = {
-  Upload: boolean;
-};
+  Upload: boolean
+}
 
 class Popup {
   repos: Repos[] | undefined;

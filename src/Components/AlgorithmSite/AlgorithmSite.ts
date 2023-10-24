@@ -1,6 +1,6 @@
-import { $$, Time, createTimer } from "../utils/jsUtils";
+import { $$, Time, createTimer } from "@utils";
 
-export class AlgorithmSite {
+export default class AlgorithmSite {
   timer: NodeJS.Timer | undefined;
 
   constructor() {}
@@ -15,6 +15,4 @@ export class AlgorithmSite {
       el.innerText = `Timer: ${h}:${m}:${s}`;
     });
   };
-
-
 }

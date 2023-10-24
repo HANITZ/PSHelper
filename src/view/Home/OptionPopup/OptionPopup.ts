@@ -42,7 +42,7 @@ export default class OptionPopup extends Component<PropsOptionPopup> {
     let { Upload } = (await getChromeLocalStorage("Upload")) as {
       Upload: boolean;
     };
-
+    console.log(Timer, Upload)
     if (isUndefined(Timer)) {
       Timer = true;
       sendChromeMessage({ action: "Timer", method: "post", isActive: Timer });
