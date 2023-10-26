@@ -3,11 +3,10 @@ export const errorMsg = {
 };
 
 export const chromeStorageId = {
-  baekjunProblemId: "baekjunProblemId",
-  baekjunStartTime: "baekjunStartTime", 
-  repo: "repoName",
+  BaekjunProblemId: "BaekjunProblemId",
+  BaekjunStartTime: "BaekjunStartTime", 
+  Repo: "Repo",
   Timer: "Timer",
   Upload: "Upload",
-  submitedProblemId: "submitedProblem",
-
+  SubmissionId: "SubmissionId",
 };

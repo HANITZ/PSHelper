@@ -9,3 +9,13 @@
   border-bottom: 4px solid #afa8de;
   border-right: 4px solid #afa8de;
 }
+
+.success-solve {
+  display: inline-block;
+  transform: rotate(45deg);
+  width: 9px;
+  height: 14px;
+  border-bottom: 4px solid #afa8de;
+  border-right: 4px solid #afa8de;
+  margin-left: 7px;
+}

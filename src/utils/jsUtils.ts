@@ -385,7 +385,15 @@ export const getReadmeText = ({
   description,
 }: paramReadmeText): string =>
   level
-    ? `# [${level}] ${title} - ${problemId} \n\n`
+    ? `# [${level}] ${title} - ${problemId} \n\n` +
+      `[문제 링크](https://www.acmicpc.net/problem/${problemId}) \n\n` +
+      `### 성능 요약\n\n` +
+      `평균 소요 메모리: ${spentMemory} KB, ` +
+      `평균 소요 시간: ${spentTime} ms\n\n` +
+      `풀이시간: ${solvingTime}\n\n` +
+      `### 분류\n\n` +
+      `${category}\n\n` +
+      `### 문제 설명\n\n${description}\n\n`
     : `# ${title} - ${problemId} \n\n` +
       `[문제 링크](https://www.acmicpc.net/problem/${problemId}) \n\n` +
       `### 성능 요약\n\n` +

@@ -25,6 +25,7 @@ import {
 import { commitCodeToRepo } from "../API/postReqAPI";
 import { chromeStorageId, errorMsg } from "../utils/Constants";
 import { AlgorithmSite } from "@Components";
+import { BaekjunProblemInfoBySolAc } from "@Data/Baekjun";
 
 interface BaekjunProblemId {
   BaekjunProblemId: string;
@@ -38,37 +39,7 @@ interface SubmitedProblem {
   submitedProblem: string;
 }
 
-interface BaekjunTag {
-  aliases: { alies: string }[];
-  bojTagId: number;
-  displayNames: { language: string; name: string; short: string }[];
-  isMeta: boolean;
-  key: string;
-  problemCount: number;
-}
-interface BaekjunProblem {
-  problemId: number;
-  titleKo: string;
-  titles: [
-    {
-      language: string;
-      languageDisplayName: string;
-      title: string;
-      isOriginal: boolean;
-    }
-  ];
-  isSolvable: boolean;
-  isPartial: boolean;
-  acceptedUserCount: number;
-  level: string;
-  votedUserCount: number;
-  sprout: boolean;
-  givesNoRating: boolean;
-  isLevelLocked: boolean;
-  averageTries: number;
-  official: boolean;
-  tags: BaekjunTag[];
-}
+
 
 export type ParamCreateProblemContent = {
   description: string;
@@ -86,9 +57,9 @@ export type ParamCreateProblemContent = {
 type BaekjunLevel = {
   level: string;
 };
-type ParamBaekCreateProblemContent = ParamCreateProblemContent & BaekjunLevel;
-type ParamBaekGetMessage = ParamGetMessage & BaekjunLevel;
-type ParamBaekGetDirectory = ParamGetDirectory & BaekjunLevel;
+export type ParamBaekCreateProblemContent = ParamCreateProblemContent & BaekjunLevel;
+export type ParamBaekGetMessage = ParamGetMessage & BaekjunLevel;
+export type ParamBaekGetDirectory = ParamGetDirectory & BaekjunLevel;
 export interface ParamGetMessage {
   title: string;
   spentMemory: string;
@@ -117,10 +88,10 @@ class Baekjun extends AlgorithmSite {
 
   init = async () => {
     const { BaekjunProblemId: baekjunProblemId } = (await getChromeLocalStorage(
-      chromeStorageId.baekjunProblemId
+      chromeStorageId.BaekjunStartTime
     )) as BaekjunProblemId;
     const { repoName } = (await getChromeLocalStorage(
-      chromeStorageId.repo
+      chromeStorageId.Repo
     )) as RepoName;
     if (!repoName) throw new Error(errorMsg.NotFoundRepo);
 
@@ -181,11 +152,11 @@ class Baekjun extends AlgorithmSite {
 
   checkSubmited = async () => {
     const { submitedProblem } = (await getChromeLocalStorage(
-      chromeStorageId.submitedProblemId
+      chromeStorageId.SubmissionId
     )) as SubmitedProblem;
     console.log(submitedProblem);
     if (submitedProblem && submitedProblem === getQueryParam("problem_id")) {
-      deleteChromeLocalStorage(chromeStorageId.submitedProblemId);
+      deleteChromeLocalStorage(chromeStorageId.SubmissionId);
       this.afterSubmit();
     }
   };
@@ -269,7 +240,7 @@ class Baekjun extends AlgorithmSite {
       level,
       titleKo,
       tags,
-    }: BaekjunProblem = await getProblemInfoBySolvedAc(problemId);
+    }: BaekjunProblemInfoBySolAc = await getProblemInfoBySolvedAc(problemId);
     const category = tags.map((tag) => tag.displayNames[0].name).join(", ");
 
     const problemContent = this.createProblemContent({
@@ -405,4 +376,4 @@ if (window.location.href.includes("/problem/")) {
 } else if (window.location.href.includes("/submit/")) {
   baekjun.readyToSubmit();
 }
-// baekjun.createModalAfterSuccess("12:12:12");
+

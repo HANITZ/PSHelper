@@ -82,7 +82,6 @@ class Programmers extends AlgorithmSite {
   };
 
   setTimerLargeTemplate = () => {
-    
     const element = $(".nav.navbar-nav");
     const position = "afterbegin";
     const html = `<li class="nav-item"   >
@@ -132,7 +131,9 @@ class Programmers extends AlgorithmSite {
   };
 
   startSolving = async () => {
-    const { Timer:isTimer } = (await getChromeLocalStorage("Timer")) as {Timer: boolean}
+    const { Timer: isTimer } = (await getChromeLocalStorage("Timer")) as {
+      Timer: boolean;
+    };
     console.log(isTimer);
     if (isTimer) {
       this.setProgrammersTimer();
@@ -209,7 +210,9 @@ class Programmers extends AlgorithmSite {
   };
 
   afterSuccess = async (modalElement: HTMLElement) => {
-    const { Upload:isUpload } = (await getChromeLocalStorage("Upload")) as {Upload: boolean}
+    const { Upload: isUpload } = (await getChromeLocalStorage("Upload")) as {
+      Upload: boolean;
+    };
     const { ProgrammersTime: startTime } = (await getChromeLocalStorage(
       "ProgrammersTime"
     )) as ProgrammersTime;

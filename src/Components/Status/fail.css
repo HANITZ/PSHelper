@@ -22,3 +22,27 @@
   position: absolute;
   transform: rotate(-45deg);
 }
+
+.fail-solve {
+  background: #f9f9f9;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  margin-left: 10px;
+}
+
+.fail-solve:after {
+  content: "";
+  height: 18px;
+  border-left: 5px solid #cd8084;
+  position: absolute;
+  transform: rotate(45deg);
+}
+
+.fail-solve:before {
+  content: "";
+  height: 18px;
+  border-left: 5px solid #cd8084;
+  position: absolute;
+  transform: rotate(-45deg);
+}

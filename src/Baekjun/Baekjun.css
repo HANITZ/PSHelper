@@ -82,8 +82,14 @@
 }
 
 .modal-baekjun {
-  background-color: rgba(40, 56, 80, 0.8);
-  display: block;
+  position: absolute;
+  top: 50%;
+  width: 400px;
+  height: 600px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+  transform: translateY(-50%);
 }
 
 .modal-document {
