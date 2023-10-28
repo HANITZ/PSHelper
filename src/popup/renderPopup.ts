@@ -1,5 +1,6 @@
+import { Repos } from "../API/getReqAPI";
 import { $ } from "../utils/jsUtils";
-import { Repos } from "./Popup";
+
 
 type RenderPopup = {
   type: string;

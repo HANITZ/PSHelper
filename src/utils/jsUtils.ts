@@ -1,3 +1,5 @@
+import Component from "../Components/Component/Component";
+
 type $ = (targetName: string, parentEl?: HTMLElement | Document) => HTMLElement;
 export const $: $ = (targetName, parentEl) => {
   const element = parentEl
@@ -6,6 +8,12 @@ export const $: $ = (targetName, parentEl) => {
   if (!element) throw new Error(`${targetName} element를 찾을 수 없습니다`);
   return element as HTMLElement;
 };
+
+export const selectEl = (selector: string, context: any): Element =>
+  context.querySelector(selector);
+
+export const selectAllEl = (selector: string, context: any): Element[] =>
+  context.querySelectorAll(selector);
 
 type $$ = (targetName: string, parentEl?: HTMLElement) => HTMLElement[];
 export const $$: $$ = (targetName, parentEl) => {
@@ -46,8 +54,6 @@ export const isObjEmpty = (obj: Object) => {
   }
   return JSON.stringify(obj) === JSON.stringify({});
 };
-
-
 
 export const b64EncodeUnicode = (str: string) => {
   return btoa(
@@ -137,11 +143,11 @@ export type InsertHTMLParam = {
   element: HTMLElement;
   position: "beforebegin" | "afterbegin" | "beforeend" | "afterend";
   html: string;
-}
-type insertHTML = (args:InsertHTMLParam) => void
-export const insertHTML:insertHTML = ({element, position, html})=>{
-  element.insertAdjacentHTML(position, html)
-}
+};
+type insertHTML = (args: InsertHTMLParam) => void;
+export const insertHTML: insertHTML = ({ element, position, html }) => {
+  element.insertAdjacentHTML(position, html);
+};
 
 export type GetTimeDiff = {
   h: string;
@@ -214,7 +220,7 @@ export const getQueryParam = (query: string): string => {
   return param;
 };
 
-export const SOLVEDAC_LEVEL: { [key: number]: string } = {
+export const SOLVEDAC_LEVEL: { [key: string]: string } = {
   0: "Unrated",
   1: "Bronze V",
   2: "Bronze IV",
@@ -356,3 +362,69 @@ export const LANGUAGES: { [key: string]: string } = {
   "Visual Basic (.NET)": "vb",
   Whitespace: "ws",
 };
+
+export type paramReadmeText = {
+  level?: string;
+  title: string;
+  problemId: string;
+  spentMemory: string;
+  spentTime: string;
+  category: string;
+  description: string;
+  solvingTime: string;
+};
+
+export const getReadmeText = ({
+  level,
+  title,
+  solvingTime,
+  problemId,
+  spentMemory,
+  spentTime,
+  category,
+  description,
+}: paramReadmeText): string =>
+  level
+    ? `# [${level}] ${title} - ${problemId} \n\n` +
+      `[문제 링크](https://www.acmicpc.net/problem/${problemId}) \n\n` +
+      `### 성능 요약\n\n` +
+      `평균 소요 메모리: ${spentMemory} KB, ` +
+      `평균 소요 시간: ${spentTime} ms\n\n` +
+      `풀이시간: ${solvingTime}\n\n` +
+      `### 분류\n\n` +
+      `${category}\n\n` +
+      `### 문제 설명\n\n${description}\n\n`
+    : `# ${title} - ${problemId} \n\n` +
+      `[문제 링크](https://www.acmicpc.net/problem/${problemId}) \n\n` +
+      `### 성능 요약\n\n` +
+      `평균 소요 메모리: ${spentMemory} KB, ` +
+      `평균 소요 시간: ${spentTime} ms\n\n` +
+      `풀이시간: ${solvingTime}\n\n` +
+      `### 분류\n\n` +
+      `${category}\n\n` +
+      `### 문제 설명\n\n${description}\n\n`;
+
+export function addComponents(this: any) {
+  const node = this.node;
+  const newNode = Array.from(
+    new DOMParser().parseFromString(this.template(), "text/html").body.children
+  );
+  node.parentNode.insertBefore(newNode[0], node.nextSibling);
+  this.node = node.nextSibling;
+  const nodeClass = node.classList.value.trim();
+  if (nodeClass) {
+    this.node.className = nodeClass;
+  }
+  node.remove();
+}
+
+export function isSameTwo(a: any, b: any) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+export function isUndefined(a: any): boolean {
+  if (typeof a === "undefined") {
+    return true;
+  }
+  return false;
+}

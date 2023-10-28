@@ -1,0 +1,29 @@
+.logo-button {
+  border-radius: 50%;
+  height: 90px;
+  width: 90px;
+  cursor: pointer;
+}
+
+.logo-text-logined {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.logo-text {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.logo-repo-logined {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  &:hover {
+    color: #aeb4b8;
+  }
+}
