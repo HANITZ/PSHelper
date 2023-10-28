@@ -1,0 +1,41 @@
+body {
+  display: flex;
+  flex-direction: column;
+  width: 270px;
+  height: 300px;
+  margin: 0;
+  white-space: nowrap;
+  background: linear-gradient(331.91deg, #afa8de 4.31%, #9586ef 130.13%);
+}
+
+.enroll-repo {
+  border-radius: 3px;
+  padding: 5px 5px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500px;
+  background: #02bc68;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  outline: none;
+  border: none;
+  margin-left: 2px;
+}
+
+.option-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 10px 10px 0 0;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #463f6b 50.31%, #000 130.13%);
+}

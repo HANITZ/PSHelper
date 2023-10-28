@@ -1,0 +1,28 @@
+.option-header {
+  width: 90%;
+  height: 30px;
+  margin: 15px 1px 5px 1px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.option-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: #000;
+}
+
+.option-body {
+  width: 100%;
+}
+
+.option {
+    display: flex;
+    flex-direction: row;
+    margin: 7px 10px;
+    align-items: center;
+}
+
+

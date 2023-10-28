@@ -1,5 +1,4 @@
 import { getChromeLocalStorage } from "../utils/chromeUtils";
-import { IsTimer } from "../Popup/Popup";
 import { $ } from "../utils/jsUtils";
 
 class Leetcode {
@@ -9,7 +8,7 @@ class Leetcode {
   }
 
   init = async () => {
-    const { isTimer } = (await getChromeLocalStorage("isTimer")) as IsTimer;
+    const { isTimer } = (await getChromeLocalStorage("isTimer")) as {isTimer: boolean}
     if (isTimer) {
       this.setTimer();
     }
