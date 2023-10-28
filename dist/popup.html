@@ -1,105 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <div id="root">
-      <div class="main-container">
-        <div class="logo-container">
-          <img class="logo-button" src="./PSHelper.png" alt="" />
-          <div class="logo-text" style="display: none">
-            Click Logo to connect to GitHub
-          </div>
-          <div class="logo-text-logined" style="display: none"></div>
-          <div class="logo-repo-logined" style="display: none"></div>
-        </div>
-        <div class="repo-container" style="display: none">
-          <div class="repo-type">
-            <div class="dropdown-select-type">
-              <input
-                type="text"
-                class="select-type"
-                readonly
-                placeholder="Select"
-              />
-              <div class="options-type">
-                <div class="option-type">New</div>
-                <div class="option-type">Old</div>
-              </div>
-            </div>
-          </div>
-          <div class="repo-content">
-            <div class="default-select">
-              <input type="text" class="before-select-type" readonly />
-            </div>
-            <div class="new-repo-create" style="display: none">
-              <div style="display: flex">
-                <input
-                  class="new-repo-input"
-                  type="text"
-                  placeholder="Create New Repo"
-                />
-                <div id="verify-repo" class="new-repo-button">Verify</div>
-                <div
-                  id="create-repo"
-                  class="new-repo-button"
-                  style="display: none"
-                >
-                  Enroll
-                </div>
-              </div>
-              <div class="verify-message"></div>
-              <div class="status">
-                <div></div>
-                <div></div>
-                <div></div>
-                </div>
-            </div>
-            <div class="old-repo-select" style="display: none">
-              <div class="dropdown-select-repo">
-                <input
-                  type="text"
-                  class="select-repo"
-                  readonly
-                  placeholder="Select Your Repo"
-                />
-                <div class="options-repo"></div>
-              </div>
-              <div id="link-repo" class="new-repo-button">Link</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="option-container" style="display: none">
-        <div class="option-header">
-          <h1 class="option-title">Option</h1>
-        </div>
-        <div class="option-body">
-          <div class="option">
-            <span class="">Uploading code to Repo</span>
-            <label for="isupload" class="repo-switch">
-              <input type="checkbox" id="isupload" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="option">
-            <span>Auto Timer</span>
-            <label for="istimer" class="repo-switch">
-              <input type="checkbox" id="istimer" />
-              <span class="slider"></span>
-            </label>
-          </div>
-        </div>
-      </div>
-      <script type="module" src="js/popup.js"></script>
-    </div>
-  </body>
-  <footer>
-    <div>
-      <span class="footer-name">PSHelper</span>
-    </div>
-  </footer>
-</html>
+Html Webpack Plugin:
+<pre>
+  Error: Child compilation failed:
+  Module not found: Error: Can't resolve '/Users/han/Desktop/PSHub/PSHelper/popup.html' in '/Users/han/Desktop/PSHub/PSHelper'
+  ModuleNotFoundError: Module not found: Error: Can't resolve '/Users/han/Desktop/PSHub/PSHelper/popup.html' in '/Users/han/Desktop/  PSHub/PSHelper'
+      at /Users/han/Desktop/PSHub/PSHelper/node_modules/webpack/lib/Compilation.js:2022:28
+      at /Users/han/Desktop/PSHub/PSHelper/node_modules/webpack/lib/NormalModuleFactory.js:817:13
+      at eval (eval at create (/Users/han/Desktop/PSHub/PSHelper/node_modules/tapable/lib/HookCodeFactory.js:33:10), <anonymous>:10:  1)
+      at /Users/han/Desktop/PSHub/PSHelper/node_modules/webpack/lib/NormalModuleFactory.js:275:22
+      at eval (eval at create (/Users/han/Desktop/PSHub/PSHelper/node_modules/tapable/lib/HookCodeFactory.js:33:10), <anonymous>:9:1  )
+      at /Users/han/Desktop/PSHub/PSHelper/node_modules/webpack/lib/NormalModuleFactory.js:448:22
+      at /Users/han/Desktop/PSHub/PSHelper/node_modules/webpack/lib/NormalModuleFactory.js:118:11
+      at /Users/han/Desktop/PSHub/PSHelper/node_modules/webpack/lib/NormalModuleFactory.js:689:25
+      at /Users/han/Desktop/PSHub/PSHelper/node_modules/webpack/lib/NormalModuleFactory.js:893:8
+      at /Users/han/Desktop/PSHub/PSHelper/node_modules/webpack/lib/NormalModuleFactory.js:1013:5
+  
+  - Compilation.js:2022 
+    [PSHelper]/[webpack]/lib/Compilation.js:2022:28
+  
+  - NormalModuleFactory.js:817 
+    [PSHelper]/[webpack]/lib/NormalModuleFactory.js:817:13
+  
+  
+  - NormalModuleFactory.js:275 
+    [PSHelper]/[webpack]/lib/NormalModuleFactory.js:275:22
+  
+  
+  - NormalModuleFactory.js:448 
+    [PSHelper]/[webpack]/lib/NormalModuleFactory.js:448:22
+  
+  - NormalModuleFactory.js:118 
+    [PSHelper]/[webpack]/lib/NormalModuleFactory.js:118:11
+  
+  - NormalModuleFactory.js:689 
+    [PSHelper]/[webpack]/lib/NormalModuleFactory.js:689:25
+  
+  - NormalModuleFactory.js:893 
+    [PSHelper]/[webpack]/lib/NormalModuleFactory.js:893:8
+  
+  - NormalModuleFactory.js:1013 
+    [PSHelper]/[webpack]/lib/NormalModuleFactory.js:1013:5
+  
+  - child-compiler.js:169 
+    [PSHelper]/[html-webpack-plugin]/lib/child-compiler.js:169:18
+  
+  - Compiler.js:551 finalCallback
+    [PSHelper]/[webpack]/lib/Compiler.js:551:5
+  
+  - Compiler.js:577 
+    [PSHelper]/[webpack]/lib/Compiler.js:577:11
+  
+  - Compiler.js:1200 
+    [PSHelper]/[webpack]/lib/Compiler.js:1200:17
+  
+  
+  - task_queues:95 process.processTicksAndRejections
+    node:internal/process/task_queues:95:5
+  
+</pre><script defer src="js/popup.js"></script>
