@@ -43,7 +43,7 @@ export default class ProblemPage extends Component<PropsProblemPage> {
           window.location.href
         ),
       });
-      setChromeLocalStorage({ [chromeStorageId.BaekjunStartTime]: nowTime });
+      await setChromeLocalStorage({ [chromeStorageId.BaekjunStartTime]: nowTime });
     } else {
       // 같은 문제 내에서 다시 접근한 경우에는 기존 타이머 지속
       this.timer = new Timer({ startTime: BaekjunStartTime });

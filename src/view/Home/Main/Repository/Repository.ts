@@ -43,11 +43,7 @@ export default class Repository extends Component<PropsRepository> {
   }
   async componentDidMount() {
     const repos = await getUserRepos();
-    const newState = {
-      ...this.state,
-      repos,
-    };
-    this.setState(newState);
+    this.setState({ repos });
   }
 
   template(): string {

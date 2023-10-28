@@ -21,11 +21,11 @@ export default class SubmitedListPage extends Component<PropsSubmitPage> {
 
   template() {
     const { status, modal } = this.state;
-    console.log(modal);
-    return `<div>
-    ${status === "loading" ? `<Status class="loading-solve"></Status>` : ``}
-    ${status === "success" ? `<Status class="success-solve"></Status>` : ``}
-    ${status === "fail" ? `<Status class="fail-solve"></Status>` : ``}
+    return `
+    <div>
+      ${status === "loading" ? `<Status class="loading-solve"></Status>` : ``}
+      ${status === "success" ? `<Status class="success-solve"></Status>` : ``}
+      ${status === "fail" ? `<Status class="fail-solve"></Status>` : ``}
     </div>
     `;
   }

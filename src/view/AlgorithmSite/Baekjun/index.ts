@@ -65,7 +65,6 @@ if (window.location.href.includes("/problem/")) {
 // })
 
 const contentElement = $(".container.content");
-console.log(contentElement);
 const html = `
   <div class="ps-modal-container"  >
     <div class="ps-modal-header">

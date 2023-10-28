@@ -86,6 +86,8 @@ export default class Baekjun {
     )) as Partial<ChromeStorage>;
     const submissionId = submitedInfo.cells[0].innerText;
     const problemId = getQueryParam("problem_id");
+    console.log(BaekjunStartTime);
+    console.log(getTimeDiff(BaekjunStartTime as number, new Date().getTime()));
     return {
       submissionId,
       problemId,
@@ -100,17 +102,21 @@ export default class Baekjun {
     };
   }
 
-  static async afterSuccess(submitedInfo: HTMLTableRowElement, callback: Function) {
+  static async afterSuccess(
+    submitedInfo: HTMLTableRowElement,
+    callback: Function
+  ) {
     const { Upload } = (await getChromeLocalStorage(
       chromeStorageId.Upload
     )) as Partial<ChromeStorage>;
     const problemContent = await this.createProblemContent(submitedInfo);
     if (Upload) {
-      await commitCodeToRepo({ ...problemContent});
+      await commitCodeToRepo({ ...problemContent });
     }
     // this.renderModalAfterSuccess(solvingTime);
-    callback({modal: true})
+    callback({ modal: true });
     deleteChromeLocalStorage(chromeStorageId.BaekjunStartTime);
+    deleteChromeLocalStorage(chromeStorageId.BaekjunProblemId);
   }
 
   static async createProblemContent(submitedInfo: HTMLTableRowElement) {
@@ -155,8 +161,7 @@ export default class Baekjun {
       category,
       description,
     });
-    console.log(readMe)
-    return { directory, message, fileName, readMe, code,  };
+    return { directory, message, fileName, readMe, code };
   }
 
   static getFileName({ title, language }: ParamGetFileName) {
