@@ -19,8 +19,6 @@
 
 
 <br/>
-<hr/>
-<br/>
 
 # Directory Structure
 
@@ -33,23 +31,31 @@
 │   ├─ backgroundAPI
 │   │   └─ getReqBackground.ts
 │   └─ background.ts
-├── Baekjun
-│   ├─ Baekjun.ts
-│   └─ Baekjun.css
-├── Programmers
-│   ├─ Programmers.ts
-│   └─ Programmers.css
-├── Popup
-│   ├─ Popup.ts
-│   └─ Popup.css
+├── Controller
+│     ├─ Timer
+│     └─ Baekjun
+├── view
+│   ├─ AlgorithmSite
+│   │   └─ Baekjun
+│   │       ├─ProblemPage
+│   │       ├─SubmitedListPage
+│   │       └─SubmitPage
+│   └─ Home
+│       ├─ Footer
+│       ├─ OptionPopup
+│       ├─ Popup.ts
+│       └─  Main
+│           ├─ Logo
+│           └─ Repository
+│               ├─ CreateNewRepo
+│               ├─ SelectOldRepo
+│               └─ SelectType
 ├── utils
 │   ├─ chromeUtils.ts
 │   └─ jsUtils.ts
 └── Giuhub.ts
 ```
 
-# Architecture
-![](asset/architecture.png)
 # 기능 목록
 
 <p style="font-weight: 700; font-size: 20px" >타이머</p>
