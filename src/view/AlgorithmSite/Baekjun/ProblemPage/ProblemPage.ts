@@ -23,6 +23,7 @@ type PropsProblemPage = {
 
 export default class ProblemPage extends Component<PropsProblemPage> {
   timer: Timer | undefined;
+
   async componentDidMount(): Promise<void> {
     const { BaekjunProblemId } = (await getChromeLocalStorage(
       chromeStorageId.BaekjunProblemId
@@ -51,6 +52,7 @@ export default class ProblemPage extends Component<PropsProblemPage> {
 
     this.timer.createTimer(this.timerHandler.bind(this));
   }
+  
   timerHandler({ h, m, s }: GetTimeDiff) {
     this.setState({ hour: h, min: m, sec: s });
   }

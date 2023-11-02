@@ -2,6 +2,7 @@ import {
   $,
   chromeStorageId,
   deleteChromeLocalStorage,
+  errorMsg,
   getChromeLocalStorage,
   insertHTML,
   isUndefined,
@@ -17,7 +18,7 @@ if (window.location.href.includes("/problem/")) {
   getChromeLocalStorage(chromeStorageId.Timer).then((res) => {
     const { Timer } = res as Partial<ChromeStorage>;
     if (isUndefined(Timer))
-      throw new Error("[PSHelper]Repository가 설정되지 않았습니다.");
+      throw new Error(errorMsg.NotFoundRepo);
     if (Timer) {
       insertHTML({
         element: $(".page-header"),
