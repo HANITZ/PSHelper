@@ -1,5 +1,6 @@
 import {
   $,
+  abc,
   chromeStorageId,
   errorMsg,
   getChromeLocalStorage,
@@ -58,3 +59,5 @@ getChromeLocalStorage(chromeStorageId.Timer).then((res) => {
     );
   }
 });
+
+console.log(abc.current);

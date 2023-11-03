@@ -1,5 +1,6 @@
 import {
   $,
+  abc,
   chromeStorageId,
   deleteChromeLocalStorage,
   errorMsg,
@@ -17,8 +18,7 @@ import "../../Modal/Modal.css";
 if (window.location.href.includes("/problem/")) {
   getChromeLocalStorage(chromeStorageId.Timer).then((res) => {
     const { Timer } = res as Partial<ChromeStorage>;
-    if (isUndefined(Timer))
-      throw new Error(errorMsg.NotFoundRepo);
+    if (isUndefined(Timer)) throw new Error(errorMsg.NotFoundRepo);
     if (Timer) {
       insertHTML({
         element: $(".page-header"),
@@ -44,26 +44,13 @@ if (window.location.href.includes("/problem/")) {
       });
       new SubmitedListPage({
         node: $(".status"),
-        state: { status: "loading" },
+        state: { status: "loading", modal: false },
       });
+
       deleteChromeLocalStorage(chromeStorageId.SubmissionId);
     }
   });
 }
-
-// insertHTML({
-//   element: $(".result"),
-//   position: "beforeend",
-//   html: `<div class="status" ></div>`,
-// });
-// new SubmitedListPage({
-//   node: $(".status"),
-//   state: { status: "loading" },
-// });
-// new Modal({
-//   node: $('.wrapper'),
-//   state:{}
-// })
 
 const contentElement = $(".container.content");
 const html = `
@@ -113,3 +100,6 @@ const html = `
   </div>
 `;
 // insertHTML({ element: contentElement, position: "beforeend", html });
+
+console.log(abc.current);
+abc.current = "baekjun";

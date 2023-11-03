@@ -3,7 +3,7 @@
 
   "name": "PSHelper",
   "description": "알고리즘 문제풀이 도우미",
-  "version": "1.1",
+  "version": "1.2",
 
   "action": {
     "default_icon": "PSHelper.png",
@@ -31,10 +31,6 @@
     {
       "matches": ["https://school.programmers.co.kr/*"],
       "js": ["js/Programmers.js"]
-    },
-    {
-      "matches": ["https://leetcode.com/*"],
-      "js": ["js/Leetcode.js"]
     },
     {
       "matches": ["https://www.acmicpc.net/*"],

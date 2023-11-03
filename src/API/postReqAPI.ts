@@ -54,6 +54,10 @@ export const postNewRepo = async (name: string): Promise<any> => {
 export type User = {
   USER: string;
 };
+
+export type AvatarURL = {
+  AVATARURL: string;
+};
 type Token = {
   GITHUB_TOKEN: string;
 };

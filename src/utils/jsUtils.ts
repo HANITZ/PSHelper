@@ -428,3 +428,7 @@ export function isUndefined(a: any): boolean {
   }
   return false;
 }
+type Abc = { current: any };
+export let abc: Abc = {
+  current: null,
+};

@@ -10,6 +10,7 @@ const messageHandler = (req: any, sender: any, sendResponse: any) => {
     setChromeLocalStorage({
       GITHUB_TOKEN: req.token,
       USER: req.user.login,
+      AVATARURL: req.user.avatar_url,
     }).then(sendResponse({ success: true }));
     sendResponse({ success: true });
   } else if (

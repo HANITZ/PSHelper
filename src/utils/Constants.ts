@@ -7,7 +7,7 @@ export const chromeStorageId = {
   BaekjunStartTime: "BaekjunStartTime",
   Programmers: "Programmers",
   ProgrammersProblemInfo: "ProgrammersProblemInfo",
-  ProgrammersStartTime: "ProgrammersStartTime", 
+  ProgrammersStartTime: "ProgrammersStartTime",
   Repo: "Repo",
   Timer: "Timer",
   Upload: "Upload",
@@ -15,5 +15,12 @@ export const chromeStorageId = {
 };
 
 export const errorMsh = {
-  NotFoundRepo: "[PSHelper]Repository가 설정되지 않았습니다."
-}
+  NotFoundRepo: "[PSHelper]Repository가 설정되지 않았습니다.",
+};
+
+export const Language = {
+  "Python 3": "28",
+  PyPy3: "73",
+  "C++17": "84",
+  "Java 11": "93",
+};

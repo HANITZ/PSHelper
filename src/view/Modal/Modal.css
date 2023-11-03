@@ -8,74 +8,138 @@
   border-radius: 5px !important;
   box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
   transform: translateY(-50%);
+  z-index: 111;
 }
 
 .ps-modal-header {
-  padding: 4px;
-  border-radius: 5px !important;
-  border-color: #00000005;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
   display: flex;
-  border-bottom-width: 1px;
   justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
+  align-items: center;
+  background-color: #f8f9fa;
+  border-radius: 8px 8px 0 0;
 }
 
-.ps-user {
-  font-size: 12px;
-  height: 25px;
+.close-btn {
+  background-color: transparent; /* 배경색을 투명하게 설정 */
+  border: none;
+  font-size: 20px; /* 아이콘의 크기를 조정 */
   cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+.ps-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ps-user .name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+.ps-user .submitted-time,
+.ps-user .submission-id,
+.ps-user .solve-time {
+  font-size: 14px;
+  color: #888;
 }
 
 .ps-modal-body {
-  display: flex;
-  flex-direction: column;
-  padding: 12px 16px;
-  gap: 16px;
+  padding: 20px;
+}
+
+.ps-modal-button {
+  padding: 20px;
 }
 
 .solving-analysis {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  width: 100%;
+  gap: 20px;
 }
-.time-wrap {
+
+.time-wrap,
+.memory-wrap {
+  border-radius: 8px !important;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  font-size: 14px;
-  line-height: 16px;
-  padding: 8px;
-  border-style: solid;
-  border-color: #0000000d;
-  border-width: 1px;
-  border-radius: 5px !important;
-  width: 48%;
-  height: 150px;
+  gap: 10px;
+  flex: 1;
+  transition: background-color 0.3s, border-color 0.3s;
+  font-size: 16px;
+  color: transparent !important;
+  text-decoration: none;
+  cursor: pointer;
 }
-.time-title {
+.runtime-wrap {
   display: flex;
+  gap: 10px;
+}
+.time-wrap:hover,
+.memory-wrap:hover {
+  background-color: #ffffff;
+  border-color: #ccc;
+  color: #5865f2;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.time-wrap.active,
+.memory-wrap.active {
+  background-color: #f0f0f0;
+  border-color: #ddd;
+}
+
+.time-wrap .title,
+.memory-wrap .title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #888;
+  display: flex;
+  align-items: center;
   gap: 8px;
 }
-.memory-wrap {
+
+.time-wrap .value,
+.memory-wrap .value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #888;
   display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  line-height: 16px;
-  padding: 8px;
-  border-style: solid;
-  border-color: #0000000d;
-  border-width: 1px;
-  border-radius: 5px !important;
-  width: 48%;
-  height: 150px;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-wrap.active .title,
+.memory-wrap.active .title,
+.time-wrap.active .value,
+.memory-wrap.active .value {
+  color: #333;
+}
+.unit {
+  font-size: 18px;
+  font-weight: 100;
+}
+
+.time-wrap:hover .title,
+.time-wrap:hover .value,
+.memory-wrap:hover .title,
+.memory-wrap:hover .value,
+.time-wrap:hover .highlight,
+.memory-wrap:hover .highlight {
+  color: #333;
 }
 
 .code-wrap {
   display: flex;
   flex-direction: column;
   border-radius: 5px !important;
-  background-color: #00000005;
+  background-color: #efd3d305;
+}
+
+.runtime-content {
+  display: flex;
 }
 
 .code-lang {
@@ -118,35 +182,7 @@
 }
 
 .eff-wrap {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 8px;
-  border-color: #00000014;
-  border-style: solid;
-  border-color: #0000000d;
-  border-width: 1px;
-  border-radius: 5px !important;
-  border-radius: 8px;
-  gap: 8px;
-}
-
-.eff-category {
-  display: flex;
-  gap: 8px;
-  border-style: solid;
-  border-width: 0;
-}
-
-.eff-category > div {
-  color: #0000008c;
-  font-size: 12px;
-  line-height: 16px;
-  padding: 2px 6px;
-  border-radius: 5px;
-  cursor: pointer;
-  border-style: solid;
-  border-width: 0;
+  margin-top: 20px;
 }
 
 .eff-body {
@@ -181,6 +217,6 @@
 .chart-bottom {
   background-color: #0000000a;
   border-style: solid;
-  border-radius: 5px;
+  border-radius: 5px !important;
   margin-left: 31px;
 }

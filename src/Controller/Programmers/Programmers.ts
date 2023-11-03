@@ -84,7 +84,8 @@ export default class Programmers {
       .filter((node) => node.className !== "active")
       .map((node) => node.innerText)
       .join(", ");
-
+      const a = $("p") as HTMLParagraphElement
+      a.innerText
     const description = $(
       "div.guide-section-description > div.markdown"
     )!.innerHTML;

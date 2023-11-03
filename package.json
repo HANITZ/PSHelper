@@ -28,6 +28,7 @@
     "webpack-merge": "^5.9.0"
   },
   "dependencies": {
+    "chart.js": "^4.4.3",
     "clean-webpack-plugin": "^4.0.0",
     "dotenv": "^16.3.1",
     "html-webpack-plugin": "^5.5.3"

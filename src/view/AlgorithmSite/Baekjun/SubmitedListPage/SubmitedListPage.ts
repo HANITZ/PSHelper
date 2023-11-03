@@ -2,10 +2,11 @@ import { Component, Status } from "@Components";
 import { $, selectEl } from "@utils";
 import "./SubmitedListPage.css";
 import { Baekjun } from "@Controller/Baekjun";
+import { Modal } from "view/Modal";
 
 type PropsSubmitPage = {
   status: "loading" | "success" | "fail";
-  modal?: boolean;
+  modal: boolean;
 };
 
 export default class SubmitedListPage extends Component<PropsSubmitPage> {
@@ -13,6 +14,7 @@ export default class SubmitedListPage extends Component<PropsSubmitPage> {
     Baekjun.checkSubmission(this.setState.bind(this));
   }
   createChildComponents() {
+    const { modal } = this.state;
     new Status({
       node: selectEl("Status", this.node),
       state: {},

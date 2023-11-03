@@ -2,7 +2,9 @@ import { BaekjunProblemInfoBySolAc } from "@Data/Baekjun";
 import { ChromeStorage } from "@Data/ChromeStorage/types";
 import {
   $,
+  $$,
   LANGUAGES,
+  Language,
   SOLVEDAC_LEVEL,
   chromeStorageId,
   convertSingleCharToDoubleChar,
@@ -12,6 +14,7 @@ import {
   getReadmeText,
   getTimeDiff,
   hasElement,
+  insertHTML,
 } from "@utils";
 import {
   getBaekjunProblemDescription,
@@ -19,22 +22,98 @@ import {
   getProblemInfoBySolvedAc,
 } from "API/getReqAPI";
 import { commitCodeToRepo } from "API/postReqAPI";
-import {
-  ParamBaekGetDirectory,
-  ParamBaekGetMessage,
-  ParamGetFileName,
-} from "Baekjun/Baekjun";
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+import { Modal } from "view/Modal";
+>>>>>>> cb8c98f (refactor: 이전 코드 삭제)
+>>>>>>> 30dbf49 (refactor: 이전 코드 삭제)
+
+interface BaekjunProblemId {
+  BaekjunProblemId: string;
+}
+
+interface BaekjunTime {
+  baekjunTime: number;
+}
+
+interface SubmitedProblem {
+  submitedProblem: string;
+}
+
+<<<<<<< HEAD
+
+
+=======
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> cb8c98f (refactor: 이전 코드 삭제)
+>>>>>>> 30dbf49 (refactor: 이전 코드 삭제)
+export type ParamCreateProblemContent = {
+  description: string;
+  acceptedUserCount?: number;
+  averageTries?: number;
+  official?: boolean;
+  title: string;
+  problemId: string;
+  solvingTime: string;
+  spentTime: string;
+  spentMemory: string;
+  category: string;
+  language: string;
+};
+type BaekjunLevel = {
+  level: string;
+};
+<<<<<<< HEAD
+export type ParamBaekCreateProblemContent = ParamCreateProblemContent & BaekjunLevel;
+=======
+<<<<<<< HEAD
+export type ParamBaekCreateProblemContent = ParamCreateProblemContent & BaekjunLevel;
+=======
+export type ParamBaekCreateProblemContent = ParamCreateProblemContent &
+  BaekjunLevel;
+>>>>>>> cb8c98f (refactor: 이전 코드 삭제)
+>>>>>>> 30dbf49 (refactor: 이전 코드 삭제)
+export type ParamBaekGetMessage = ParamGetMessage & BaekjunLevel;
+export type ParamBaekGetDirectory = ParamGetDirectory & BaekjunLevel;
+export interface ParamGetMessage {
+  title: string;
+  spentMemory: string;
+  spentTime: string;
+  solvingTime: string;
+}
 
 type ProblemInfo = {
   submissionId: string;
   problemId: string;
   spentTime: string;
   spentMemory: string;
-  language: string;
+  language: keyof typeof Language;
   solvingTime: string;
   code: string;
   description: string;
 };
+
+export interface ParamGetMessage {
+  title: string;
+  spentMemory: string;
+  spentTime: string;
+  solvingTime: string;
+}
+
+export interface ParamGetDirectory {
+  problemId: string;
+  title: string;
+}
+
+export interface ParamGetFileName {
+  title: string;
+  language: string;
+}
 
 export default class Baekjun {
   static getProblemId = (url: string) => {
@@ -70,6 +149,7 @@ export default class Baekjun {
         clearInterval(submissionInterval);
         if (this.checkSuccess()) {
           callback({ status: "success" });
+          this.renderModal(submitedInfo);
           this.afterSuccess(submitedInfo, callback);
           return;
         }
@@ -86,14 +166,14 @@ export default class Baekjun {
     )) as Partial<ChromeStorage>;
     const submissionId = submitedInfo.cells[0].innerText;
     const problemId = getQueryParam("problem_id");
-    console.log(BaekjunStartTime);
-    console.log(getTimeDiff(BaekjunStartTime as number, new Date().getTime()));
+
     return {
       submissionId,
       problemId,
       spentTime: submitedInfo.cells[5].innerText,
       spentMemory: submitedInfo.cells[4].innerText,
-      language: $("a", submitedInfo.cells[6]).innerText,
+      language: $("a", submitedInfo.cells[6])
+        .innerText as keyof typeof Language,
       solvingTime: Object.values(
         getTimeDiff(BaekjunStartTime as number, new Date().getTime())
       ).join(" : "),
@@ -113,10 +193,130 @@ export default class Baekjun {
     if (Upload) {
       await commitCodeToRepo({ ...problemContent });
     }
-    // this.renderModalAfterSuccess(solvingTime);
+
     callback({ modal: true });
     deleteChromeLocalStorage(chromeStorageId.BaekjunStartTime);
     deleteChromeLocalStorage(chromeStorageId.BaekjunProblemId);
+  }
+
+  static async renderModal(submitedInfo: HTMLTableRowElement) {
+    const data = await Baekjun.getProblemInfoByDom(submitedInfo);
+    const {
+      problemId,
+      submissionId,
+      solvingTime,
+      code,
+      description,
+      language,
+      spentMemory,
+      spentTime,
+    } = data;
+    let res;
+    let nextStartNum;
+    const others: Array<string | number>[] = [];
+    for (let n = 0; n < 10; n++) {
+      if (n == 0) {
+        res = await fetch(
+          `https://www.acmicpc.net/status?problem_id=${problemId}&language_id=${Language[language]}&result_id=4&from_problem=1`
+        )
+          .then((response) => response.text())
+          .then((data) =>
+            new window.DOMParser().parseFromString(data, "text/html")
+          );
+      } else {
+        if (!nextStartNum) {
+          continue;
+        }
+        res = await fetch(
+          `https://www.acmicpc.net/status?problem_id=${problemId}&language_id=${Language[language]}&result_id=4&from_problem=1&top=${nextStartNum}`
+        )
+          .then((response) => response.text())
+          .then((data) =>
+            new window.DOMParser().parseFromString(data, "text/html")
+          );
+      }
+
+      const rows = $$("tr", $("tbody", res)).slice(1, undefined);
+      rows.forEach((row) => {
+        const tds = $$("td", row);
+        const memory = tds[4].textContent as string;
+        const time = tds[5].textContent as string;
+
+        const link = tds[6].querySelector("a");
+        if (link) {
+          others.push([
+            (Number(memory) / 1000).toFixed(2),
+            Number(time),
+            link.href,
+          ]);
+          return;
+        }
+
+        others.push([(Number(memory) / 1000).toFixed(2), Number(time)]);
+      });
+
+      const nextPage = res.querySelector(
+        "#next_page"
+      ) as HTMLAnchorElement | null;
+
+      if (nextPage) {
+        nextStartNum = nextPage.href.split("top=")[1];
+      }
+    }
+
+    const avgMemory = Math.round(
+      others.reduce((acc, value) => acc + Number(value[0]), 0) / others.length
+    );
+    const avgTime =
+      Math.round(
+        (others.reduce((acc, value) => acc + Number(value[1]), 0) /
+          others.length) *
+          100
+      ) / 100;
+
+    const lowMemories = [...others].sort((a, b) => Number(a[0]) - Number(b[0]));
+    const lowTimes = [...others].sort((a, b) => Number(a[1]) - Number(b[1]));
+
+    const myMemory = (Number(spentMemory) / 1000).toString();
+
+    console.log(lowMemories, "lowMemories");
+    console.log(lowTimes, "lowTimes");
+
+    const myRuntimePercent = [
+      ...others.map((item) => item[1]),
+      Number(spentTime),
+    ]
+      .sort((a, b) => Number(a) - Number(b))
+      .indexOf(Number(spentTime));
+
+    const myMemoryPercent = [
+      ...others.map((item) => Number(item) / 1000),
+      Number(myMemory),
+    ]
+      .sort((a, b) => a - b)
+      .indexOf(Number(myMemory));
+
+    insertHTML({
+      element: $(".container.content"),
+      position: "afterbegin",
+      html: `<Modal></Modal>`,
+    });
+    new Modal({
+      node: $("Modal"),
+      state: {
+        isOpen: true,
+        avgMemory,
+        avgTime,
+        lowMemories,
+        lowTimes,
+        spentMemory: myMemory,
+        spentTime,
+        solvingTime,
+        submissionId,
+        myRuntimePercent,
+        myMemoryPercent,
+      },
+    });
   }
 
   static async createProblemContent(submitedInfo: HTMLTableRowElement) {
