@@ -19,3 +19,17 @@
   border-right: 4px solid #afa8de;
   margin-left: 7px;
 }
+
+.success-programmers {
+  display: flex;
+  justify-content: center;
+}
+
+.success-programmers > span > div {
+  display: inline-block;
+  transform: rotate(45deg);
+  width: 1.2em;
+  height: 2.3em;
+  border-bottom: 7px solid #afa8de;
+  border-right: 7px solid #afa8de;
+}

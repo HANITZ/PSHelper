@@ -3,8 +3,8 @@ type BaekjunStartTime = {
 };
 
 type BaekjunProblemId = {
-  baekjunProblemId: string
-}
+  baekjunProblemId: string;
+};
 
 type ChromeStorage = {
   Timer: boolean;
@@ -12,6 +12,19 @@ type ChromeStorage = {
   SubmissionId: string;
   BaekjunProblemId: string;
   BaekjunStartTime: number;
-}
+  ProgrammersStartTime: number;
+};
+type ProgrammersProblem = {
+  isSolved: string;
+  title: string;
+  level: string;
+  finishedCount: string;
+  acceptanceRate: string;
+};
 
-export { BaekjunStartTime, BaekjunProblemId, ChromeStorage };
+export {
+  BaekjunStartTime,
+  BaekjunProblemId,
+  ChromeStorage,
+  ProgrammersProblem,
+};

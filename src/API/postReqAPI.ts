@@ -22,7 +22,7 @@ export const commitCodeToRepo = async ({
   const sourceReadMe = await createBlob(readMe, "README.md", directory);
   const treeSHA = await createTree(refSHA, [sourceCode, sourceReadMe]);
   const commitSHA = await createCommit(message, treeSHA, refSHA);
-  await updateHead(ref, commitSHA);
+  return await updateHead(ref, commitSHA);
 };
 
 export const postNewRepo = async (name: string): Promise<any> => {
@@ -161,16 +161,14 @@ export const updateHead: UpdateHead = async (ref, commitSHA, force = true) => {
   )) as Token;
   const host = `https://api.github.com/repos/${user}/${repoName}/git/refs/heads/main`;
   const data = JSON.stringify({ sha: commitSHA, force });
-  const res = await (
-    await fetch(host, {
-      method: "PATCH",
-      headers: {
-        Authorization: `token ${GITHUB_TOKEN}`,
-        Accept: "application/vnd.github.v3+json",
-        "Content-Type": "application/json",
-      },
-      body: data,
-    })
-  ).json();
-  return res;
+  const res = await await fetch(host, {
+    method: "PATCH",
+    headers: {
+      Authorization: `token ${GITHUB_TOKEN}`,
+      Accept: "application/vnd.github.v3+json",
+      "Content-Type": "application/json",
+    },
+    body: data,
+  });
+  return res.status;
 };

@@ -19,11 +19,46 @@ import {
   getProblemInfoBySolvedAc,
 } from "API/getReqAPI";
 import { commitCodeToRepo } from "API/postReqAPI";
-import {
-  ParamBaekGetDirectory,
-  ParamBaekGetMessage,
-  ParamGetFileName,
-} from "Baekjun/Baekjun";
+
+interface BaekjunProblemId {
+  BaekjunProblemId: string;
+}
+
+interface BaekjunTime {
+  baekjunTime: number;
+}
+
+interface SubmitedProblem {
+  submitedProblem: string;
+}
+
+
+
+export type ParamCreateProblemContent = {
+  description: string;
+  acceptedUserCount?: number;
+  averageTries?: number;
+  official?: boolean;
+  title: string;
+  problemId: string;
+  solvingTime: string;
+  spentTime: string;
+  spentMemory: string;
+  category: string;
+  language: string;
+};
+type BaekjunLevel = {
+  level: string;
+};
+export type ParamBaekCreateProblemContent = ParamCreateProblemContent & BaekjunLevel;
+export type ParamBaekGetMessage = ParamGetMessage & BaekjunLevel;
+export type ParamBaekGetDirectory = ParamGetDirectory & BaekjunLevel;
+export interface ParamGetMessage {
+  title: string;
+  spentMemory: string;
+  spentTime: string;
+  solvingTime: string;
+}
 
 type ProblemInfo = {
   submissionId: string;
@@ -35,6 +70,23 @@ type ProblemInfo = {
   code: string;
   description: string;
 };
+
+export interface ParamGetMessage {
+  title: string;
+  spentMemory: string;
+  spentTime: string;
+  solvingTime: string;
+}
+
+export interface ParamGetDirectory {
+  problemId: string;
+  title: string;
+}
+
+export interface ParamGetFileName {
+  title: string;
+  language: string;
+}
 
 export default class Baekjun {
   static getProblemId = (url: string) => {

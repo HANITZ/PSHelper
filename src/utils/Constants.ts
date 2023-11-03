@@ -4,9 +4,16 @@ export const errorMsg = {
 
 export const chromeStorageId = {
   BaekjunProblemId: "BaekjunProblemId",
-  BaekjunStartTime: "BaekjunStartTime", 
+  BaekjunStartTime: "BaekjunStartTime",
+  Programmers: "Programmers",
+  ProgrammersProblemInfo: "ProgrammersProblemInfo",
+  ProgrammersStartTime: "ProgrammersStartTime", 
   Repo: "Repo",
   Timer: "Timer",
   Upload: "Upload",
   SubmissionId: "SubmissionId",
 };
+
+export const errorMsh = {
+  NotFoundRepo: "[PSHelper]Repository가 설정되지 않았습니다."
+}

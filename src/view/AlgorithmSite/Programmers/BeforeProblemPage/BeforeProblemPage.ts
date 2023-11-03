@@ -1,20 +1,24 @@
 import { Component } from "@Components";
-import { $, $$, setChromeLocalStorage } from "@utils";
+import { Programmers } from "@Controller/Programmers";
+import {
+  $,
+  $$,
+  chromeStorageId,
+  getChromeLocalStorage,
+  setChromeLocalStorage,
+} from "@utils";
 
 type PropsBeforeProblemPage = {};
 
 export default class BeforeProblemPage extends Component<PropsBeforeProblemPage> {
   setEvent() {
-    const problems = $$("tr", this.node as HTMLElement);
-    problems.slice(1).forEach((tr) => {
-      const isSolved = $("td.status.solved", tr) ? "solved" : "unsolved";
-      const title = $("td.title", tr).innerText;
-      const level = $("td.level", tr).innerText;
-      const finishedCount = $("td.finished-count", tr).innerText;
-      const acceptanceRate = $("td.acceptance-rate", tr).innerText;
-      tr.addEventListener("click", () => {
+    const problems = Programmers.getProblemInfoFromList();
+    problems.forEach((problem) => {
+      const { isSolved, title, level, finishedCount, acceptanceRate, element } =
+        problem;
+      element.addEventListener("click", async () => {
         setChromeLocalStorage({
-          Problem: {
+          [chromeStorageId.ProgrammersProblemInfo]: {
             isSolved,
             title,
             level,

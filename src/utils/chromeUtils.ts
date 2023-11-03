@@ -1,5 +1,3 @@
-
-
 export const setChromeSyncStorage = ({ ...props }, fn = () => {}) => {
   chrome.storage.sync.set({ ...props }, fn);
 };
@@ -15,15 +13,18 @@ export const getChromeSyncStorage = (
   return chrome.storage.sync.get([key]);
 };
 
-export const setChromeLocalStorage = ({ ...props }):Promise<any> => {
+export const setChromeLocalStorage = ({ ...props }): Promise<any> => {
   return chrome.storage.local.set({ ...props });
 };
 
 type Fn = (data: object) => {};
-type getChromeLocalStorage = (key: string) => Promise<object>;
+type getChromeLocalStorage = (key: string | string[]) => Promise<object>;
 
 export const getChromeLocalStorage: getChromeLocalStorage = (key) => {
-  return chrome.storage.local.get([key]);
+  if (typeof key === "string") {
+    return chrome.storage.local.get([key]);
+  }
+  return chrome.storage.local.get([...key]);
 };
 type deleteChromeLocalStorage = (key: string | string[]) => void;
 export const deleteChromeLocalStorage: deleteChromeLocalStorage = (key) => {
@@ -43,5 +44,3 @@ export const sendChromeMessage = async (
 export const getChromeMessage = (fn: any) => {
   chrome.runtime.onMessage.addListener(fn);
 };
-
-

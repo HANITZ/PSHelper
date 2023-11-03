@@ -68,3 +68,43 @@
     height: 7px;
   }
 }
+
+.loading-programmers{
+  display: flex;
+  justify-content: center;
+}
+
+.loading-programmers > span > div {
+  width: 48px;
+  height: 48px;
+  border-radius: 50% !important;
+  display: inline-block;
+  position: relative;
+  background: linear-gradient(0deg, rgb(255, 255, 255) 33%, #afa8de 100%);
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+.mark-programmers {
+  margin-right: 20px !important;
+}
+
+.loading-programmers > span > div::after {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

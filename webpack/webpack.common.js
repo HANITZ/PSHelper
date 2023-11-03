@@ -12,9 +12,8 @@ module.exports = {
   entry: {
     popup: path.join(srcDir, "view/Home/index.ts"),
     background: path.join(srcDir, "background/background.ts"),
-    Github: path.join(srcDir, "Github.ts"),
-    Programmers: path.join(srcDir, "Programmers/Programmers.ts"),
-    Leetcode: path.join(srcDir, "Leetcode/Leetcode.ts"),
+    Github: path.join(srcDir, "Controller/Github/Github.ts"),
+    Programmers: path.join(srcDir, "view/AlgorithmSite/Programmers/index.ts"),
     Baekjun: path.join(srcDir, "view/AlgorithmSite/Baekjun/index.ts"),
   },
 
