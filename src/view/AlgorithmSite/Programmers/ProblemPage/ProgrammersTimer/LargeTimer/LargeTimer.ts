@@ -1,4 +1,5 @@
 import { Component } from "@Components";
+import "./LargeTimer.css";
 
 type PropsLargeTimer = {
   hour?: string;
@@ -9,10 +10,10 @@ type PropsLargeTimer = {
 export default class LargeTimer extends Component<PropsLargeTimer> {
   template(): string {
     const { hour, min, sec } = this.state;
-    return `<div >
-        <p class="timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: ${
-          hour ? hour : `00`
-        }:${min ? min : `00`}:${sec ? sec : `00`}</p>
-        </div>`;
+    return `<li >
+        <p class="large-timer"  >Timer: ${hour ? hour : `00`}:${min ? min : `00`}:${
+      sec ? sec : `00`
+    }</p>
+        </li>`;
   }
 }

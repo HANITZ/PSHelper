@@ -13,7 +13,7 @@ module.exports = {
     popup: path.join(srcDir, "view/Home/index.ts"),
     background: path.join(srcDir, "background/background.ts"),
     Github: path.join(srcDir, "Github.ts"),
-    Programmers: path.join(srcDir, "Programmers/Programmers.ts"),
+    Programmers: path.join(srcDir, "view/AlgorithmSite/Programmers/index.ts"),
     Leetcode: path.join(srcDir, "Leetcode/Leetcode.ts"),
     Baekjun: path.join(srcDir, "view/AlgorithmSite/Baekjun/index.ts"),
   },

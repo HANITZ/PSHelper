@@ -1,5 +1,5 @@
 import { Component } from "@Components";
-
+import "./SmallTimer.css";
 type PropsSmallTimer = {
   hour?: string;
   min?: string;
@@ -11,9 +11,9 @@ export default class SmallTimer extends Component<PropsSmallTimer> {
     const { hour, min, sec } = this.state;
 
     return `<div >
-        <p class="timer" style= "color: #B2C0CC; font-weight: 500;   margin: 0; padding: 0.25rem 0.5rem 0.25rem 0"  >Timer: ${
-          hour ? hour : `00`
-        }:${min ? min : `00`}:${sec ? sec : `00`}</p>
+        <p class="small-timer">Timer: ${hour ? hour : `00`}:${
+      min ? min : `00`
+    }:${sec ? sec : `00`}</p>
         </div>`;
   }
 }

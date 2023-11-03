@@ -1,59 +1,44 @@
 import { Component } from "@Components";
-import { ChromeStorage } from "@Data/ChromeStorage";
-import { Timer } from "@Timer";
-import {
-  $,
-  $$,
-  GetTimeDiff,
-  chromeStorageId,
-  errorMsg,
-  getChromeLocalStorage,
-  insertHTML,
-  isUndefined,
-  selectEl,
-  setChromeLocalStorage,
-} from "@utils";
-import { SmallTimer } from "./SmallTimer";
-import { LargeTimer } from "./LargeTimer";
+import { $, selectEl } from "@utils";
 import "./ProblemPage.css";
+import { ProgrammersModal } from "./ProgrammersModal";
+import ProgrammersTimer from "./ProgrammersTimer/ProgrammersTimer";
 
 type PropsProblemPage = {
-  hour?: string;
-  min?: string;
-  sec?: string;
   isTimer: boolean;
   isUpload: boolean;
 };
 
 export default class ProblemPage extends Component<PropsProblemPage> {
-  timer: Timer | undefined;
+  async componentDidMount(): Promise<void> {}
 
-  async componentDidMount(): Promise<void> {
+  async createChildComponents() {
     const { isTimer } = this.state;
 
     if (isTimer) {
-      this.timer = new Timer({});
-      this.timer.createTimer(this.timerHandler.bind(this));
+      new ProgrammersTimer({
+        node: this.node,
+        state: { isTimer },
+      });
     }
   }
 
-  timerHandler({ h, m, s }: GetTimeDiff) {
-    this.setState({ hour: h, min: m, sec: s });
-  }
-  async createChildComponents() {
-    const { isTimer, hour, min, sec } = this.state;
-
-    if (isTimer) {
-      new SmallTimer({
-        node: selectEl(".small-timer", this.node),
-        state: { hour, min, sec },
-      });
-
-      new LargeTimer({
-        node: selectEl(".large-timer", this.node),
-        state: { hour, min, sec },
-      });
-    }
+  setEvent() {
+    const { isUpload } = this.state;
+    $("#submit-code").addEventListener("click", () => {
+      const interval = setInterval(() => {
+        const modalElement = $(".modal-body");
+        if (modalElement) {
+          new ProgrammersModal({
+            node: modalElement,
+            state: {
+              isUpload,
+            },
+          });
+          clearInterval(interval);
+        }
+      }, 2000);
+    });
   }
 
   render() {

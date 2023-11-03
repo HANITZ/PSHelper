@@ -32,7 +32,6 @@ export default abstract class Component<T> {
       if (!Object.prototype.hasOwnProperty.call(newState, key)) {
         throw new Error(`${key}는 상태에 존재하지 않는 변수입니다.`);
       }
-
       if (!isSameTwo(this.state[key], newState[key])) {
         return true;
       }
@@ -49,13 +48,13 @@ export default abstract class Component<T> {
 
   createChildComponents(): void {}
 
-  update(): void {
-    
-  }
+  update(): void {}
 
   template(): string {
     return "";
   }
 
   setEvent(): void {}
+
+  clearComponent(): void {}
 }

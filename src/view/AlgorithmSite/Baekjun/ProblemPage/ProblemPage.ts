@@ -44,7 +44,7 @@ export default class ProblemPage extends Component<PropsProblemPage> {
           window.location.href
         ),
       });
-      await setChromeLocalStorage({ [chromeStorageId.BaekjunStartTime]: nowTime });
+      setChromeLocalStorage({ [chromeStorageId.BaekjunStartTime]: nowTime });
     } else {
       // 같은 문제 내에서 다시 접근한 경우에는 기존 타이머 지속
       this.timer = new Timer({ startTime: BaekjunStartTime });
@@ -52,7 +52,7 @@ export default class ProblemPage extends Component<PropsProblemPage> {
 
     this.timer.createTimer(this.timerHandler.bind(this));
   }
-  
+
   timerHandler({ h, m, s }: GetTimeDiff) {
     this.setState({ hour: h, min: m, sec: s });
   }
